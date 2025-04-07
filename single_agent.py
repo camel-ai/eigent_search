@@ -70,10 +70,14 @@ def single_result(agent_type: str):
     }
 
 
-def main(agent_type: str, testing: bool = False):
-    dataset = list(load_dataset("basicv8vc/SimpleQA")["test"])
+def main(agent_type: str, sample_index: int = 0, testing: bool = False):
+    
+    print(f"Using {sample_index}th partition of SimpleQA dataset ...")
+    dataset = list(load_dataset("json", data_files=f"data/simpleqa/simpleqa_partition_{sample_index}.json")["train"])
+        
     if testing:
-        dataset = dataset[6:9]
+        print("Running in testing mode (3 problems) ...")
+        dataset = dataset[:3]
     
     # Create agents
     agent = create_agent(agent_type)
@@ -126,7 +130,9 @@ def main(agent_type: str, testing: bool = False):
         tqdm.write("---------")
         tqdm.write("\n")
     
-    output_file = f"single_agent_result_{agent_type}.json"
+    output_file = f"results/{agent_type}_simpleqa_{sample_index}.json"
+    if testing:
+        output_file = output_file.replace(".json", "_testing.json")
     with open(output_file, "w") as f:
         json.dump(results, f, indent=4)
     print(f"Results saved to {output_file}")
@@ -141,10 +147,17 @@ if __name__ == "__main__":
         help="Type of agent to use (librarian, plain, or cot)"
     )
     parser.add_argument(
+        "--sample_index",
+        "-s",
+        type=int,
+        default=0,
+        help="Index of the sample partition to use"
+    )
+    parser.add_argument(
         "--testing",
         "-t",
         action="store_true",
         help="Run in testing mode (only 3 problems)"
     )
     args = parser.parse_args()
-    main(args.agent_type, args.testing)
+    main(args.agent_type, args.sample_index, args.testing)
