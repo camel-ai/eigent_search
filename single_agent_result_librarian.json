@@ -5,8 +5,8 @@
         "prediction": {
             "librarian": {
                 "response": {
-                    "knowledge": "[{\"source\": \"Christianity Today\", \"timestamp\": \"2008-01\", \"fact\": \"In January 2008, Barack Obama told Christianity Today, 'I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ.'\"}]",
-                    "reasoning": "1. The retrieved knowledge from Christianity Today states that Barack Obama made the statement in January 2008.\n2. There is no conflicting information or additional context needed to interpret this fact.\n3. Therefore, the month and year of Obama's statement can be directly identified as January 2008.",
+                    "knowledge": "[{\"source\": \"Christianity Today\", \"timestamp\": \"2008-01-23\", \"fact\": \"Barack Obama told Christianity Today, 'I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ.'\"}]",
+                    "reasoning": "The retrieved fact from Christianity Today, dated January 23, 2008, states that Barack Obama made the statement about his Christian faith. This provides the month and year of the statement as January 2008.",
                     "answer": "January 2008"
                 },
                 "grade": "CORRECT"
@@ -19,9 +19,9 @@
         "prediction": {
             "librarian": {
                 "response": {
-                    "knowledge": "[{\"source\": \"Supreme Court of India Official Website\", \"timestamp\": \"2023-10-01\", \"fact\": \"Mirza Hameedullah Beg was appointed as the Chief Justice of India on 29th January 1977 by the then President of India, Fakhruddin Ali Ahmed.\"}]",
-                    "reasoning": "1. The fact states that Mirza Hameedullah Beg was appointed as the Chief Justice of India on 29th January 1977.\n2. It also mentions that the appointing authority was the President of India at that time, Fakhruddin Ali Ahmed.\n3. Therefore, Fakhruddin Ali Ahmed, as the President of India in 1977, appointed Mirza Hameedullah Beg as the Chief Justice of India.",
-                    "answer": "Mirza Hameedullah Beg was appointed as the Chief Justice of India in 1977 by President Fakhruddin Ali Ahmed."
+                    "knowledge": "[\n  {\"source\": \"Supreme Court of India Official Website\", \"timestamp\": \"2023-10-01\", \"fact\": \"Mirza Hameedullah Beg served as the Chief Justice of India from January 29, 1977, to February 21, 1978.\"},\n  {\"source\": \"Supreme Court of India Official Website\", \"timestamp\": \"2023-10-01\", \"fact\": \"The President of India appoints the Chief Justice of India.\"},\n  {\"source\": \"Historical Records of India\", \"timestamp\": \"2023-10-01\", \"fact\": \"In 1977, the President of India was Fakhruddin Ali Ahmed until his death on February 11, and then B. D. Jatti served as Acting President until July 25, 1977, when Neelam Sanjiva Reddy took office.\"}\n]",
+                    "reasoning": "1. Mirza Hameedullah Beg was appointed as the Chief Justice of India on January 29, 1977.\n2. The President of India is responsible for appointing the Chief Justice of India.\n3. Fakhruddin Ali Ahmed was the President of India until February 11, 1977.\n4. Since Mirza Hameedullah Beg was appointed on January 29, 1977, before Fakhruddin Ali Ahmed's death, it was Fakhruddin Ali Ahmed who appointed him.",
+                    "answer": "Fakhruddin Ali Ahmed appointed Mirza Hameedullah Beg as the Chief Justice of India in 1977."
                 },
                 "grade": "CORRECT"
             }
@@ -33,8 +33,8 @@
         "prediction": {
             "librarian": {
                 "response": {
-                    "knowledge": "[{\"source\": \"Wikipedia\", \"timestamp\": \"2023-10-01\", \"fact\": \"J\u00f3hanna Sigur\u00f0ard\u00f3ttir, born 4 October 1942, is an Icelandic politician who served as prime minister of Iceland from 2009 to 2013. Before her political career, she worked as a flight attendant from 1962 to 1971.\"}]",
-                    "reasoning": "1. The question asks for the name of a former Prime Minister of Iceland who worked as a cabin crew member until 1971.\n2. The retrieved fact states that J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as the Prime Minister of Iceland from 2009 to 2013.\n3. It also mentions that she worked as a flight attendant from 1962 to 1971.\n4. The term 'cabin crew member' is synonymous with 'flight attendant.'\n5. Therefore, J\u00f3hanna Sigur\u00f0ard\u00f3ttir matches the description provided in the question.",
+                    "knowledge": "[{\"source\": \"Encyclopedia Britannica\", \"timestamp\": \"2023-01-01\", \"fact\": \"J\u00f3hanna Sigur\u00f0ard\u00f3ttir, born October 4, 1942, was a former Prime Minister of Iceland. Before entering politics, she worked as a flight attendant from 1962 to 1971.\"}]",
+                    "reasoning": "1. The fact retrieved from the Encyclopedia Britannica states that J\u00f3hanna Sigur\u00f0ard\u00f3ttir was a former Prime Minister of Iceland.\n2. It also mentions that she worked as a flight attendant, which is synonymous with a cabin crew member, from 1962 until 1971.\n3. Based on this information, J\u00f3hanna Sigur\u00f0ard\u00f3ttir fits the description of having worked as a cabin crew member until 1971 and later becoming a Prime Minister of Iceland.",
                     "answer": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir is the former Prime Minister of Iceland who worked as a cabin crew member until 1971."
                 },
                 "grade": "CORRECT"

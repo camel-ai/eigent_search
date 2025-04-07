@@ -8,6 +8,7 @@ from librarian.prompt import PLAIN_PROMPT, COT_PROMPT, LIBRARIAN_PROMPT
 import json
 import argparse
 from typing import Dict
+from tqdm import tqdm
 
 AGENT_CONFIGS = {
     'librarian': {
@@ -55,9 +56,9 @@ def get_agent_response(agent: ChatAgent, problem: str, agent_type: str) -> Dict:
 
 def print_agent_response(response: Dict, agent_type: str) -> None:
     """Print the response from an agent."""
-    print(f"\n#### {agent_type.title()} Agent Answer ####\n")
+    tqdm.write(f"\n#### {agent_type.title()} Agent Answer ####\n")
     for field in AGENT_CONFIGS[agent_type]['show_fields']:
-        print(f"{field}:", response[field], "\n")
+        tqdm.write(f"{field}: {response[field]}\n")
 
 
 def single_result(agent_type: str):
@@ -84,7 +85,7 @@ def main(agent_type: str, testing: bool = False):
     correct_count = 0
     total = 0
     
-    for dp in dataset:
+    for dp in tqdm(dataset, desc=f"{agent_type.title()} Agent (SimpleQA)"):
         total += 1
         
         # Reset agent
@@ -95,18 +96,16 @@ def main(agent_type: str, testing: bool = False):
         result["problem"] = dp["problem"]
         result["answer"] = dp["answer"]
         
-        print("#### Question ####\n")
-        print(dp["problem"])
+        tqdm.write(f"#### Question ####\n\n{dp['problem']}")
         
         # Get agent response
         response = get_agent_response(agent, dp["problem"], agent_type)
         result["prediction"][agent_type]["response"] = response
         print_agent_response(response, agent_type)
         
-        print("\n#### Gold Answer ####\n")
-        print(dp["answer"])
+        tqdm.write(f"\n#### Gold Answer ####\n\n{dp['answer']}")
         
-        print("\n#### Grade ####\n")
+        tqdm.write("\n#### Grade ####\n")
         grade = eval(
             evaluation_agent.grade(dp["problem"], dp["answer"], response["answer"])
         )["grade"]
@@ -116,16 +115,16 @@ def main(agent_type: str, testing: bool = False):
         if grade == "CORRECT":
             correct_count += 1
         
-        print(f"{agent_type.title()} Agent Grade:", grade)
+        tqdm.write(f"{agent_type.title()} Agent Grade: {grade}")
         
         results.append(result)
         
-        print("\n#### Cumulative Results ###\n")
-        print(f"{agent_type.title()} Agent Cumulative Correct: {correct_count} / {total}")
+        tqdm.write("\n#### Cumulative Results ###\n")
+        tqdm.write(f"{agent_type.title()} Agent Cumulative Correct: {correct_count} / {total}")
         
-        print("\n")
-        print("---------")
-        print("\n")
+        tqdm.write("\n")
+        tqdm.write("---------")
+        tqdm.write("\n")
     
     output_file = f"single_agent_result_{agent_type}.json"
     with open(output_file, "w") as f:
