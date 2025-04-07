@@ -1,0 +1,44 @@
+[
+    {
+        "problem": "What were the month and year when Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\"?",
+        "answer": "January 2008",
+        "prediction": {
+            "librarian": {
+                "response": {
+                    "knowledge": "[{\"source\": \"Christianity Today\", \"timestamp\": \"2008-01\", \"fact\": \"In January 2008, Barack Obama told Christianity Today, 'I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ.'\"}]",
+                    "reasoning": "1. The retrieved knowledge from Christianity Today states that Barack Obama made the statement in January 2008.\n2. There is no conflicting information or additional context needed to interpret this fact.\n3. Therefore, the month and year of Obama's statement can be directly identified as January 2008.",
+                    "answer": "January 2008"
+                },
+                "grade": "CORRECT"
+            }
+        }
+    },
+    {
+        "problem": "Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?",
+        "answer": "Fakhruddin Ali Ahmed",
+        "prediction": {
+            "librarian": {
+                "response": {
+                    "knowledge": "[{\"source\": \"Supreme Court of India Official Website\", \"timestamp\": \"2023-10-01\", \"fact\": \"Mirza Hameedullah Beg was appointed as the Chief Justice of India on 29th January 1977 by the then President of India, Fakhruddin Ali Ahmed.\"}]",
+                    "reasoning": "1. The fact states that Mirza Hameedullah Beg was appointed as the Chief Justice of India on 29th January 1977.\n2. It also mentions that the appointing authority was the President of India at that time, Fakhruddin Ali Ahmed.\n3. Therefore, Fakhruddin Ali Ahmed, as the President of India in 1977, appointed Mirza Hameedullah Beg as the Chief Justice of India.",
+                    "answer": "Mirza Hameedullah Beg was appointed as the Chief Justice of India in 1977 by President Fakhruddin Ali Ahmed."
+                },
+                "grade": "CORRECT"
+            }
+        }
+    },
+    {
+        "problem": "What is the name of the former Prime Minister of Iceland who worked as a cabin crew member until 1971?",
+        "answer": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir",
+        "prediction": {
+            "librarian": {
+                "response": {
+                    "knowledge": "[{\"source\": \"Wikipedia\", \"timestamp\": \"2023-10-01\", \"fact\": \"J\u00f3hanna Sigur\u00f0ard\u00f3ttir, born 4 October 1942, is an Icelandic politician who served as prime minister of Iceland from 2009 to 2013. Before her political career, she worked as a flight attendant from 1962 to 1971.\"}]",
+                    "reasoning": "1. The question asks for the name of a former Prime Minister of Iceland who worked as a cabin crew member until 1971.\n2. The retrieved fact states that J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as the Prime Minister of Iceland from 2009 to 2013.\n3. It also mentions that she worked as a flight attendant from 1962 to 1971.\n4. The term 'cabin crew member' is synonymous with 'flight attendant.'\n5. Therefore, J\u00f3hanna Sigur\u00f0ard\u00f3ttir matches the description provided in the question.",
+                    "answer": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir is the former Prime Minister of Iceland who worked as a cabin crew member until 1971."
+                },
+                "grade": "CORRECT"
+            }
+        }
+    }
+]
