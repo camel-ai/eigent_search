@@ -1,25 +1,14 @@
-from pydantic import BaseModel, Field
-from typing import Literal
-
 from camel.agents import ChatAgent
-
-# Grade constants
-GRADE_CORRECT = "CORRECT"
-GRADE_INCORRECT = "INCORRECT"
-GRADE_NOT_ATTEMPTED = "NOT_ATTEMPTED"
+from .schema import Grade
 
 
-class Judgement(BaseModel):
-    grade: Literal[GRADE_CORRECT, GRADE_INCORRECT, GRADE_NOT_ATTEMPTED] = Field(
-        ..., description="The grade of the predicted answer."
-    )
-
-
-class LLMClassifier:
+class SimpleQAGrader:
     def __init__(self, agent: ChatAgent):
         self.agent = agent
 
-    def create_judgement(self, input: str, expected: str, output: str) -> str:
+    def create_judgement(
+        self, question: str, reference_answer: str, predicted_answer: str
+    ) -> str:
         return f"""\
 Your job is to look at a question, a gold target, and a predicted answer, and then assign a grade of either ["CORRECT", "INCORRECT", "NOT_ATTEMPTED"]. First, I will give examples of each grade, and then you will grade a new example.
  
@@ -87,9 +76,9 @@ Also note the following things:
  
 Here is a new example. Simply reply with either CORRECT, INCORRECT, NOT ATTEMPTED. Don't apologize or correct yourself if there was a mistake; we are just trying to grade the answer.
 '''
-Question: {input}
-Gold target: {expected}
-Predicted answer: {output}
+Question: {question}
+Gold target: {reference_answer}
+Predicted answer: {predicted_answer}
 '''
  
 Grade the predicted answer of this new question as one of:
@@ -98,9 +87,10 @@ INCORRECT
 NOT_ATTEMPTED
 """
 
-    def grade(self, input: str, expected: str, output: str) -> str:
+    def grade(self, question: str, reference_answer: str, predicted_answer: str):
         self.agent.reset()
         response = self.agent.step(
-            self.create_judgement(input, expected, output), response_format=Judgement
+            self.create_judgement(question, reference_answer, predicted_answer),
+            response_format=Grade,
         )
         return response.msgs[0].content
