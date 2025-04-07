@@ -1,10 +1,18 @@
 from pydantic import BaseModel, Field
+from typing import Literal
 
 from camel.agents import ChatAgent
 
+# Grade constants
+GRADE_CORRECT = "CORRECT"
+GRADE_INCORRECT = "INCORRECT"
+GRADE_NOT_ATTEMPTED = "NOT_ATTEMPTED"
+
 
 class Judgement(BaseModel):
-    grade: str = Field(..., description="The grade of the predicted answer.")
+    grade: Literal[GRADE_CORRECT, GRADE_INCORRECT, GRADE_NOT_ATTEMPTED] = Field(
+        ..., description="The grade of the predicted answer."
+    )
 
 
 class LLMClassifier:
@@ -85,13 +93,14 @@ Predicted answer: {output}
 '''
  
 Grade the predicted answer of this new question as one of:
-A: CORRECT
-B: INCORRECT
-C: NOT_ATTEMPTED
- 
-Just return the letters "A", "B", or "C", with no text around it."""
+CORRECT
+INCORRECT
+NOT_ATTEMPTED
+"""
 
     def grade(self, input: str, expected: str, output: str) -> str:
         self.agent.reset()
-        response = self.agent.step(self.create_judgement(input, expected, output), response_format=Judgement)
+        response = self.agent.step(
+            self.create_judgement(input, expected, output), response_format=Judgement
+        )
         return response.msgs[0].content
