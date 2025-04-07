@@ -1,10 +1,16 @@
+from pydantic import BaseModel, Field
 
 from camel.agents import ChatAgent
+
+
+class Judgement(BaseModel):
+    grade: str = Field(..., description="The grade of the predicted answer.")
+
 
 class LLMClassifier:
     def __init__(self, agent: ChatAgent):
         self.agent = agent
-    
+
     def create_judgement(self, input: str, expected: str, output: str) -> str:
         return f"""\
 Your job is to look at a question, a gold target, and a predicted answer, and then assign a grade of either ["CORRECT", "INCORRECT", "NOT_ATTEMPTED"]. First, I will give examples of each grade, and then you will grade a new example.
@@ -84,10 +90,8 @@ B: INCORRECT
 C: NOT_ATTEMPTED
  
 Just return the letters "A", "B", or "C", with no text around it."""
-        
- 
+
     def grade(self, input: str, expected: str, output: str) -> str:
         self.agent.reset()
-        response = self.agent.step(self.create_judgement(input, expected, output))
-        return response
-  
+        response = self.agent.step(self.create_judgement(input, expected, output), response_format=Judgement)
+        return response.msgs[0].content
