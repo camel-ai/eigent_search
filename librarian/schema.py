@@ -6,7 +6,7 @@ class LibrarianResponse(BaseModel):
     """The response from the librarian agent."""
 
     knowledge: list[str] = Field(..., description="The retrieved knowledge.")
-    reasoning: str = Field(..., description="The step-by-step reasoning process.")
+    reasoning: list[str] = Field(..., description="The step-by-step reasoning process.")
     answer: str = Field(..., description="The final answer.")
 
 
@@ -19,7 +19,7 @@ class PlainResponse(BaseModel):
 class CoTResponse(BaseModel):
     """The response from the CoT agent."""
 
-    reasoning: str = Field(..., description="The step-by-step reasoning process.")
+    reasoning: list[str] = Field(..., description="The step-by-step reasoning process.")
     answer: str = Field(..., description="The final answer.")
 
 
