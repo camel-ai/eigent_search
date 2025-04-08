@@ -1,2 +1,3 @@
 # librarian
-Dev repo for proof-of-concept for the knowledge &amp; reasoning decoupling paradigm
+
+Dev repo for proof-of-concept for the "reasoning on what is known" paradigm
