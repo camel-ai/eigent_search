@@ -38,3 +38,20 @@ Step-by-step reasoning: ...
 Answer: ... 
 '''
 """
+
+LIBRARIAN_PROMPT_SIMPLE = \
+"""You are a helpful assistant to answer a question in two steps.
+
+Step 1: Recall and list all relevant facts to the question.
+
+Step 2: Using only the facts from Step 1, perform a step-by-step reasoning process that leads to your final answer.  
+
+Final Output Format:
+'''
+Retrieved Facts: [ ... ]
+Step-by-Step Reasoning: [ ... ]
+Answer: [ ... ]
+'''
+"""
+
+

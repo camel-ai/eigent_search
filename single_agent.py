@@ -4,7 +4,7 @@ from datasets import load_dataset
 from librarian.model import create_openai_model
 from librarian.evaluation import SimpleQAGrader
 from librarian.schema import LibrarianResponse, PlainResponse, CoTResponse
-from librarian.prompt import PLAIN_PROMPT, COT_PROMPT, LIBRARIAN_PROMPT
+from librarian.prompt import PLAIN_PROMPT, COT_PROMPT, LIBRARIAN_PROMPT, LIBRARIAN_PROMPT_SIMPLE
 import json
 import argparse
 from typing import Dict
@@ -13,6 +13,12 @@ from tqdm import tqdm
 AGENT_CONFIGS = {
     'librarian': {
         'prompt': LIBRARIAN_PROMPT,
+        'response_format': LibrarianResponse,
+        'question_prefix': 'Question: ',
+        'show_fields': ['knowledge', 'reasoning', 'answer']
+    },
+    'librarian2': {
+        'prompt': LIBRARIAN_PROMPT_SIMPLE,
         'response_format': LibrarianResponse,
         'question_prefix': 'Question: ',
         'show_fields': ['knowledge', 'reasoning', 'answer']
