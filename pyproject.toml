@@ -3,7 +3,7 @@ name = "librarian"
 version = "0.0.1.dev0"
 description = "The Librarian Paradigm: An Agentic Solution for Structured Knowledge and Grounded Reasoning"
 authors = []
-requires-python = ">=3.10.0,<3.12"
+requires-python = ">=3.10,<3.13"
 dependencies = [
     "camel-ai[all]>=0.2.38"
 ]
