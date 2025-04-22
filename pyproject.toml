@@ -1,14 +1,13 @@
-[tool.poetry]
+[project]
 name = "librarian"
-version = "0.1.0"
-description = "Dev repo for proof-of-concept for the knowledge & reasoning decoupling paradigm"
+version = "0.0.1.dev0"
+description = "The Librarian Paradigm: An Agentic Solution for Structured Knowledge and Grounded Reasoning"
 authors = []
-packages = [{include = "librarian"}]
-
-[tool.poetry.dependencies]
-python = ">=3.10.0,<3.12"
-camel-ai = {version = "^0.2.38", extras = ["all"]}
+requires-python = ">=3.10.0,<3.12"
+dependencies = [
+    "camel-ai[all]>=0.2.38"
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
