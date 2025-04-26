@@ -11,3 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
+
+from .simpleqa import SimpleQAEvaluator
+
+__all__ = ['SimpleQAEvaluator']
