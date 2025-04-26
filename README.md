@@ -7,3 +7,7 @@ Large language models (LLMs) often hallucinate, and it’s difficult to pinpoint
 ## Road Map
 
 ![Road Map](docs/images/roadmap.png)
+
+
+> Important code reference by OpenAI: https://github.com/openai/simple-evals
+
