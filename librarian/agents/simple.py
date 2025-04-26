@@ -17,11 +17,12 @@
 from textwrap import dedent
 from pydantic import BaseModel, Field
 from .struct_agent import StructAgent
+from camel.models import BaseModelBackend
 
 class DirectAnswerAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs a direct answer."""
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, model: BaseModelBackend, *args, **kwargs):
         # define the schema
         class DirectAnswerResponse(BaseModel):
             answer: str = Field(..., description="The predicted answer.")
@@ -35,12 +36,12 @@ class DirectAnswerAgent(StructAgent):
         '''
         """).strip()
         # now pass the class object
-        super().__init__(response_format=DirectAnswerResponse, system_message=system_message, *args, **kwargs)
+        super().__init__(response_format=DirectAnswerResponse, system_message=system_message, model=model, *args, **kwargs)
     
 class ChainOfThoughtAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs an answer through step-by-step reasoning."""
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, model: BaseModelBackend, *args, **kwargs):
         # define the schema
         class ChainOfThoughtResponse(BaseModel):
             reasoning: str = Field(..., description="The step-by-step reasoning process.")
@@ -56,12 +57,12 @@ class ChainOfThoughtAgent(StructAgent):
         '''
         """).strip()
         # now pass the class object
-        super().__init__(response_format=ChainOfThoughtResponse, system_message=system_message, *args, **kwargs)
+        super().__init__(response_format=ChainOfThoughtResponse, system_message=system_message, model=model, *args, **kwargs)
 
 class SimpleLibrarianAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs an answer in two steps: first presenting knowledge from its memory, then reasoning step-by-step."""
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, model: BaseModelBackend, *args, **kwargs):
         # define the schema
         class SimpleLibrarianResponse(BaseModel):
             knowledge: str = Field(..., description="The retrieved knowledge.")
@@ -83,4 +84,4 @@ class SimpleLibrarianAgent(StructAgent):
         '''
         """).strip()
         # now pass the class object
-        super().__init__(response_format=SimpleLibrarianResponse, system_message=system_message, *args, **kwargs)
+        super().__init__(response_format=SimpleLibrarianResponse, system_message=system_message, model=model, *args, **kwargs)
