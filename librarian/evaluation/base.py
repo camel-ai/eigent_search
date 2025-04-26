@@ -33,7 +33,7 @@ class BaseEvaluator(ABC):
 
     @abstractmethod
     def evaluate(self, request: EvaluationRequest) -> EvaluationResult:
-        """Compute a scalar score and per-metric breakdown for a given :class:`EvaluationRequest`."""
+        """Compute a scalar score and per-metric breakdown for a given :obj:`EvaluationRequest`."""
         ...
 
     def __call__(self, requests: list[EvaluationRequest]) -> list[EvaluationResult]:
