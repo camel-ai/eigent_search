@@ -15,23 +15,39 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any
 from pydantic import BaseModel, Field
+from typing import TypeVar, Generic, Any
 
 
-class EvaluationRequest(BaseModel):
-    """Container for inputs to evaluators."""
-    context: dict[str, Any]
+BenchmarkPayload = TypeVar("T", bound=BaseModel)
+
+
+class EvaluationRequest(BaseModel, Generic[BenchmarkPayload]):
+    payload: BenchmarkPayload
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
 
 class EvaluationResult(BaseModel):
     """Result of an evaluation with an overall score and detailed metrics."""
-    score: float = Field(default_factory=float, description="Standard score for the evaluation.")
-    metrics: dict[str, float] = Field(default_factory=dict, description="Optional detailed metrics for the evaluation.")
+
+    score: float = Field(
+        default_factory=float, description="Standard score for the evaluation."
+    )
+    metrics: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Optional detailed metrics for the evaluation.",
+    )
+
 
 class BaseEvaluator(ABC):
     """Abstract interface for scoring agent responses."""
+    
+    @abstractmethod
+    def create_request(self, *args, **kwargs) -> EvaluationRequest[BenchmarkPayload]:
+        """Create an :obj:`EvaluationRequest` from a :obj:`BenchmarkPayload`."""
+        ...
 
     @abstractmethod
-    def evaluate(self, request: EvaluationRequest) -> EvaluationResult:
+    def evaluate(self, request: EvaluationRequest[BenchmarkPayload]) -> EvaluationResult:
         """Compute a scalar score and per-metric breakdown for a given :obj:`EvaluationRequest`."""
         ...
