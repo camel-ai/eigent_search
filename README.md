@@ -11,3 +11,28 @@ Large language models (LLMs) often hallucinate, and it’s difficult to pinpoint
 
 > Important code reference by OpenAI: https://github.com/openai/simple-evals
 
+## Get Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/camel-ai/librarian.git
+```
+
+2. Install dependencies:
+```bash
+cd librarian
+uv venv --python 3.10
+source .venv/bin/activate
+uv sync
+```
+
+3. Run the evaluation script:
+```bash
+python scripts/simpleqa_eval.py -a simple_librarian -n 500
+```
+
+4. View results in the `results` directory.
+
+## License
+
+This project is licensed under the Apache License 2.0.
