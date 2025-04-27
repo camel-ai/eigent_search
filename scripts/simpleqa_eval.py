@@ -66,7 +66,8 @@ def main(agent_type: str, num_questions: int):
     scores = []
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
-    for example in tqdm(test_samples, desc="SimpleQA Evaluation", unit="example"):
+    output_file = f"results/{agent_type}_simpleqa_{num_questions}.json"
+    for i, example in tqdm(enumerate(test_samples), desc="SimpleQA Evaluation", unit="example"):
         agent.reset()
         response = agent.step(f"Question: {example['problem']}")
         response = eval(response.msgs[0].content)
@@ -87,12 +88,14 @@ def main(agent_type: str, num_questions: int):
         )
         counter[eval_result.metrics["grade"]] += 1
         tqdm.write(f"[{agent_type}] {counter}")
+        
+        # save results every 50 examples or at the end
+        if (i+1) % 50 == 0 or i == num_questions - 1:
+            with open(output_file, "w") as f:
+                json.dump(results, f, indent=4)
+            print(f"Results saved to {output_file}")
+            
     tqdm.write(f"[{agent_type}] Accuracy (n={num_questions}): {sum(scores) / len(scores)}")
-
-    output_file = f"results/{agent_type}_simpleqa_{num_questions}.json"
-    with open(output_file, "w") as f:
-        json.dump(results, f, indent=4)
-    print(f"Results saved to {output_file}")
 
 
 if __name__ == "__main__":
