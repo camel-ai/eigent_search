@@ -31,9 +31,9 @@ class DirectAnswerAgent(StructAgent):
         You are a helpful assistant who answers the question directly.
         
         Final Output Format:
-        '''
+        ```
         Answer: ...
-        '''
+        ```
         """).strip()
         # now pass the class object
         super().__init__(response_format=DirectAnswerResponse, system_message=system_message, model=model, *args, **kwargs)
@@ -51,10 +51,10 @@ class ChainOfThoughtAgent(StructAgent):
         You are a helpful assistant who reasons step by step to answer the question.
         
         Final Output Format:
-        '''
+        ```
         Step-by-step reasoning: ...
         Answer: ...
-        '''
+        ```
         """).strip()
         # now pass the class object
         super().__init__(response_format=ChainOfThoughtResponse, system_message=system_message, model=model, *args, **kwargs)
@@ -77,11 +77,11 @@ class SimpleLibrarianAgent(StructAgent):
         Step 2: Using only the facts from Step 1, perform a step-by-step reasoning process that leads to your final answer.  
 
         Final Output Format:
-        '''
+        ```
         Retrieved Facts: ...
         Step-by-Step Reasoning: ...
         Answer: ...
-        '''
+        ```
         """).strip()
         # now pass the class object
         super().__init__(response_format=SimpleLibrarianResponse, system_message=system_message, model=model, *args, **kwargs)
