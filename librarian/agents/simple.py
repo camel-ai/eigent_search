@@ -19,14 +19,15 @@ from pydantic import BaseModel, Field
 from .struct_agent import StructAgent
 from camel.models import BaseModelBackend
 
+
+class DirectAnswerResponse(BaseModel):
+    answer: str = Field(..., description="The predicted answer.")
+
+
 class DirectAnswerAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs a direct answer."""
-    
+
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
-        # define the schema
-        class DirectAnswerResponse(BaseModel):
-            answer: str = Field(..., description="The predicted answer.")
-        # define the system-level instruction
         system_message = dedent("""
         You are a helpful assistant who answers the question directly.
         
@@ -35,18 +36,24 @@ class DirectAnswerAgent(StructAgent):
         Answer: ...
         ```
         """).strip()
-        # now pass the class object
-        super().__init__(response_format=DirectAnswerResponse, system_message=system_message, model=model, *args, **kwargs)
-    
+        super().__init__(
+            response_format=DirectAnswerResponse,
+            system_message=system_message,
+            model=model,
+            *args,
+            **kwargs,
+        )
+
+
+class ChainOfThoughtResponse(BaseModel):
+    reasoning: str = Field(..., description="The step-by-step reasoning process.")
+    answer: str = Field(..., description="The predicted answer.")
+
+
 class ChainOfThoughtAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs an answer through step-by-step reasoning."""
-    
+
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
-        # define the schema
-        class ChainOfThoughtResponse(BaseModel):
-            reasoning: str = Field(..., description="The step-by-step reasoning process.")
-            answer: str = Field(..., description="The predicted answer.")
-        # define the system-level instruction
         system_message = dedent("""
         You are a helpful assistant who reasons step by step to answer the question.
         
@@ -56,19 +63,25 @@ class ChainOfThoughtAgent(StructAgent):
         Answer: ...
         ```
         """).strip()
-        # now pass the class object
-        super().__init__(response_format=ChainOfThoughtResponse, system_message=system_message, model=model, *args, **kwargs)
+        super().__init__(
+            response_format=ChainOfThoughtResponse,
+            system_message=system_message,
+            model=model,
+            *args,
+            **kwargs,
+        )
+
+
+class SimpleLibrarianResponse(BaseModel):
+    knowledge: str = Field(..., description="The retrieved knowledge.")
+    reasoning: str = Field(..., description="The step-by-step reasoning process.")
+    answer: str = Field(..., description="The predicted answer.")
+
 
 class SimpleLibrarianAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs an answer in two steps: first presenting knowledge from its memory, then reasoning step-by-step."""
-    
+
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
-        # define the schema
-        class SimpleLibrarianResponse(BaseModel):
-            knowledge: str = Field(..., description="The retrieved knowledge.")
-            reasoning: str = Field(..., description="The step-by-step reasoning process.")
-            answer: str = Field(..., description="The predicted answer.")
-        # define the system-level instruction
         system_message = dedent("""
         You are a helpful assistant to answer a question in two steps.
 
@@ -83,5 +96,10 @@ class SimpleLibrarianAgent(StructAgent):
         Answer: ...
         ```
         """).strip()
-        # now pass the class object
-        super().__init__(response_format=SimpleLibrarianResponse, system_message=system_message, model=model, *args, **kwargs)
+        super().__init__(
+            response_format=SimpleLibrarianResponse,
+            system_message=system_message,
+            model=model,
+            *args,
+            **kwargs,
+        )
