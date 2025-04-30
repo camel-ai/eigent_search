@@ -20,10 +20,23 @@ from .struct_agent import StructAgent
 from camel.models import BaseModelBackend
 
 
+# AgentOps decorator setting
+try:
+    import os
+
+    if os.getenv("AGENTOPS_API_KEY") is not None:
+        from agentops import track_agent
+    else:
+        raise ImportError
+except (ImportError, AttributeError):
+    from camel.utils import track_agent
+
+
 class DirectAnswerResponse(BaseModel):
     answer: str = Field(..., description="The predicted answer.")
 
 
+@track_agent(name="DirectAnswerAgent")
 class DirectAnswerAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs a direct answer."""
 
@@ -50,6 +63,7 @@ class ChainOfThoughtResponse(BaseModel):
     answer: str = Field(..., description="The predicted answer.")
 
 
+@track_agent(name="ChainOfThoughtAgent")
 class ChainOfThoughtAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs an answer through step-by-step reasoning."""
 
@@ -78,6 +92,7 @@ class SimpleLibrarianResponse(BaseModel):
     answer: str = Field(..., description="The predicted answer.")
 
 
+@track_agent(name="SimpleLibrarianAgent")
 class SimpleLibrarianAgent(StructAgent):
     r"""A :class:`StructAgent` that outputs an answer in two steps: first presenting knowledge from its memory, then reasoning step-by-step."""
 
