@@ -32,7 +32,7 @@ except (ImportError, AttributeError):
 
 class SearchResponse(BaseModel):
     query: str = Field(description="The search query that was used.")
-    findings: list[dict[str, str]] = Field(
+    findings: list[str] = Field(
         description="List of search findings including fact, source and confidence."
     )
 

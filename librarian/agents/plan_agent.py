@@ -31,7 +31,7 @@ except (ImportError, AttributeError):
     
 class PlanResponse(BaseModel):
     analysis: str = Field(description="Brief analysis of the question and what makes it complex.")
-    search_plan: list[dict[str, str]] = Field(description="List of search queries and their purposes.")
+    search_plan: list[str] = Field(description="List of search queries and their purposes.")
 
 
 @track_agent(name="PlanAgent")
