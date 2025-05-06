@@ -15,6 +15,7 @@
 from pydantic import BaseModel, Field
 from textwrap import dedent
 from camel.models import BaseModelBackend
+from camel.toolkits import SearchToolkit
 from .struct_agent import StructAgent
 
 # AgentOps decorator setting
@@ -39,6 +40,7 @@ class SearchResponse(BaseModel):
 @track_agent(name="SearchAgent")
 class SearchAgent(StructAgent):
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
+        self.search_tool = SearchToolkit().search_duckduckgo
         system_message = dedent("""
         You are a search agent. Your job is to perform web searches and extract the most relevant 
         information from the search results.
@@ -64,6 +66,7 @@ class SearchAgent(StructAgent):
             response_format=SearchResponse,
             system_message=system_message,
             model=model,
+            tools=[self.search_tool],
             *args,
             **kwargs,
         )
