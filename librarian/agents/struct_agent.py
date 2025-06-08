@@ -34,8 +34,7 @@ except (ImportError, AttributeError):
 
 @track_agent(name="StructAgent")
 class StructAgent(ChatAgent):
-    r"""A :class:`ChatAgent` that must have a response format for structured
-    output."""
+    r"""A :class:`ChatAgent` that must have a response format for structured output."""
 
     def __init__(
         self,
@@ -43,10 +42,10 @@ class StructAgent(ChatAgent):
         system_message: BaseMessage | str | None = None,
         model: BaseModelBackend | list[BaseModelBackend] | None = None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(system_message=system_message, model=model, *args, **kwargs)
         self.response_format = response_format
-        
+
     def step(self, input_message: BaseMessage | str) -> ChatAgentResponse:
         return super().step(input_message, response_format=self.response_format)
