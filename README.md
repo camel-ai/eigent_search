@@ -1,4 +1,4 @@
-# The Librarian Paradigm: Structured Knowledge and Grounded Reasoning
+# CAMEL-AI DeepResearch
 
 ## Development Logs
 
