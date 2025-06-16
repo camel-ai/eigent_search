@@ -72,7 +72,8 @@ class BrowseCompEvaluator(BaseEvaluator):
     def __init__(self, chat_agent: ChatAgent):
         self.agent = chat_agent
         
-    def load_dataset(self) -> Dataset:
+    @staticmethod
+    def load_dataset() -> Dataset:
         # TODO: add decription function to the dataset
         return load_dataset("smolagents/browse_comp")
         

@@ -119,7 +119,8 @@ class SimpleQAEvaluator(BaseEvaluator):
     def __init__(self, chat_agent: ChatAgent):
         self.agent = chat_agent
 
-    def load_dataset(self) -> Dataset:
+    @staticmethod
+    def load_dataset() -> Dataset:
         return load_dataset("basicv8vc/SimpleQA")
 
     def create_request(
