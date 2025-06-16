@@ -16,7 +16,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, Field
-from typing import TypeVar, Generic, Any
+from typing import TypeVar, Generic, Any, Union
+from datasets import Dataset, DatasetDict, IterableDataset, IterableDatasetDict
 
 
 BenchmarkPayload = TypeVar("T", bound=BaseModel)
@@ -41,13 +42,22 @@ class EvaluationResult(BaseModel):
 
 class BaseEvaluator(ABC):
     """Abstract interface for scoring agent responses."""
-    
+
+    @abstractmethod
+    def load_dataset(
+        self, *args, **kwargs
+    ) -> Union[DatasetDict, Dataset, IterableDatasetDict, IterableDataset]:
+        """Load the dataset for this benchmark."""
+        ...
+
     @abstractmethod
     def create_request(self, *args, **kwargs) -> EvaluationRequest[BenchmarkPayload]:
         """Create an :obj:`EvaluationRequest` from a :obj:`BenchmarkPayload`."""
         ...
 
     @abstractmethod
-    def evaluate(self, request: EvaluationRequest[BenchmarkPayload]) -> EvaluationResult:
+    def evaluate(
+        self, request: EvaluationRequest[BenchmarkPayload]
+    ) -> EvaluationResult:
         """Compute a scalar score and per-metric breakdown for a given :obj:`EvaluationRequest`."""
         ...

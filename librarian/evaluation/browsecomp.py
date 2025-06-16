@@ -15,6 +15,7 @@
 from pydantic import BaseModel, Field
 from typing import Literal
 from camel.agents import ChatAgent
+from datasets import Dataset, load_dataset
 from .base import BaseEvaluator, EvaluationRequest, EvaluationResult
 
 # Not sure what to use but migrating from OpenAI's Simple Eval
@@ -70,6 +71,10 @@ class BrowseCompEvaluator(BaseEvaluator):
 
     def __init__(self, chat_agent: ChatAgent):
         self.agent = chat_agent
+        
+    def load_dataset(self) -> Dataset:
+        # TODO: add decription function to the dataset
+        return load_dataset("smolagents/browse_comp")
         
     def create_request(self, problem: str, answer: str, prediction: str) -> EvaluationRequest[BrowseCompPayload]:
         return EvaluationRequest(payload=BrowseCompPayload(problem=problem, answer=answer, prediction=prediction))

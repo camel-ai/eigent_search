@@ -15,6 +15,7 @@
 from pydantic import BaseModel, Field
 from typing import Literal
 from camel.agents import ChatAgent
+from datasets import load_dataset, Dataset
 from .base import BaseEvaluator, EvaluationRequest, EvaluationResult
 
 
@@ -117,9 +118,18 @@ class SimpleQAEvaluator(BaseEvaluator):
 
     def __init__(self, chat_agent: ChatAgent):
         self.agent = chat_agent
-        
-    def create_request(self, problem: str, answer: str, prediction: str) -> EvaluationRequest[SimpleQAPayload]:
-        return EvaluationRequest(payload=SimpleQAPayload(problem=problem, answer=answer, prediction=prediction))
+
+    def load_dataset(self) -> Dataset:
+        return load_dataset("basicv8vc/SimpleQA")
+
+    def create_request(
+        self, problem: str, answer: str, prediction: str
+    ) -> EvaluationRequest[SimpleQAPayload]:
+        return EvaluationRequest(
+            payload=SimpleQAPayload(
+                problem=problem, answer=answer, prediction=prediction
+            )
+        )
 
     def evaluate(self, request: EvaluationRequest[SimpleQAPayload]) -> EvaluationResult:
         self.agent.reset()
