@@ -17,15 +17,12 @@ from .baseline import (
     ChainOfThoughtAgent,
     KnowledgeThenReasoningAgent,
 )
-from .synthesize_agent import SynthesizeAgent
 from .search_agent import SearchAgent
-from .plan_agent import PlanAgent
+
 
 __all__ = [
     "DirectAnswerAgent",
     "ChainOfThoughtAgent",
     "KnowledgeThenReasoningAgent",
-    "SynthesizeAgent",
     "SearchAgent",
-    "PlanAgent",
 ]
