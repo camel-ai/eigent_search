@@ -17,7 +17,7 @@ git clone https://github.com/camel-ai/librarian.git
 2. Install dependencies:
 ```bash
 cd librarian
-uv venv --python 3.10
+uv venv --python 3.10 --prompt "(deep_research) " .venv
 source .venv/bin/activate
 uv sync
 ```
