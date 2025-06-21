@@ -12,7 +12,11 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from .simple import DirectAnswerAgent, ChainOfThoughtAgent, SimpleLibrarianAgent
+from .baseline import (
+    DirectAnswerAgent,
+    ChainOfThoughtAgent,
+    KnowledgeThenReasoningAgent,
+)
 from .synthesize_agent import SynthesizeAgent
 from .search_agent import SearchAgent
 from .plan_agent import PlanAgent
@@ -20,7 +24,7 @@ from .plan_agent import PlanAgent
 __all__ = [
     "DirectAnswerAgent",
     "ChainOfThoughtAgent",
-    "SimpleLibrarianAgent",
+    "KnowledgeThenReasoningAgent",
     "SynthesizeAgent",
     "SearchAgent",
     "PlanAgent",

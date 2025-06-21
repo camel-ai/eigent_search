@@ -11,14 +11,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
-
-"""Predefined :class:`StructAgent` subclasses for common output formats."""
+"""Predefined :class:`ChatAgent` subclasses for baseline agents."""
 
 from textwrap import dedent
 from pydantic import BaseModel, Field
-from .struct_agent import StructAgent
 from camel.models import BaseModelBackend
-
+from camel.messages import BaseMessage
+from camel.responses import ChatAgentResponse
+from camel.agents.chat_agent import ChatAgent
 
 # AgentOps decorator setting
 try:
@@ -37,10 +37,11 @@ class DirectAnswerResponse(BaseModel):
 
 
 @track_agent(name="DirectAnswerAgent")
-class DirectAnswerAgent(StructAgent):
-    r"""A :class:`StructAgent` that outputs a direct answer."""
+class DirectAnswerAgent(ChatAgent):
+    r"""A :class:`ChatAgent` that outputs a direct answer with a predefined response format."""
 
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
+        # Predefined system message for direct answering
         system_message = dedent("""
         You are a helpful assistant who answers the question directly.
         
@@ -49,13 +50,10 @@ class DirectAnswerAgent(StructAgent):
         Answer: ...
         ```
         """).strip()
-        super().__init__(
-            response_format=DirectAnswerResponse,
-            system_message=system_message,
-            model=model,
-            *args,
-            **kwargs,
-        )
+        super().__init__(system_message=system_message, model=model, *args, **kwargs)
+
+    def step(self, input_message: BaseMessage | str) -> ChatAgentResponse:
+        return super().step(input_message, response_format=DirectAnswerResponse)
 
 
 class ChainOfThoughtResponse(BaseModel):
@@ -64,7 +62,7 @@ class ChainOfThoughtResponse(BaseModel):
 
 
 @track_agent(name="ChainOfThoughtAgent")
-class ChainOfThoughtAgent(StructAgent):
+class ChainOfThoughtAgent(ChatAgent):
     r"""A :class:`StructAgent` that outputs an answer through step-by-step reasoning."""
 
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
@@ -77,23 +75,20 @@ class ChainOfThoughtAgent(StructAgent):
         Answer: ...
         ```
         """).strip()
-        super().__init__(
-            response_format=ChainOfThoughtResponse,
-            system_message=system_message,
-            model=model,
-            *args,
-            **kwargs,
-        )
+        super().__init__(system_message=system_message, model=model, *args, **kwargs)
+
+    def step(self, input_message: BaseMessage | str) -> ChatAgentResponse:
+        return super().step(input_message, response_format=ChainOfThoughtResponse)
 
 
-class SimpleLibrarianResponse(BaseModel):
+class KnowledgeThenReasoningResponse(BaseModel):
     knowledge: str = Field(..., description="The retrieved knowledge.")
     reasoning: str = Field(..., description="The step-by-step reasoning process.")
     answer: str = Field(..., description="The predicted answer.")
 
 
-@track_agent(name="SimpleLibrarianAgent")
-class SimpleLibrarianAgent(StructAgent):
+@track_agent(name="KnowledgeThenReasoningAgent")
+class KnowledgeThenReasoningAgent(ChatAgent):
     r"""A :class:`StructAgent` that outputs an answer in two steps: first presenting knowledge from its memory, then reasoning step-by-step."""
 
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
@@ -111,10 +106,9 @@ class SimpleLibrarianAgent(StructAgent):
         Answer: ...
         ```
         """).strip()
-        super().__init__(
-            response_format=SimpleLibrarianResponse,
-            system_message=system_message,
-            model=model,
-            *args,
-            **kwargs,
+        super().__init__(system_message=system_message, model=model, *args, **kwargs)
+
+    def step(self, input_message: BaseMessage | str) -> ChatAgentResponse:
+        return super().step(
+            input_message, response_format=KnowledgeThenReasoningResponse
         )

@@ -26,14 +26,14 @@ from librarian.evaluation import SimpleQAEvaluator
 from librarian.agents import (
     DirectAnswerAgent,
     ChainOfThoughtAgent,
-    SimpleLibrarianAgent,
+    KnowledgeThenReasoningAgent,
 )
 
 
 AGENTS = {
     "direct_answer": DirectAnswerAgent,
     "chain_of_thought": ChainOfThoughtAgent,
-    "simple_librarian": SimpleLibrarianAgent,
+    "knowledge_then_reasoning": KnowledgeThenReasoningAgent,
 }
 
 

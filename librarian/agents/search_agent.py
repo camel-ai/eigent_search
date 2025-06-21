@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 from textwrap import dedent
 from camel.models import BaseModelBackend
 from camel.toolkits import SearchToolkit
-from .struct_agent import StructAgent
+from camel.agents.chat_agent import ChatAgent
 
 # AgentOps decorator setting
 try:
@@ -38,7 +38,7 @@ class SearchResponse(BaseModel):
 
 
 @track_agent(name="SearchAgent")
-class SearchAgent(StructAgent):
+class SearchAgent(ChatAgent):
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
         self.search_tool = SearchToolkit().search_duckduckgo
         system_message = dedent("""
@@ -63,7 +63,6 @@ class SearchAgent(StructAgent):
         Focus on extracting factual information that is directly relevant to the original question.
         """).strip()
         super().__init__(
-            response_format=SearchResponse,
             system_message=system_message,
             model=model,
             tools=[self.search_tool],
