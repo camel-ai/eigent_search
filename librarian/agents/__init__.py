@@ -17,12 +17,9 @@ from .baseline import (
     ChainOfThoughtAgent,
     KnowledgeThenReasoningAgent,
 )
-from .search_agent import SearchAgent
-
 
 __all__ = [
     "DirectAnswerAgent",
     "ChainOfThoughtAgent",
     "KnowledgeThenReasoningAgent",
-    "SearchAgent",
 ]
