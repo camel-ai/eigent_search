@@ -86,6 +86,7 @@ class BaseResearchAgent(abc.ABC, ChatAgent):
         return self.toolkit.get_tools()
 
 
+@track_agent(name="LeadResearcher")
 class LeadResearcher(abc.ABC, BaseResearchAgent):
     """Plans the work, spawns sub‑agents, aggregates results."""
 
@@ -122,6 +123,7 @@ class LeadResearcher(abc.ABC, BaseResearchAgent):
         }
 
 
+@track_agent(name="JuniorResearcher")
 class JuniorResearcher(BaseResearchAgent):
     """Runs exactly one sub‑query, then stops."""
 
