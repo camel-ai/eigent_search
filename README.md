@@ -2,7 +2,7 @@
 
 ## Development Logs
 
-- [ ] Base module redesign.
+- [X] Base module design.
 - [ ] Create evaluation guidelines.
 - [X] Establish base evaluation at `evaluation`; evaluators for SimpleQA and BrowseComp are both ready. 
 - [X] Create simple single agent baselines.
