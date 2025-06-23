@@ -23,7 +23,7 @@ from camel.types import ModelPlatformType, ModelType
 from camel.agents import ChatAgent
 
 from librarian.evaluation import SimpleQAEvaluator
-from librarian.agents import (
+from librarian.baseline import (
     DirectAnswerAgent,
     ChainOfThoughtAgent,
     KnowledgeThenReasoningAgent,
