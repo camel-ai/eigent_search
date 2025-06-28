@@ -34,15 +34,15 @@ class ResearchToolkit(BaseToolkit):
 
     def __init__(
         self,
-        search_tool: FunctionTool = SearchToolkit().search_google,
+        search_tool: FunctionTool = FunctionTool(SearchToolkit().search_google),
         scrape_tool: Optional[FunctionTool] = None,
         browse_tool: Optional[FunctionTool] = None,
         max_workers: int = 8,
     ) -> None:
         super().__init__()
-        self.search_tool: FunctionTool = search_tool or SearchToolkit().search_google
-        self.scrape_tool: FunctionTool = scrape_tool
-        self.browse_tool: FunctionTool = browse_tool
+        self.search_tool: FunctionTool = search_tool or FunctionTool(SearchToolkit().search_google)
+        self.scrape_tool: Optional[FunctionTool] = scrape_tool
+        self.browse_tool: Optional[FunctionTool] = browse_tool
         # TODO: maybe we do not need this executor because CAMEL has implemented such functionality? Please check.
         self._executor = ThreadPoolExecutor(max_workers=max_workers)
 
