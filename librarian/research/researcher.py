@@ -83,7 +83,7 @@ class BaseResearchAgent(abc.ABC, ChatAgent):
 
     @property
     def tools(self) -> List[FunctionTool]:  # noqa: D401
-        return self.toolkit.get_tools()
+        return self.research_toolkit.get_tools()
 
 
 @track_agent(name="LeadResearcher")
