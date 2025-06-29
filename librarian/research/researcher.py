@@ -42,7 +42,7 @@ class ResearchResult(BaseModel):
 
 
 @track_agent(name="BaseResearchAgent")
-class BaseResearchAgent(abc.ABC, ChatAgent):
+class BaseResearchAgent(ChatAgent, abc.ABC):
     """Base class for both lead and sub research agents."""
 
     role: str = "generic"
@@ -58,7 +58,7 @@ class BaseResearchAgent(abc.ABC, ChatAgent):
     ) -> None:
         self.research_toolkit = research_toolkit
         self.parent = parent
-        super(ChatAgent, self).__init__(
+        super().__init__(
             system_message=system_message,
             model=model,
             tools=self.research_toolkit.get_tools(),
@@ -87,7 +87,7 @@ class BaseResearchAgent(abc.ABC, ChatAgent):
 
 
 @track_agent(name="LeadResearcher")
-class LeadResearcher(abc.ABC, BaseResearchAgent):
+class LeadResearcher(BaseResearchAgent, abc.ABC):
     """Plans the work, spawns sub‑agents, aggregates results."""
 
     role = "leader"
