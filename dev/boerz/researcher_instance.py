@@ -202,9 +202,12 @@ class LeadResearcher(BaseLeadResearcher):
             reflection = {}
 
         reflection["evidence"] = "Not implemented yet!"
-        logger.info(f"Final reflection result: {reflection}")
+        logger.info("Final reflection result:")
+        for key, value in reflection.items():
+            logger.info(f"  {key}: {value}")
         return reflection
         
+        #ChatAgent: use response_format 
         
         #return "Research reflection completed"
 
@@ -280,11 +283,15 @@ class LeadResearcher(BaseLeadResearcher):
                 max_sub_tasks=max_sub_tasks, 
                 research_results=research_results,
                 )
+        
+        str_results = "\n\n\n\n".join([f"Sub-query: {result['sub_query']}\n\nResult: {result['sub_result']}" for result in research_results])
+
+        logger.info(f"Research results:\n {str_results}")
 
         return {
             "query": query,
-            "answer": reflection["answer"],
-            "evidence": reflection["evidence"],
+            "answer":reflection.get("answer", "Error: No answer found"),
+            "evidence": reflection.get("evidence","Error: No evidence found"),
         }
 
     
@@ -301,6 +308,7 @@ class JuniorResearcher(BaseJuniorResearcher):
         # logger.info(f"Junior Researcher: Research result: {result['sub_result']}")
         return result
 
+    # Do not need this for now.
     def reflect(self, research_results: List[Dict[str, Any]]) -> str:
         r"""Reflect on the research results."""
         # Currently a place holder, we do not always need this.

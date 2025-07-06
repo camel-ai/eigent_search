@@ -1,0 +1,502 @@
+[
+    {
+        "problem": "Who received the IEEE Frank Rosenblatt Award in 2010?",
+        "answer": "Michio Sugeno",
+        "response": {
+            "query": "Question: Who received the IEEE Frank Rosenblatt Award in 2010?",
+            "answer": "The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno from the Faculty of Culture and Information Science, Doshisha University, Kyoto, Japan, for his contributions to the development and applications of fuzzy logic.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who was awarded the Oceanography Society's Jerlov Award in 2018?",
+        "answer": "Annick Bricaud",
+        "response": {
+            "query": "Question: Who was awarded the Oceanography Society's Jerlov Award in 2018?",
+            "answer": "The Oceanography Society's Jerlov Award in 2018 was awarded to Dr. Annick Bricaud.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
+        "answer": "Radcliffe College",
+        "response": {
+            "query": "Question: What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
+            "answer": "The women's liberal arts college in Cambridge, Massachusetts, was Radcliffe College. It was founded in 1879 but is no longer operating as an independent women's college. It was fully incorporated into Harvard University in 1999 and has since evolved into the Radcliffe Institute for Advanced Study.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In whose honor was the Leipzig 1877 tournament organized?",
+        "answer": "Adolf Anderssen",
+        "response": {
+            "query": "Question: In whose honor was the Leipzig 1877 tournament organized?",
+            "answer": "The Leipzig 1877 tournament was organized in honor of Adolf Anderssen.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
+        "answer": "Poet Henrich Heine.",
+        "response": {
+            "query": "Question: According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
+            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture made for her villa Achilleion at Corfu depicted the 'Dying Achilles,' capturing the tragic and heroic final moments of the Greek hero Achilles.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's death ordered to pay her son?",
+        "answer": "120,000",
+        "response": {
+            "query": "Question: How much money, in euros, was the surgeon held responsible for Stella Obasanjo's death ordered to pay her son?",
+            "answer": "The surgeon held responsible for Stella Obasanjo's death was ordered to pay \u20ac120,000 in compensation to her son.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What were the month and year when Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\"?",
+        "answer": "January 2008",
+        "response": {
+            "query": "Question: What were the month and year when Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\"?",
+            "answer": "Barack Obama made the statement, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ,\" to Christianity Today in January 2008.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?",
+        "answer": "Fakhruddin Ali Ahmed",
+        "response": {
+            "query": "Question: Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?",
+            "answer": "Mirza Hameedullah Beg was appointed as the Chief Justice of India in 1977 by the President of India. The President of India at the time of his appointment was Fakhruddin Ali Ahmed until February 1977, and then Neelam Sanjiva Reddy from July 1977 onwards. Given the timing, it is likely that Fakhruddin Ali Ahmed appointed him.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the name of the former Prime Minister of Iceland who worked as a cabin crew member until 1971?",
+        "answer": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir",
+        "response": {
+            "query": "Question: What is the name of the former Prime Minister of Iceland who worked as a cabin crew member until 1971?",
+            "answer": "The former Prime Minister of Iceland who worked as a cabin crew member until 1971 is J\u00f3hanna Sigur\u00f0ard\u00f3ttir.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "To whom did Mehbooba Mufti Sayed contest the 2019 Lok Sabha elections and lose?",
+        "answer": "Hasnain Masoodi",
+        "response": {
+            "query": "Question: To whom did Mehbooba Mufti Sayed contest the 2019 Lok Sabha elections and lose?",
+            "answer": "Mehbooba Mufti Sayed contested the 2019 Lok Sabha elections from the Anantnag constituency and lost to Hasnain Masoodi of the Jammu & Kashmir National Conference (JKNC).",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "How many fouls did Inter commit in the Champions League final match between Bayern and Inter on May 23, 2010?",
+        "answer": "13",
+        "response": {
+            "query": "Question: How many fouls did Inter commit in the Champions League final match between Bayern and Inter on May 23, 2010?",
+            "answer": "The exact number of fouls committed by Inter Milan in the Champions League final match against Bayern Munich on May 23, 2010, is not available from the current research. No direct official statistics or credible sources specifying the fouls count for that match were found.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "What year did the Lego part with ID gal56 first release?",
+        "answer": "2002",
+        "response": {
+            "query": "Question: What year did the Lego part with ID gal56 first release?",
+            "answer": "The Lego part with ID gal56, known as the Galidor Accessory Staff Euripides, was first released in the year 2002.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which year did the Japanese scientist Koichi Mizushima receive the Kato Memorial Prize?",
+        "answer": "1999",
+        "response": {
+            "query": "Question: In which year did the Japanese scientist Koichi Mizushima receive the Kato Memorial Prize?",
+            "answer": "Koichi Mizushima received the Kato Memorial Prize in 1999.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which year did Melbourne's Monash Gallery of Art (MGA) rebrand and become the Museum of Australian Photography (MAPh)?",
+        "answer": "2023",
+        "response": {
+            "query": "Question: In which year did Melbourne's Monash Gallery of Art (MGA) rebrand and become the Museum of Australian Photography (MAPh)?",
+            "answer": "Melbourne's Monash Gallery of Art (MGA) rebranded and became the Museum of Australian Photography (MAPh) in the year 2023.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who requested the Federal Aviation Administration (FAA) implement a 900 sq mi (2,300 km2) temporary flight restriction zone over the operations areas of the Deepwater Horizon?",
+        "answer": "The Coast Guard",
+        "response": {
+            "query": "Question: Who requested the Federal Aviation Administration (FAA) implement a 900 sq mi (2,300 km2) temporary flight restriction zone over the operations areas of the Deepwater Horizon?",
+            "answer": "The U.S. Coast Guard requested the Federal Aviation Administration (FAA) to implement the 900 sq mi temporary flight restriction zone over the operations areas of the Deepwater Horizon incident.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What signature piece of the MOBA did Scott Wilson discover on the curb between two trash cans?",
+        "answer": "Lucy in the Field with Flowers",
+        "response": {
+            "query": "Question: What signature piece of the MOBA did Scott Wilson discover on the curb between two trash cans?",
+            "answer": "Scott Wilson discovered the painting titled 'Lucy in the Field with Flowers' on the curb between two trash cans, which became the signature piece of the Museum of Bad Art (MOBA).",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What player scored all the conversions for Spain in the rugby match between Spain and Romania that was part of the 2022 Rugby Europe Championship on February 27, 2022?",
+        "answer": "Manuel Ordas",
+        "response": {
+            "query": "Question: What player scored all the conversions for Spain in the rugby match between Spain and Romania that was part of the 2022 Rugby Europe Championship on February 27, 2022?",
+            "answer": "The specific player who scored all the conversions for Spain in the rugby match against Romania on February 27, 2022, in the 2022 Rugby Europe Championship is not clearly identified in the publicly available match reports and summaries.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "What is the surname of the psychiatrist who prescribes medication for Marie Hanson for her periodic blackouts in Season 1, Episode 20 of Ally McBeal?",
+        "answer": "Peters",
+        "response": {
+            "query": "Question: What is the surname of the psychiatrist who prescribes medication for Marie Hanson for her periodic blackouts in Season 1, Episode 20 of Ally McBeal?",
+            "answer": "The surname of the psychiatrist who prescribes medication for Marie Hanson in Season 1, Episode 20 of Ally McBeal is Peters.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the British-American kickboxer Andrew Tate's kickboxing name?",
+        "answer": "King cobra",
+        "response": {
+            "query": "Question: What is the British-American kickboxer Andrew Tate's kickboxing name?",
+            "answer": "Andrew Tate's kickboxing nickname or ring name is 'Cobra'.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What position was John Gilbert Layton appointed to in Quebec from 1969 until 1970?",
+        "answer": " Quebec Youth Parliament prime minister",
+        "response": {
+            "query": "Question: What position was John Gilbert Layton appointed to in Quebec from 1969 until 1970?",
+            "answer": "There is no available evidence or records indicating that John Gilbert Layton was appointed to any specific position in Quebec from 1969 until 1970. Existing biographical and archival sources do not mention such an appointment during that period.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "Who won the Gerard P. Kuiper Prize in 2001?",
+        "answer": "Bruce W. Hapke",
+        "response": {
+            "query": "Question: Who won the Gerard P. Kuiper Prize in 2001?",
+            "answer": "Bruce W. Hapke won the Gerard P. Kuiper Prize in 2001.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Which streamer won the \"Best VTuber Streamer\" award at The Streamer Awards in 2022?",
+        "answer": "CodeMiko",
+        "response": {
+            "query": "Question: Which streamer won the \"Best VTuber Streamer\" award at The Streamer Awards in 2022?",
+            "answer": "The streamer who won the \"Best VTuber Streamer\" award at The Streamer Awards in 2022 is CodeMiko.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What did Daemon Targaryen say to Rhaenyra about living life in fear in Episode 4, Season 1 of House of the Dragon?",
+        "answer": "You cannot live your life in fear, or you will forsake the best parts of it.",
+        "response": {
+            "query": "Question: What did Daemon Targaryen say to Rhaenyra about living life in fear in Episode 4, Season 1 of House of the Dragon?",
+            "answer": "Daemon Targaryen said to Rhaenyra in Episode 4, Season 1 of House of the Dragon: \"You cannot live your life in fear, or you will forsake the best parts of it.\"",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On which U.S. TV station did the Canadian reality series *To Serve and Protect* debut?",
+        "answer": "KVOS-TV",
+        "response": {
+            "query": "Question: On which U.S. TV station did the Canadian reality series *To Serve and Protect* debut?",
+            "answer": "The Canadian reality series 'To Serve and Protect' debuted on the U.S. TV station KVOS-TV.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What instrument did Alec Aitken play well enough for a professional musician to remark, \"Aitken is the most accomplished amateur musician I have ever known\"?",
+        "answer": "Violin",
+        "response": {
+            "query": "Question: What instrument did Alec Aitken play well enough for a professional musician to remark, \"Aitken is the most accomplished amateur musician I have ever known\"?",
+            "answer": "Alec Aitken played the violin well enough for a professional musician to remark, 'Aitken is the most accomplished amateur musician I have ever known.'",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On what day, month, and year did Tara Chand (a politician and a Dalit leader from Jammu and Kashmir) resign from the Indian National Congress in support of Ghulam Nabi Azad?",
+        "answer": "August 30, 2022",
+        "response": {
+            "query": "Question: On what day, month, and year did Tara Chand (a politician and a Dalit leader from Jammu and Kashmir) resign from the Indian National Congress in support of Ghulam Nabi Azad?",
+            "answer": "Tara Chand resigned from the Indian National Congress on 30 August 2022 in support of Ghulam Nabi Azad.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What was the strike rate of Harbhajan Singh in the final match of IPL 2015?",
+        "answer": "200.00",
+        "response": {
+            "query": "Question: What was the strike rate of Harbhajan Singh in the final match of IPL 2015?",
+            "answer": "Harbhajan Singh did not bat in the final match of IPL 2015, so he did not have a strike rate. Regarding his bowling in the final, he bowled 3 overs, conceding 30 runs without taking a wicket.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In the lore of Dungeons and Dragons, what is the name of the fortress in the Astral Plane used as a lair by the red great wyrm Ashardalon?",
+        "answer": "Bastion of Unborn Souls",
+        "response": {
+            "query": "Question: In the lore of Dungeons and Dragons, what is the name of the fortress in the Astral Plane used as a lair by the red great wyrm Ashardalon?",
+            "answer": "The fortress in the Astral Plane used as a lair by the red great wyrm Ashardalon in Dungeons and Dragons lore is known as the 'Bastion of Broken Souls' or the 'Bastion of Unborn Souls.'",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "In which episode and season of South Park does Bill Cosby (BSM-471) first appear? Give me the number and title.",
+        "answer": "Season 4 Episode 12: \"Trapper Keeper\"",
+        "response": {
+            "query": "Question: In which episode and season of South Park does Bill Cosby (BSM-471) first appear? Give me the number and title.",
+            "answer": "Bill Cosby (BSM-471) first appears in South Park in Season 4, Episode 12, titled 'Trapper Keeper'.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "The WWI Q-Ship \"Salvia\" was partially reconstructed with a false counter-stern to resemble what kind of ship?",
+        "answer": "tramp",
+        "response": {
+            "query": "Question: The WWI Q-Ship \"Salvia\" was partially reconstructed with a false counter-stern to resemble what kind of ship?",
+            "answer": "The WWI Q-Ship Salvia was partially reconstructed with a false counter-stern to resemble a tramp ship (a type of merchant ship).",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Which district in Kashmir was originally known as Panwangam?",
+        "answer": "Pulwama",
+        "response": {
+            "query": "Question: Which district in Kashmir was originally known as Panwangam?",
+            "answer": "The district in Kashmir originally known as Panwangam is Pulwama.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In 1810, Fran\u00e7ois Aim\u00e9 Louis Dumoulin published a collection of how many engravings themed on the journey of \"Robinson Crusoe\"?",
+        "answer": "150",
+        "response": {
+            "query": "Question: In 1810, Fran\u00e7ois Aim\u00e9 Louis Dumoulin published a collection of how many engravings themed on the journey of \"Robinson Crusoe\"?",
+            "answer": "In 1810, Fran\u00e7ois Aim\u00e9 Louis Dumoulin published a collection of 150 engravings themed on the journey of Robinson Crusoe.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What day, month, and year was Carrie Underwood's album \"Cry Pretty\" certified Gold by the RIAA?",
+        "answer": "October 23, 2018",
+        "response": {
+            "query": "Question: What day, month, and year was Carrie Underwood's album \"Cry Pretty\" certified Gold by the RIAA?",
+            "answer": "Carrie Underwood's album 'Cry Pretty' was certified Gold by the RIAA before February 24, 2020, as it was certified Platinum on that date. The exact day, month, and year of the Gold certification are not explicitly documented in the available sources.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "In the series \"El guardi\u00e1n invisible,\" who portrays the character Alfonso \u00c1lvarez de Toledo?",
+        "answer": "Ram\u00f3n Barea",
+        "response": {
+            "query": "Question: In the series \"El guardi\u00e1n invisible,\" who portrays the character Alfonso \u00c1lvarez de Toledo?",
+            "answer": "Ram\u00f3n Barea portrays the character Alfonso \u00c1lvarez de Toledo in the series 'El guardi\u00e1n invisible'.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On what day, month, and year was David Sweet, Canadian politician, born?",
+        "answer": "June 24, 1957",
+        "response": {
+            "query": "Question: On what day, month, and year was David Sweet, Canadian politician, born?",
+            "answer": "David Sweet, the Canadian politician, was born on June 24, 1957.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "From which high school did the first female governor of Hawaii, United States, graduate?",
+        "answer": "Birmingham High School",
+        "response": {
+            "query": "Question: From which high school did the first female governor of Hawaii, United States, graduate?",
+            "answer": "The first female governor of Hawaii, Linda Lingle, graduated from Birmingham High School in Lake Balboa, California.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which month and year did Khusro Bakhtiar (former Federal Minister for Planning, Development, and Reforms, Pakistan) announce that the government was considering establishing a Pak-China business council to promote the private sector's role in the China-Pakistan Economic Corridor (CPEC)?",
+        "answer": "June 2019",
+        "response": {
+            "query": "Question: In which month and year did Khusro Bakhtiar (former Federal Minister for Planning, Development, and Reforms, Pakistan) announce that the government was considering establishing a Pak-China business council to promote the private sector's role in the China-Pakistan Economic Corridor (CPEC)?",
+            "answer": "Khusro Bakhtiar announced that the government was considering establishing a Pak-China business council to promote the private sector's role in the China-Pakistan Economic Corridor (CPEC) in June 2019.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the first and last name of the woman whom the British linguist Bernard Comrie married in 1985?",
+        "answer": "Akiko Kumahira",
+        "response": {
+            "query": "Question: What is the first and last name of the woman whom the British linguist Bernard Comrie married in 1985?",
+            "answer": "Bernard Comrie married Akiko Kumahira in 1985.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What are the first names and surnames of the figure skaters who came 21st in the ice dance category at the 2022 Winter Olympics in Beijing?",
+        "answer": "Katharina M\u00fcller and Tim Dieck",
+        "response": {
+            "query": "Question: What are the first names and surnames of the figure skaters who came 21st in the ice dance category at the 2022 Winter Olympics in Beijing?",
+            "answer": "Error: No answer found",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "What is the name of the kibbutz that Simon Le Bon lived on in 1978?",
+        "answer": "Gvulot.",
+        "response": {
+            "query": "Question: What is the name of the kibbutz that Simon Le Bon lived on in 1978?",
+            "answer": "Simon Le Bon lived on Kibbutz Gvulot in the Negev desert in 1978.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who won the 1991 Ig Nobel Prize for Peace?",
+        "answer": "Edward Teller",
+        "response": {
+            "query": "Question: Who won the 1991 Ig Nobel Prize for Peace?",
+            "answer": "The 1991 Ig Nobel Prize for Peace was awarded to the American and Canadian armies for their joint study called 'Operation Desert Storm Cataract'.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "Why did David Chow come to Genoa City on \"The Young and the Restless\"?",
+        "answer": "To avenge the murder of his former fianc\u00e9e, Carmen Mesta.",
+        "response": {
+            "query": "Question: Why did David Chow come to Genoa City on \"The Young and the Restless\"?",
+            "answer": "David Chow came to Genoa City on 'The Young and the Restless' as a savvy political operative seeking to avenge the murder of his former fianc\u00e9e, Carmen Mesta.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which season and episode of Archer does Sterling go into a rampage? Give me the season, number, and title of the episode.",
+        "answer": "Season 2, Episode 9 \"Placebo Effect\"",
+        "response": {
+            "query": "Question: In which season and episode of Archer does Sterling go into a rampage? Give me the season, number, and title of the episode.",
+            "answer": "Sterling Archer goes into a rampage in Season 3, Episode 2 of Archer, titled 'Placebo Effect'. In this episode, Archer discovers that the chemotherapy drugs he has been taking for his breast cancer are counterfeit, leading him to aggressively go after the criminals responsible.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "On what day, month, and year was Algerian artist Mohammed Racim born?",
+        "answer": "June 24th, 1896.",
+        "response": {
+            "query": "Question: On what day, month, and year was Algerian artist Mohammed Racim born?",
+            "answer": "Mohammed Racim was born in 1896; the exact day and month of his birth are not specified in the available reliable sources.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "How many original artworks were shown in the Society of Illustrators' first \"Annual Exhibition\"?",
+        "answer": "350",
+        "response": {
+            "query": "Question: How many original artworks were shown in the Society of Illustrators' first \"Annual Exhibition\"?",
+            "answer": "The Society of Illustrators' first Annual Exhibition in 1959 featured 350 original artworks.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In what year was Eugenius Aristides Nisbet elected to the Georgia House of Representatives?",
+        "answer": "1827",
+        "response": {
+            "query": "Question: In what year was Eugenius Aristides Nisbet elected to the Georgia House of Representatives?",
+            "answer": "Eugenius Aristides Nisbet was elected to the Georgia House of Representatives in the year 1827.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What day/month/year was it announced that the politician Ibrahim Rugova had been diagnosed with lung cancer?",
+        "answer": "5 September 2005",
+        "response": {
+            "query": "Question: What day/month/year was it announced that the politician Ibrahim Rugova had been diagnosed with lung cancer?",
+            "answer": "Error: No answer found",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "In 2022, which university did Honda Battle of the Bands (HBOB) select to be the first-ever HBCU campus to host the in-person event?",
+        "answer": "Alabama State University",
+        "response": {
+            "query": "Question: In 2022, which university did Honda Battle of the Bands (HBOB) select to be the first-ever HBCU campus to host the in-person event?",
+            "answer": "In 2022, Honda Battle of the Bands (HBOB) selected Alabama State University in Montgomery, Alabama to be the first-ever HBCU campus to host the in-person event.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who wrote the lyrics to \"Dream Serenade,\" the opening theme song for the radio program \"The American Album of Familiar Music\"?",
+        "answer": "Alfred Bryan",
+        "response": {
+            "query": "Question: Who wrote the lyrics to \"Dream Serenade,\" the opening theme song for the radio program \"The American Album of Familiar Music\"?",
+            "answer": "The lyrics to 'Dream Serenade,' the opening theme song for the radio program 'The American Album of Familiar Music,' were written by Alfred Bryan.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In what year did Etta Cone last visit Europe?",
+        "answer": "1938",
+        "response": {
+            "query": "Question: In what year did Etta Cone last visit Europe?",
+            "answer": "Etta Cone last visited Europe in 1938.",
+            "evidence": "Not implemented yet!"
+        },
+        "grade": "CORRECT"
+    }
+]
