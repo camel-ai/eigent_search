@@ -33,7 +33,7 @@ class QueryProcessingToolkit(BaseToolkit):
         super().__init__()
         self.process_graph = nx.DiGraph()
         self.search_tool = FunctionTool(SearchToolkit().search_google)
-        self.query_counter = 0  # For generating unique IDs
+        self.process_counter = 0  # For generating unique IDs
 
     def rewrite_query(self, query: str, rewritten_query: str) -> str:
         """Rewrite the input query to improve search effectiveness.
@@ -76,10 +76,18 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             list[str]: The list of expanded queries as provided by the agent.
         """
+        # Expand the query
+        result_queries = (
+            [query, *expanded_queries]
+            if query not in expanded_queries
+            else expanded_queries
+        )
+        # Track the expanded queries list as a single node
         from_id = self._add_process_node(query)
-        to_id = self._add_process_node(expanded_queries)
+        to_id = self._add_process_node(result_queries)
         self._add_transformation_edge(from_id, to_id, "expand")
-        return expanded_queries
+
+        return result_queries
 
     def select_query_and_search(
         self, candidate_queries: list[str], selected_query: str, final_query: str
@@ -106,17 +114,18 @@ class QueryProcessingToolkit(BaseToolkit):
         self._add_transformation_edge(from_id, to_id, "refine")
         # Search the web
         search_results = self.search_tool(final_query)
+        from_id = self._add_process_node(final_query)
         to_id = self._add_process_node(search_results)
         self._add_transformation_edge(from_id, to_id, "search")
         return search_results
 
     def generate_new_queries(
-        self, search_results: list[str], new_queries: list[str]
+        self, search_results: list[Any], new_queries: list[str]
     ) -> list[str]:
         """Generate new queries based on the search results.
 
         This method takes search results and a list of intended new queries,
-        then returns the new queries. The LLM should analyze the search results
+        then returns the new queries. The agent should analyze the search results
         and provide follow-up queries that would help gather more specific information.
 
         Args:
@@ -125,7 +134,7 @@ class QueryProcessingToolkit(BaseToolkit):
                         that would help gather more specific or related information.
 
         Returns:
-            list[str]: The list of new queries as provided by the LLM.
+            list[str]: The list of new queries as provided by the agent.
         """
         from_id = self._add_process_node(search_results)
         to_id = self._add_process_node(new_queries)
@@ -141,12 +150,12 @@ class QueryProcessingToolkit(BaseToolkit):
             FunctionTool(self.generate_new_queries),
         ]
 
-    def _add_process_node(self, query: str) -> str:
+    def _add_process_node(self, data: Any) -> str:
         """Add a process node to the graph and return its ID."""
         process_id = f"process_{self.process_counter}"
         self.process_counter += 1
 
-        self.process_graph.add_node(process_id, query=query)
+        self.process_graph.add_node(process_id, data=data)
         return process_id
 
     def _add_transformation_edge(self, from_id: str, to_id: str, action: str) -> None:

@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
-from .researcher import LeadResearcher, JuniorResearcher
-from .research_toolkit import ResearchToolkit
+from .query_toolkit import QueryProcessingToolkit
+from .researcher import ResearchAgent
 
-__all__ = ["LeadResearcher", "JuniorResearcher", "ResearchToolkit"]
+__all__ = ["QueryProcessingToolkit", "ResearchAgent"]
