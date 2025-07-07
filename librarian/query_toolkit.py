@@ -141,7 +141,7 @@ class QueryProcessingToolkit(BaseToolkit):
             FunctionTool(self.generate_new_queries),
         ]
 
-    def _add_query_node(self, query: str) -> str:
+    def _add_process_node(self, query: str) -> str:
         """Add a process node to the graph and return its ID."""
         process_id = f"process_{self.process_counter}"
         self.process_counter += 1
