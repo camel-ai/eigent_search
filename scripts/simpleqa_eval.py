@@ -17,6 +17,7 @@ import json
 from dotenv import load_dotenv
 from tqdm.auto import tqdm
 from datasets import load_dataset
+import logging
 
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
@@ -28,13 +29,26 @@ from librarian.baseline import (
     ChainOfThoughtAgent,
     KnowledgeThenReasoningAgent,
 )
-
+from librarian.research import ResearchAgent
 
 AGENTS = {
+    "research": ResearchAgent,
     "direct_answer": DirectAnswerAgent,
     "chain_of_thought": ChainOfThoughtAgent,
     "knowledge_then_reasoning": KnowledgeThenReasoningAgent,
 }
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("results/simpleqa_eval.log"),
+        logging.StreamHandler(),
+    ],
+    force=True,
+)
+logger = logging.getLogger(__name__)
 
 
 @click.command()
@@ -91,11 +105,19 @@ def main(agent_type: str, num_questions: int):
         counter[eval_result.metrics["grade"]] += 1
         tqdm.write(f"[{agent_type}] {counter}")
 
+        if agent_type == "research":
+            logger.info(
+                f"[{agent_type}] Number of searches: {agent.query_toolkit.search_counter}"
+            )
+            logger.info(
+                f"[{agent_type}] Process Graph:\n{agent.query_toolkit.render_process_graph()}"
+            )
+
         # save results every 50 examples or at the end
         if (i + 1) % 50 == 0 or i == num_questions - 1:
             with open(output_file, "w") as f:
                 json.dump(results, f, indent=4)
-            print(f"Results saved to {output_file}")
+            tqdm.write(f"Results saved to {output_file}")
 
     tqdm.write(
         f"[{agent_type}] Accuracy (n={num_questions}): {sum(scores) / len(scores)}"
