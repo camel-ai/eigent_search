@@ -37,7 +37,7 @@ except (ImportError, AttributeError):
 
 class ResearchResponse(BaseModel):
     answer: str = Field(..., description="The answer to the research question.")
-    evidence: list[dict[str, str]] = Field(..., description="The evidence of the research results.")
+    research_results: list[str] = Field(..., description="The research results.")
 
 
 @track_agent(name="ResearchAgent")
@@ -52,7 +52,7 @@ class ResearchAgent(ChatAgent):
         Final Output Format:
         ```
         Answer: ...
-        Evidence: ...
+        Research Results: ...
         ```
         """).strip()
         super().__init__(system_message=system_message, model=model, tools=[QueryProcessingToolkit().get_tools()], *args, **kwargs)
