@@ -110,7 +110,7 @@ def main(agent_type: str, num_questions: int):
                 f"[{agent_type}] Number of searches: {agent.query_toolkit.search_counter}"
             )
             logger.info(
-                f"[{agent_type}] Process Graph:\n{agent.query_toolkit.render_process_graph()}"
+                f"[{agent_type}] Process Graph:\n{agent.query_toolkit.render_trace_graph()}"
             )
 
         # save results every 50 examples or at the end

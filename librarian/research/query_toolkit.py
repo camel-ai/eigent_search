@@ -34,10 +34,10 @@ class QueryProcessingToolkit(BaseToolkit):
 
     def __init__(self) -> None:
         super().__init__()
-        self.process_graph = nx.DiGraph()
+        self.trace_graph = nx.DiGraph()
         self.search_tool = SearchToolkit().search_google
         self.search_counter = 0  # For counting the number of searches
-        self.process_counter = 0  # For generating unique IDs
+        self.current_node_id = 0
 
     def rewrite_query(self, query: str, rewritten_query: str) -> str:
         """Rewrite the input query to improve search effectiveness.
@@ -56,9 +56,7 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             str: The rewritten query as provided by the agent.
         """
-        from_id = self._add_process_node(query)
-        to_id = self._add_process_node(rewritten_query)
-        self._add_transformation_edge(from_id, to_id, "rewrite")
+        self.record_process(query, rewritten_query, "rewrite")
         logger.info(f"[rewrite]: '{query}' -> '{rewritten_query}'")
         return rewritten_query
 
@@ -90,9 +88,7 @@ class QueryProcessingToolkit(BaseToolkit):
             else candidate_queries
         )
         # Track the expanded queries list as a single node
-        from_id = self._add_process_node(query)
-        to_id = self._add_process_node(candidate_queries)
-        self._add_transformation_edge(from_id, to_id, "expand")
+        self.record_process(query, candidate_queries, "expand")
         logger.info(f"[expand]: '{query}' -> '{candidate_queries}'")
         return candidate_queries
 
@@ -112,23 +108,17 @@ class QueryProcessingToolkit(BaseToolkit):
             list[dict[str, Any]]: The search results from the web search.
         """
         # Select the best query from candidates
-        from_id = self._add_process_node(candidate_queries)
-        to_id = self._add_process_node(selected_query)
-        self._add_transformation_edge(from_id, to_id, "select")
+        self.record_process(candidate_queries, selected_query, "select")
         logger.info(f"[select]: '{candidate_queries}' -> '{selected_query}'")
         # Refine the selected query
-        from_id = self._add_process_node(selected_query)
-        to_id = self._add_process_node(final_query)
-        self._add_transformation_edge(from_id, to_id, "refine")
+        self.record_process(selected_query, final_query, "refine")
         logger.info(f"[refine]: '{selected_query}' -> '{final_query}'")
         # Search the web
         # NOTE: ad-hoc fix to prevent searching huggingface website
         final_query += " -site:huggingface.co"
         search_results = self.search_tool(final_query)
         self.search_counter += 1
-        from_id = self._add_process_node(final_query)
-        to_id = self._add_process_node(search_results)
-        self._add_transformation_edge(from_id, to_id, "search")
+        self.record_process(final_query, search_results, "search")
         logger.info(f"[search]: '{final_query}' -> '{search_results}'")
         return search_results
 
@@ -148,9 +138,7 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             list[str]: The list of new queries as provided by the agent.
         """
-        from_id = self._add_process_node(search_results)
-        to_id = self._add_process_node(new_queries)
-        self._add_transformation_edge(from_id, to_id, "generate")
+        self.record_process(search_results, new_queries, "generate")
         return new_queries
 
     def get_tools(self) -> list[FunctionTool]:
@@ -164,21 +152,16 @@ class QueryProcessingToolkit(BaseToolkit):
             # FunctionTool(self.generate_new_queries),
         ]
 
-    def _add_process_node(self, data: Any) -> str:
-        """Add a process node to the graph and return its ID."""
-        process_id = f"process_{self.process_counter}"
-        self.process_counter += 1
+    def record_process(self, from_data: Any, to_data: Any, action: str) -> str:
+        """Record a process in the trace graph."""
+        self.trace_graph.add_node(self.current_node_id, data=from_data)
+        self.trace_graph.add_node(self.current_node_id + 1, data=to_data)
+        self.trace_graph.add_edge(self.current_node_id, self.current_node_id + 1, action=action)
+        self.current_node_id += 1
 
-        self.process_graph.add_node(process_id, data=data)
-        return process_id
-
-    def _add_transformation_edge(self, from_id: str, to_id: str, action: str) -> None:
-        """Add a transformation edge to the graph."""
-        self.process_graph.add_edge(from_id, to_id, action=action)
-
-    def render_process_graph(self) -> str:
+    def render_trace_graph(self) -> str:
         """Render the process graph as a string representation."""
-        if not self.process_graph.nodes():
+        if not self.trace_graph.nodes():
             return "Empty graph"
 
         def format_data(data):
@@ -237,11 +220,11 @@ class QueryProcessingToolkit(BaseToolkit):
             return lines
 
         # Find all root nodes
-        roots = find_roots(self.process_graph)
+        roots = find_roots(self.trace_graph)
 
         if not roots:
             # If no roots found, start from any node (for cyclic graphs)
-            roots = [list(self.process_graph.nodes())[0]]
+            roots = [list(self.trace_graph.nodes())[0]]
 
         # Render all components
         visited = set()
@@ -250,6 +233,6 @@ class QueryProcessingToolkit(BaseToolkit):
         for i, root in enumerate(roots):
             if i > 0:
                 result_lines.append("\n")  # Separate components
-            result_lines.extend(render_component(self.process_graph, root, visited))
+            result_lines.extend(render_component(self.trace_graph, root, visited))
 
         return "".join(result_lines)
