@@ -24,7 +24,8 @@ uv sync
 
 3. Run the evaluation script:
 ```bash
-python scripts/simpleqa_eval.py -a knowledge_then_reasoning -n 500
+# run first five SimpleQA examples
+python scripts/simpleqa_eval.py -a research -n 5 
 ```
 
 4. View results in the `results` directory.
