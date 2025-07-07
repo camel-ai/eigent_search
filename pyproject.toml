@@ -5,7 +5,7 @@ description = "The Librarian Paradigm: An Agentic Solution for Structured Knowle
 authors = []
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "camel-ai[all]>=0.2.46"
+    "camel-ai[all]>=0.2.70"
 ]
 
 [build-system]
