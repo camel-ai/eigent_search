@@ -1,0 +1,68 @@
+[
+    {
+        "problem": "Who received the IEEE Frank Rosenblatt Award in 2010?",
+        "answer": "Michio Sugeno",
+        "response": {
+            "answer": "Michio Sugeno received the IEEE Frank Rosenblatt Award in 2010.",
+            "search_results": [
+                "IEEE Frank Rosenblatt Award - Wikipedia: 2010: Michio Sugeno; 2009: John J. Hopfield; 2008: Teuvo Kohonen; 2007 ... List of IEEE Frank Rosenblatt Award recipients.",
+                "IEEE Frank Rosenblatt Award Recipients: 2010 \u2013 MICHIO SUGENO. Faculty of Culture and Information Science, Doshisha.",
+                "IEEE Awards - IEEE Computational Intelligence Society: View past IEEE Frank Rosenblatt Award Recipients (PDF) including 2010 to 2021."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who was awarded the Oceanography Society's Jerlov Award in 2018?",
+        "answer": "Annick Bricaud",
+        "response": {
+            "answer": "Annick Bricaud was awarded the Oceanography Society's Jerlov Award in 2018.",
+            "search_results": [
+                "Jerlov Medal | The Oceanography Society - The Dr. Nils Gunnar Jerlov Medal is awarded biennially to an individual for advancing our knowledge of how light interacts with the ocean. (https://tos.org/jerlov-medal)",
+                "2018 Jerlov Award Recognizes Optical Oceanographer - Annick Bricaud has been selected by the Oceanography Society as the 2018 recipient of the Jerlov Award. The award recognizes Bricaud's group. (https://www.photonics.com/Articles/2018_Jerlov_Award_Recognizes_Optical_Oceanographer/a64036)",
+                "The Oceanography Society - Wikipedia - The Jerlov Award is awarded by the society. (https://en.wikipedia.org/wiki/The_Oceanography_Society)"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
+        "answer": "Radcliffe College",
+        "response": {
+            "answer": "The women's liberal arts college in Cambridge, Massachusetts, was Radcliffe College.",
+            "search_results": [
+                "Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, that was founded in 1879. In 1999, it was fully incorporated into Harvard.",
+                "Radcliffe College, a women's liberal arts college, was based in Cambridge, Massachusetts.",
+                "Seven Sisters colleges include women's liberal arts colleges, with Radcliffe College being in Cambridge, Massachusetts, before its merger with Harvard.",
+                "Wellesley College is a private women's liberal arts college in Massachusetts but located in Wellesley, not Cambridge."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In whose honor was the Leipzig 1877 tournament organized?",
+        "answer": "Adolf Anderssen",
+        "response": {
+            "answer": "The Leipzig 1877 tournament was organized in honor of Adolf Anderssen.",
+            "search_results": [
+                "The Leipzig 1877 event (organized by the Mitteldeutscher Schachbund) was called the Anderssen-Feier and held in honor of Adolf Anderssen. He seemed to have...",
+                "The Leipzig 1877 tournament was organised in his honour and named the... (Adolf Anderssen - Wikipedia)",
+                "The Leipzig 1877 tournament was held to honor Anderssen. It was... This tournament honored Anderssen's 50th anniversary of learning chess."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
+        "answer": "Poet Henrich Heine.",
+        "response": {
+            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture made for her villa Achilleion at Corfu depicted the Greek hero Achilles.",
+            "search_results": [
+                "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu? - Source: Hacker News Q&A discussions (https://news.ycombinator.com/item?id=42001816)",
+                "The Achilleion palace in Corfu, built by Empress Elizabeth, is famous for its classical Greek themes, especially the statue of Achilles, which is often noted as her favorite sculpture.",
+                "Karl K\u00fcchler referred to the sculpture of Achilles at Achilleion as Empress Elizabeth's favorite sculpture."
+            ]
+        },
+        "grade": "INCORRECT"
+    }
+]
