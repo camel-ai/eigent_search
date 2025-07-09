@@ -166,7 +166,7 @@ class QueryProcessingToolkit(BaseToolkit):
         self.current_node_id += 1
 
     def trace_reset(self):
-        """Reset the trace graph for a new questions."""
+        """Reset the trace graph for a new question."""
         if self.current_trace_graph is not None:
             self.trace_graph_list.append(self.current_trace_graph)
         self.current_trace_graph = None
