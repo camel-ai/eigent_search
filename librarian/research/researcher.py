@@ -65,12 +65,8 @@ class ResearchAgent(ChatAgent):
         )
 
     def reset(self):
-        r"""Resets the :obj:`ChatAgent` to its initial state."""
-        self.terminated = False
-        self.init_messages()
-        for terminator in self.response_terminators:
-            terminator.reset()
+        super().reset()
         self.query_toolkit.trace_reset()
-        
+
     def step(self, input_message: BaseMessage | str) -> ChatAgentResponse:
         return super().step(input_message, response_format=ResearchResponse)
