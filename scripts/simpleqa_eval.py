@@ -84,7 +84,7 @@ def main(agent_type: str, num_questions: int):
     for i, example in enumerate(
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
-        agent.reset()
+        
         response = agent.step(f"Question: {example['problem']}")
         response = eval(response.msgs[0].content)
         eval_request = evaluator.create_request(
@@ -109,9 +109,9 @@ def main(agent_type: str, num_questions: int):
             logger.info(
                 f"[{agent_type}] Number of searches: {agent.query_toolkit.search_counter}"
             )
-            logger.info(
-                f"[{agent_type}] Process Graph:\n{agent.query_toolkit.render_trace_graph()}"
-            )
+            # logger.info(
+            #     f"[{agent_type}] Process Graph:\n{agent.query_toolkit.render_trace_graph()}"
+            # )
 
         # save results every 50 examples or at the end
         if (i + 1) % 50 == 0 or i == num_questions - 1:
@@ -119,10 +119,13 @@ def main(agent_type: str, num_questions: int):
                 json.dump(results, f, indent=4)
             tqdm.write(f"Results saved to {output_file}")
 
+        agent.reset()
+
     tqdm.write(
         f"[{agent_type}] Accuracy (n={num_questions}): {sum(scores) / len(scores)}"
     )
 
-
 if __name__ == "__main__":
     main()
+
+# %%
