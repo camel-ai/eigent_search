@@ -64,5 +64,9 @@ class ResearchAgent(ChatAgent):
             **kwargs,
         )
 
+    def reset(self):
+        super().reset()
+        self.query_toolkit.trace_reset()
+
     def step(self, input_message: BaseMessage | str) -> ChatAgentResponse:
         return super().step(input_message, response_format=ResearchResponse)

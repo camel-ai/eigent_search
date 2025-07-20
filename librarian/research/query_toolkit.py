@@ -34,10 +34,12 @@ class QueryProcessingToolkit(BaseToolkit):
 
     def __init__(self) -> None:
         super().__init__()
-        self.trace_graph = nx.DiGraph()
+        self.current_trace_graph = None
+        self.current_node_id = 0
+        self.trace_graph_list = []
+
         self.search_tool = SearchToolkit().search_google
         self.search_counter = 0  # For counting the number of searches
-        self.current_node_id = 0
 
     def rewrite_query(self, query: str, rewritten_query: str) -> str:
         """Rewrite the input query to improve search effectiveness.
@@ -154,10 +156,20 @@ class QueryProcessingToolkit(BaseToolkit):
 
     def record_process(self, from_data: Any, to_data: Any, action: str) -> str:
         """Record a process in the trace graph."""
-        self.trace_graph.add_node(self.current_node_id, data=from_data)
-        self.trace_graph.add_node(self.current_node_id + 1, data=to_data)
-        self.trace_graph.add_edge(self.current_node_id, self.current_node_id + 1, action=action)
+        if self.current_trace_graph is None:
+            self.current_trace_graph = nx.DiGraph()
+            self.current_node_id = 0
+
+        self.current_trace_graph.add_node(self.current_node_id, data=from_data)
+        self.current_trace_graph.add_node(self.current_node_id + 1, data=to_data)
+        self.current_trace_graph.add_edge(self.current_node_id, self.current_node_id + 1, action=action)
         self.current_node_id += 1
+
+    def trace_reset(self):
+        """Reset the trace graph for a new question."""
+        if self.current_trace_graph is not None:
+            self.trace_graph_list.append(self.current_trace_graph)
+        self.current_trace_graph = None
 
     def render_trace_graph(self) -> str:
         """Render the process graph as a string representation."""
