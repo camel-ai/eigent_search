@@ -85,7 +85,7 @@ def main(agent_type: str, num_questions: int):
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
         
-        response = agent.step(f"Question: {example['problem']}")
+        response = agent.step(f"{example['problem']}")
         response = eval(response.msgs[0].content)
         eval_request = evaluator.create_request(
             problem=example["problem"],

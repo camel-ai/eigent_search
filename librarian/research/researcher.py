@@ -17,7 +17,8 @@ from __future__ import annotations
 from textwrap import dedent
 from pydantic import BaseModel, Field
 from camel.models import BaseModelBackend
-from camel.messages import BaseMessage
+
+# from camel.messages import BaseMessage
 from camel.responses import ChatAgentResponse
 from camel.agents.chat_agent import ChatAgent
 
@@ -37,14 +38,21 @@ except (ImportError, AttributeError):
 
 class ResearchResponse(BaseModel):
     answer: str = Field(..., description="The answer to the research question.")
-    search_results: list[str] = Field(..., description="The search results that lead to the answer.")
+    search_results: list[str] = Field(
+        ..., description="The search results that lead to the answer."
+    )
 
 
 @track_agent(name="ResearchAgent")
 class ResearchAgent(ChatAgent):
     r"""A :class:`ChatAgent` that conducts deep research on a given question."""
 
-    def __init__(self, model: BaseModelBackend, *args, **kwargs):
+    def __init__(
+        self,
+        model: BaseModelBackend,
+        *args,
+        **kwargs,
+    ):
         # Predefined system message for direct answering
         system_message = dedent("""
         You are a helpful assistant who conducts deep research on a given question.
@@ -55,18 +63,26 @@ class ResearchAgent(ChatAgent):
         Search Results: ...
         ```
         """).strip()
-        self.query_toolkit = QueryProcessingToolkit()
         super().__init__(
             system_message=system_message,
             model=model,
-            tools=self.query_toolkit.get_tools(),
             *args,
             **kwargs,
         )
+        self.current_query_toolkit = None
 
     def reset(self):
         super().reset()
-        self.query_toolkit.trace_reset()
+        self.remove_tools(
+            [
+                tool.get_function_name()
+                for tool in self.current_query_toolkit.get_tools()
+            ]
+        )
+        self.current_query_toolkit = None
 
-    def step(self, input_message: BaseMessage | str) -> ChatAgentResponse:
-        return super().step(input_message, response_format=ResearchResponse)
+    def step(self, input_query: str) -> ChatAgentResponse:
+        self.current_query_toolkit = QueryProcessingToolkit(input_query)
+        self.add_tools(self.current_query_toolkit.get_tools())
+        search_response = super().step(input_query, response_format=ResearchResponse)
+        return search_response
