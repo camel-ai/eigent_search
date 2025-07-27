@@ -50,11 +50,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Set log level of camel.agents.chat_agent to WARNING
+logging.getLogger("camel.agents.chat_agent").setLevel(logging.WARNING)
+
 
 @click.command()
 @click.option("--agent_type", "-a", type=click.Choice(AGENTS.keys()), required=True)
 @click.option("--num_questions", "-n", type=int, default=5)
-def main(agent_type: str, num_questions: int):
+@click.option("--start_idx", "-s", type=int, default=0, help="Start index for the test samples.")
+def main(agent_type: str, num_questions: int, start_idx: int):
     # setup the agent for evaluation
     load_dotenv()  # load the openai key from .env
     model = ModelFactory.create(
@@ -75,12 +79,13 @@ def main(agent_type: str, num_questions: int):
 
     # load the dataset
     dataset = load_dataset("basicv8vc/SimpleQA")
-    test_samples = list(dataset["test"])[:num_questions]
+    
+    test_samples = list(dataset["test"])[start_idx: start_idx+num_questions]
 
     scores = []
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
-    output_file = f"results/{agent_type}_simpleqa_{num_questions}.json"
+    output_file = f"results/{agent_type}_simpleqa_startidx_{start_idx}_nquestions_{num_questions}.json"
     for i, example in enumerate(
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
@@ -107,11 +112,11 @@ def main(agent_type: str, num_questions: int):
 
         if agent_type == "research":
             logger.info(
-                f"[{agent_type}] Number of searches: {agent.query_toolkit.search_counter}"
+                f"[{agent_type}] Number of searches: {agent.current_query_toolkit.search_counter}"
             )
-            # logger.info(
-            #     f"[{agent_type}] Process Graph:\n{agent.query_toolkit.render_trace_graph()}"
-            # )
+            logger.info(
+                f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
+            )
 
         # save results every 50 examples or at the end
         if (i + 1) % 50 == 0 or i == num_questions - 1:
