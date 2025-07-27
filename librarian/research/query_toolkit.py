@@ -41,35 +41,50 @@ class QueryProcessingToolkit(BaseToolkit):
         self.search_tool = SearchToolkit().search_google
         self.search_counter = 0  # For counting the number of searches
 
-    def _pop_frontier(self, query: str) -> str:
-        """Pop a query from the CURRENT FRONTIER.
+    def _not_in_frontier_error_message(self, func_name:str , query: str) -> str:
+        """Generate an error message indicating the query is not in the frontier.
 
         Args:
-            query (str): The query to pop from the CURRENT FRONTIER.
+            func_name (str): The name of the function that called this error message.
+            query (str): The query to check if it is in the CURRENT FRONTIER.
 
         Returns:
-            str: The `query` if it has been popped from the frontier, otherwise the error message.
+            str: The error message indicating the query is not in the frontier,
+            and present the CURRENT FRONTIER.
 
-        NOTE: This is not a tool, but a sanity check to ensure the query is in the frontier.
+        NOTE: This is not a tool, but a helper method to generate an error
+        message.
         """
-        # Todo: This is a fallback to avoid empty frontier. We should decide if we need this
-        if not self.frontier:
-            self.frontier.add(self.initial_query)
 
-        try:
-            self.frontier.remove(query)
-        except Exception as e:
-            error_message = (
-                f"❌ Invalid operation: Candidate query '{query}' must be selected from the current frontier listed below.\n"
-                f"📋 current frontier:\n  - "
-                + "\n  - ".join(map(str, self.frontier))
-                + "\n"
-                #f"💡 Note: Ensure that the query is present in the frontier before removal.\n"
-                #f"🛑 Underlying exception: {type(e).__name__}: {e}"
+        error_message = (
+            f"❌ Invalid operation: Candidate query '{query}' must be selected "
+            f"from the current frontier listed below.\n📋 current frontier:\n  - "
+            + "\n  - ".join(map(str, self.frontier))
+            + "\n"
+        )
+
+        logger.error(
+            f"In `{func_name}`, selected query is not in frontier. "
+            f"Error message from `_frontier_error_message`: \n{error_message}"
+        )
+        return error_message
+    
+    def _already_in_frontier_error_message(self, query: str) -> str:
+        """Generate an error message indicating the rewritten query is already in the frontier.
+        Args:
+            query (str): The rewritten query to check if it is already in the frontier.
+        Returns:
+            str: The error message indicating the rewritten query is already in the frontier.
+        NOTE: This is not a tool, but a helper method to generate an error
+        message.
+        """
+
+        error_message = (
+                f"❌ Invalid operation: Rewritten query '{query}' "
+                "is already in the frontier. Please provide a new query."
             )
-            # logger.error(error_message)
-            return error_message
-        return query
+        logger.error(error_message)
+        return error_message
 
     def _check_explored(self, query: str) -> str:
         """Check if the query has been explored.
@@ -99,7 +114,8 @@ class QueryProcessingToolkit(BaseToolkit):
         or doesn't clearly convey the user's intent. For clear, specific queries, this step can be skipped.
 
         The agent should provide a more specific, detailed, or differently phrased version 
-        of the original query when rewriting is needed.
+        of the original query when rewriting is needed. Do not re-generate `rewritten_query` that is already
+        in the CURRENT FRONTIER, or has already been explored.
 
         Args:
             query (str): The candidate query selected from CURRENT FRONTIER.
@@ -114,21 +130,28 @@ class QueryProcessingToolkit(BaseToolkit):
             dict[str, list[str]] | str: The new CURRENT FRONTIER after the rewriting process or the error message.
         """
 
-        # Pop the query from the frontier
-        popped_query = self._pop_frontier(query)
-        if popped_query != query:
-            logger.error(f"In `rewrite_query`, selected query is not in frontier. Error message from `_pop_frontier`: \n{popped_query}")
-            return popped_query  # This will be the error message from the _pop_frontier method
+        # Check if the query is in the CURRENT FRONTIER
+        if query not in self.frontier:
+            return self._not_in_frontier_error_message(
+                func_name="rewrite_query", query=query
+            )
 
         # Check if the rewritten query has been explored
         checked_query = self._check_explored(rewritten_query)
         if checked_query != rewritten_query:
             return checked_query  # This will be the error message from the _check_explored method
+        
+        # Check if the new query is already in the CURRENT FRONTIER
+        if rewritten_query in self.frontier:
+            return self._already_in_frontier_error_message(rewritten_query)
+
         self.frontier.add(rewritten_query)
 
-        # Record the process and add the popped query to explored set
+        # Record the process and
         self.trace_graph.record_process(query, rewritten_query, "rewrite_query")
-        self.explored.add(query)
+        
+        # We choose not to add the popped query to explored set
+        # self.explored.add(query)
 
         return {"CURRENT FRONTIER": list(self.frontier)}
 
@@ -153,28 +176,31 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             dict[str, list[str]] | str: The current frontier after the expanding process or the error message.
         """
-        # Pop the query from the frontier
-        popped_query = self._pop_frontier(query)
-        if popped_query != query:
-            logger.error(f"In `expand_query`, selected query is not in frontier. Error message from `_pop_frontier`: \n{popped_query}")
-            return popped_query  # This will be the error message from the _pop_frontier method
+    
+        # Check if the query is in the CURRENT FRONTIER
+        if query not in self.frontier:
+            error_message = self._not_in_frontier_error_message(
+                func_name="expand_query",
+                query=query)
+            return error_message
 
         # Check if the candidate queries have been explored
         checked_queries = []
         for candidate_query in candidate_queries:
             checked_query = self._check_explored(candidate_query)
-            if checked_query == candidate_query:
+            if checked_query == candidate_query and candidate_query not in self.frontier:
                 checked_queries.append(checked_query)
         if not checked_queries:
-            return "❌ Invalid operation: All candidate queries have been explored."
+            return "❌ Invalid operation: All candidate queries have been explored or in the current frontier."
 
         # Add the checked queries to the frontier
         self.frontier.update(checked_queries)
 
-        # Record the process and add the popped query to explored set
+        # Record the process 
         for checked_query in checked_queries:
             self.trace_graph.record_process(query, checked_query, "expand_query")
-        self.explored.add(query)
+        
+        #self.explored.add(query)
 
         return {"CURRENT FRONTIER": list(self.frontier)}
 
@@ -183,7 +209,7 @@ class QueryProcessingToolkit(BaseToolkit):
     ) -> dict[str, list[str]] | str:
         """Select the best `query` from the CURRENT FRONTIER and perform web search.
 
-        This method selects the most promising query from the frontier for web search. The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search. Then, optionally add advanced search operators (AND, OR, NOT, quotes, site:, filetype:, etc.) to improve search precision and relevance. Finally, perform an actual web search using the final query and return the results. The agent should return the search results as a list of strings.
+        This method selects the most promising query from the frontier for web search. The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search. Then, OPTIONALLY add advanced search operators (AND, OR, NOT, quotes, site:, filetype:, etc.) to improve search precision and relevance. Finally, perform an actual web search using the final query and return the results. The agent should return the search results as a list of strings.
 
         Args:
             query (str): The input query from the CURRENT FRONTIER that is selected for web search.
@@ -194,16 +220,20 @@ class QueryProcessingToolkit(BaseToolkit):
         """
 
         # Pop the selected query from the frontier
-        popped_query = self._pop_frontier(query)
-        if popped_query != query:
-            logger.error(f"In `select_query_and_search`, selected query is not in frontier, error message from `_pop_frontier`: \n{popped_query}")
-            return popped_query  # This will be the error message from the _pop_frontier method
+        if query not in self.frontier:
+            return self._not_in_frontier_error_message(
+                func_name="select_query_and_search", query=query
+            )
 
         # Check if the final query has been explored
         checked_query = self._check_explored(final_query)
         if checked_query != final_query:
             return checked_query  # This will be the error message from the _check_explored method
 
+        # It is possible the final_query is in the frontier, and we should remove it in this case.
+        if final_query in self.frontier:
+            self.frontier.remove(final_query)
+        
         # NOTE: prevent searching huggingface website to avoid answer leakage
         final_query += " -site:huggingface.co"
         # Search the web
@@ -216,14 +246,25 @@ class QueryProcessingToolkit(BaseToolkit):
         
         self.trace_graph.record_process(query, final_query, "select_and_enhance_search_query")
 
+        is_research_okay = False
         for result in search_results:
-            self.trace_graph.record_process(final_query, str(result['description']), "search_web") 
-        
-        self.explored.add(query)
+            if 'description' not in result:
+                continue
+            is_research_okay = True
+            # Todo
+            self.trace_graph.record_process(final_query, str(result['description']), "search_web")
+        if not is_research_okay:
+            logger.error("Error with google search! Consider trying again.")
+            return "Error with google search! Consider trying again."
+
+        #Note: Do not add the original query to explored set, as it is not the final query.
+        #self.explored.add(query)
         self.explored.add(final_query)
 
+
         # NOTE: whether to remind the current frontier here? We currently think this step needs to focus on reflecting the search results, not another query from the frontier.
-        return {"SEARCH RESULTS":[str(result['description']) for result in search_results]}
+        # Todo: think about what fields we can remove from search google. Potentailly useful fields: 'title', 'url', 'description'.
+        return {"SEARCH RESULTS": [str(result) for result in search_results]}
 
     def reflect_or_complete(
         self,
@@ -255,7 +296,7 @@ class QueryProcessingToolkit(BaseToolkit):
                 self.trace_graph.record_process(
                     result, final_answer, "complete_task"
                 )
-            return final_answer, search_results
+            return final_answer#, search_results
         elif new_queries:
             logger.info("`Whether to complete`: Generating new queries based on search results.")
             for new_query in new_queries:
