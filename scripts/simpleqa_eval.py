@@ -28,6 +28,7 @@ from librarian.baseline import (
     DirectAnswerAgent,
     ChainOfThoughtAgent,
     KnowledgeThenReasoningAgent,
+    DirectAnswerAgentWithGoogleSearch
 )
 from librarian.research import ResearchAgent
 
@@ -36,6 +37,7 @@ AGENTS = {
     "direct_answer": DirectAnswerAgent,
     "chain_of_thought": ChainOfThoughtAgent,
     "knowledge_then_reasoning": KnowledgeThenReasoningAgent,
+    "direct_w_google": DirectAnswerAgentWithGoogleSearch,
 }
 
 
@@ -51,7 +53,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Set log level of camel.agents.chat_agent to WARNING
-logging.getLogger("camel.agents.chat_agent").setLevel(logging.WARNING)
+# logging.getLogger("camel.agents.chat_agent").setLevel(logging.WARNING)
 
 
 @click.command()
@@ -90,7 +92,7 @@ def main(agent_type: str, num_questions: int, start_idx: int):
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
         
-        response = agent.step(f"{example['problem']}")
+        response = agent.step(f"{example['problem']}" )
         response = eval(response.msgs[0].content)
         eval_request = evaluator.create_request(
             problem=example["problem"],
