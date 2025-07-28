@@ -17,7 +17,8 @@ from __future__ import annotations
 from textwrap import dedent
 from pydantic import BaseModel, Field
 from camel.models import BaseModelBackend
-from camel.messages import BaseMessage
+
+# from camel.messages import BaseMessage
 from camel.responses import ChatAgentResponse
 from camel.agents.chat_agent import ChatAgent
 
@@ -37,36 +38,65 @@ except (ImportError, AttributeError):
 
 class ResearchResponse(BaseModel):
     answer: str = Field(..., description="The answer to the research question.")
-    search_results: list[str] = Field(..., description="The search results that lead to the answer.")
+    search_results: list[str] = Field(
+        ..., description="The search results that lead to the answer."
+    )
 
 
 @track_agent(name="ResearchAgent")
 class ResearchAgent(ChatAgent):
     r"""A :class:`ChatAgent` that conducts deep research on a given question."""
 
-    def __init__(self, model: BaseModelBackend, *args, **kwargs):
+    def __init__(
+        self,
+        model: BaseModelBackend,
+        *args,
+        **kwargs,
+    ):
         # Predefined system message for direct answering
         system_message = dedent("""
-        You are a helpful assistant who conducts deep research on a given question.
-        
+        You are a helpful assistant who conducts deep research on a given query.
+
+        You will be provided with a query processing toolkit that contains the following tools:
+        - rewrite_query: Rewrite the query to be more specific and focused.
+        - expand_query: Expand the query to be more comprehensive.
+        - select_query_and_search: Select a query from the frontier (and optionally enhance with advanced search operators) and search the web for information.
+        - generate_new_queries: Generate new queries based on the search results if the search results are not sufficient to answer the user's initial query.
+        - complete_task: Complete the deep research when search results are sufficient to answer the user's initial query.
+
+        The query processing toolkit also maintains a frontier of queries to be explored and an explored set of queries. The frontier contains the queries that have not been explored yet. The explored set contains the queries that have been explored and should not be explored again. You should keep track of the frontier and the explored set while conducting the research.
+
+        The final output should be the answer to the user's initial query, and the search results that lead to the answer.
+
         Final Output Format:
         ```
         Answer: ...
         Search Results: ...
         ```
         """).strip()
-        self.query_toolkit = QueryProcessingToolkit()
         super().__init__(
             system_message=system_message,
             model=model,
-            tools=self.query_toolkit.get_tools(),
             *args,
             **kwargs,
         )
+        self.current_query_toolkit = None
 
     def reset(self):
         super().reset()
-        self.query_toolkit.trace_reset()
+        self.remove_tools(
+            [
+                tool.get_function_name()
+                for tool in self.current_query_toolkit.get_tools()
+            ]
+        )
+        self.current_query_toolkit = None
 
-    def step(self, input_message: BaseMessage | str) -> ChatAgentResponse:
-        return super().step(input_message, response_format=ResearchResponse)
+    def step(self, input_query: str) -> ChatAgentResponse:
+        self.current_query_toolkit = QueryProcessingToolkit(input_query)
+        self.add_tools(self.current_query_toolkit.get_tools())
+        search_response = super().step(
+            f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
+            response_format=ResearchResponse,
+        )
+        return search_response

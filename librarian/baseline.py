@@ -19,6 +19,7 @@ from camel.models import BaseModelBackend
 from camel.messages import BaseMessage
 from camel.responses import ChatAgentResponse
 from camel.agents.chat_agent import ChatAgent
+from camel.toolkits import FunctionTool, SearchToolkit
 
 # AgentOps decorator setting
 try:
@@ -35,6 +36,11 @@ except (ImportError, AttributeError):
 class DirectAnswerResponse(BaseModel):
     answer: str = Field(..., description="The predicted answer.")
 
+class ResearchResponse(BaseModel):
+    answer: str = Field(..., description="The answer to the research question.")
+    search_results: list[str] = Field(
+        ..., description="The search results that lead to the answer."
+    )
 
 @track_agent(name="DirectAnswerAgent")
 class DirectAnswerAgent(ChatAgent):
@@ -112,3 +118,25 @@ class KnowledgeThenReasoningAgent(ChatAgent):
         return super().step(
             input_message, response_format=KnowledgeThenReasoningResponse
         )
+
+
+@track_agent(name="DirectAnswerAgent")
+class DirectAnswerAgentWithGoogleSearch(ChatAgent):
+    r"""A :class:`ChatAgent` that outputs a direct answer with a predefined response format. It has access to google search tools."""
+
+    def __init__(self, model: BaseModelBackend, *args, **kwargs):
+        # Predefined system message for direct answering
+        system_message = dedent("""
+        You are a helpful assistant who conducts deep research on a given question.
+        
+        Final Output Format:
+        ```
+        Answer: ...
+        Search Results: ...
+        ```
+        """).strip()
+        super().__init__(system_message=system_message, model=model, tools = [FunctionTool(SearchToolkit().search_google)], *args, **kwargs)
+
+    def step(self, input_message: str) -> ChatAgentResponse:
+        return super().step( input_message, response_format=ResearchResponse)
+        #return super().step( input_message + " -site:huggingface.co", response_format=ResearchResponse)
