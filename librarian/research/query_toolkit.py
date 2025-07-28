@@ -16,20 +16,87 @@ from __future__ import annotations
 
 import networkx as nx
 import logging
-from typing import Any
+from functools import wraps
 
 from camel.toolkits import FunctionTool, BaseToolkit, SearchToolkit, ThinkingToolkit
 
 logger = logging.getLogger(__name__)
 
 
+def validate_input_query_in_frontier(func):
+    """Decorator to validate that the input query is in the current frontier.
+
+    This decorator should be applied to methods that take a query parameter
+    and need to ensure it exists in the current frontier before processing.
+    """
+
+    @wraps(func)
+    def wrapper(self, **kwargs):
+        # Get the query parameter from kwargs
+        query = kwargs["query"]
+        if query and query not in self.frontier:
+            error_message = (
+                f"❌ Invalid operation: Candidate query '{query}' must be selected "
+                f"from the current frontier listed below.\n{self.get_frontier_str()}"
+            )
+            logger.error(f"[{func.__name__}] {error_message}")
+            return error_message
+        return func(self, **kwargs)
+
+    return wrapper
+
+
+def validate_output_query_not_explored(func):
+    """Decorator to validate that the output query is not already explored.
+
+    This decorator should be applied to methods that take an output query parameter
+    and need to ensure it hasn't been explored before processing.
+    """
+
+    @wraps(func)
+    def wrapper(self, **kwargs):
+        # Find output query parameters
+        output_params = {
+            "rewrite_query": "rewritten_query",
+            "expand_query": "expanded_queries",
+            "select_query_and_search": "final_query",
+            "generate_new_queries": "new_queries",
+        }
+        output_param = output_params[func.__name__]
+        output_query = kwargs.get(output_param)
+
+        if output_query:
+            # Validation logic
+            was_single = not isinstance(output_query, list)
+            if was_single:
+                output_query = [output_query]
+
+            output_query_not_explored = [
+                oq for oq in output_query if oq not in self.explored
+            ]
+
+            if not output_query_not_explored:
+                error_message = (
+                    f"❌ Invalid operation: All {output_query} are already explored."
+                )
+                logger.error(error_message)
+                return error_message
+
+            # Update kwargs with filtered queries
+            if was_single:
+                kwargs[output_param] = output_query_not_explored[0]
+            else:
+                kwargs[output_param] = output_query_not_explored
+
+        return func(self, **kwargs)
+
+    return wrapper
+
+
 class QueryProcessingToolkit(BaseToolkit):
     """Toolkit for processing queries for deep research.
 
-    This toolkit provides methods for query rewriting, expansion, selection, and generation.
-    Each method follows a pattern where it takes the original input and the intended output
-    as parameters, then returns the intended output. This allows LLMs to understand the
-    expected behavior through the docstring and call the function appropriately.
+    This toolkit provides methods for query rewriting, expansion, selection, and generation. Each method follows a pattern where it takes the original input and the intended output as parameters, then returns the intended output. This allows LLMs to understand the expected behavior through the docstring and call the function appropriately.
     """
 
     def __init__(self, initial_query: str) -> None:
@@ -41,128 +108,37 @@ class QueryProcessingToolkit(BaseToolkit):
         self.search_tool = SearchToolkit().search_google
         self.search_counter = 0  # For counting the number of searches
 
-    def _not_in_frontier_error_message(self, func_name:str , query: str) -> str:
-        """Generate an error message indicating the query is not in the frontier.
+    def get_frontier_str(self) -> str:
+        """Display the current frontier as a string."""
+        return "📋 current frontier:\n  - " + "\n  - ".join(list(self.frontier))
+
+    @validate_input_query_in_frontier
+    @validate_output_query_not_explored
+    def rewrite_query(self, query: str, rewritten_query: str) -> dict[str, list[str]]:
+        """Rewrite a selected query from the current frontier to improve search effectiveness.
+
+        This step is OPTIONAL and should only be used when the input query is vague, fuzzy, or doesn't clearly convey the user's intent. For clear, specific queries, this step can be skipped. The agent should provide a more specific, detailed, or differently phrased version of the original query when rewriting is needed.
 
         Args:
-            func_name (str): The name of the function that called this error message.
-            query (str): The query to check if it is in the CURRENT FRONTIER.
+            query (str): The input query from the current frontier that requires rewriting.
+            rewritten_query (str): The intended rewritten version of the query.
 
         Returns:
-            str: The error message indicating the query is not in the frontier,
-            and present the CURRENT FRONTIER.
-
-        NOTE: This is not a tool, but a helper method to generate an error
-        message.
+            dict[str, list[str]]: The current frontier after the rewriting process.
         """
-
-        error_message = (
-            f"❌ Invalid operation: Candidate query '{query}' must be selected "
-            f"from the current frontier listed below.\n📋 current frontier:\n  - "
-            + "\n  - ".join(map(str, self.frontier))
-            + "\n"
-        )
-
-        logger.error(
-            f"In `{func_name}`, selected query is not in frontier. "
-            f"Error message from `_frontier_error_message`: \n{error_message}"
-        )
-        return error_message
-    
-    def _already_in_frontier_error_message(self, query: str) -> str:
-        """Generate an error message indicating the rewritten query is already in the frontier.
-        Args:
-            query (str): The rewritten query to check if it is already in the frontier.
-        Returns:
-            str: The error message indicating the rewritten query is already in the frontier.
-        NOTE: This is not a tool, but a helper method to generate an error
-        message.
-        """
-
-        error_message = (
-                f"❌ Invalid operation: Rewritten query '{query}' "
-                "is already in the frontier. Please provide a new query."
-            )
-        logger.error(error_message)
-        return error_message
-
-    def _check_explored(self, query: str) -> str:
-        """Check if the query has been explored.
-
-        Args:
-            query (str): The query to check if it has been explored.
-
-        Returns:
-            str: The `query` if it has not been explored, otherwise the error message.
-
-        NOTE: This is not a tool, but a sanity check to ensure the query is not in the explored set.
-        """
-        if query in self.explored:
-            error_message = (
-                f"❌ Invalid operation: Query '{query}' has already been explored."
-            )
-            logger.error(error_message)
-            return error_message
-        return query
-
-    def rewrite_query(self, query: str, rewritten_query: str) -> dict[str,list[str]] | str:
-        """Rewrite the selected candidate query from the CURRENT FRONTIER to improve search effectiveness.
-
-        This method selects the input query selected from the CURRENT FRONTIER 
-        and generates the intended rewritten version, then returns the rewritten query. 
-        This step is OPTIONAL and should only be used when the input query is vague, fuzzy, 
-        or doesn't clearly convey the user's intent. For clear, specific queries, this step can be skipped.
-
-        The agent should provide a more specific, detailed, or differently phrased version 
-        of the original query when rewriting is needed. Do not re-generate `rewritten_query` that is already
-        in the CURRENT FRONTIER, or has already been explored.
-
-        Args:
-            query (str): The candidate query selected from CURRENT FRONTIER.
-            that may need rewriting if vague or unclear. The query should be removed 
-            from the frontier after this step.
-
-            rewritten_query (str): The intended rewritten version of the query that should 
-            be more specific, detailed, or better phrased for search. If the input query 
-            is already clear, this can be the same as the input query.
-
-        Returns:
-            dict[str, list[str]] | str: The new CURRENT FRONTIER after the rewriting process or the error message.
-        """
-
-        # Check if the query is in the CURRENT FRONTIER
-        if query not in self.frontier:
-            return self._not_in_frontier_error_message(
-                func_name="rewrite_query", query=query
-            )
-
-        # Check if the rewritten query has been explored
-        checked_query = self._check_explored(rewritten_query)
-        if checked_query != rewritten_query:
-            return checked_query  # This will be the error message from the _check_explored method
-        
-        # Check if the new query is already in the CURRENT FRONTIER
-        if rewritten_query in self.frontier:
-            return self._already_in_frontier_error_message(rewritten_query)
-
+        # Add the rewritten query to the frontier if it has passed the frontier and explored validation
         self.frontier.add(rewritten_query)
-
-        # Record the process and
         self.trace_graph.record_process(query, rewritten_query, "rewrite_query")
-        
-        # We choose not to add the popped query to explored set
-        # self.explored.add(query)
+        return {"frontier": list(self.frontier)}
 
-        return {"CURRENT FRONTIER": list(self.frontier)}
+    @validate_input_query_in_frontier
+    @validate_output_query_not_explored
+    def expand_query(
+        self, query: str, expanded_queries: list[str]
+    ) -> dict[str, list[str]]:
+        """Expand the input query selected from the current frontier into multiple related search queries.
 
-    def expand_query(self, query: str, candidate_queries: list[str]) -> dict[str, list[str]] | str:
-        """Expand the input query selected from the CURRENT FRONTIER into multiple related search queries.
-
-        Expanding the query is helpful when the input query is vague, fuzzy, or doesn't clearly convey the user's intent.
-
-        This method takes the input query and a list of intended expanded queries,
-        then returns the expanded queries. The agent should expand queries using two
-        main strategies:
+        The agent should expand queries using two main strategies:
 
         (1) associations - related concepts, synonyms, broader/narrower terms, or
         (2) decomposition - breaking down complex queries into simpler, more focused components.
@@ -170,155 +146,102 @@ class QueryProcessingToolkit(BaseToolkit):
         This helps capture different aspects and variations of the input query for comprehensive research.
 
         Args:
-            query (str): The input query from the frontier that may need expanding.
-            candidate_queries (list[str]): A list of intended expanded queries (including the original input query) that cover different aspects and variations of the input query using associations or decomposition strategies.
+            query (str): The input query from the current frontier that requires expanding.
+            expanded_queries (list[str]): A list of expanded queries.
 
         Returns:
-            dict[str, list[str]] | str: The current frontier after the expanding process or the error message.
+            dict[str, list[str]]: The current frontier after the expanding process.
         """
-    
-        # Check if the query is in the CURRENT FRONTIER
-        if query not in self.frontier:
-            error_message = self._not_in_frontier_error_message(
-                func_name="expand_query",
-                query=query)
-            return error_message
+        # Add the new queries to the frontier if they have passed the frontier and explored validation
+        self.frontier.update(expanded_queries)
+        for new_query in expanded_queries:
+            self.trace_graph.record_process(query, new_query, "expand_query")
+        return {"frontier": list(self.frontier)}
 
-        # Check if the candidate queries have been explored
-        checked_queries = []
-        for candidate_query in candidate_queries:
-            checked_query = self._check_explored(candidate_query)
-            if checked_query == candidate_query and candidate_query not in self.frontier:
-                checked_queries.append(checked_query)
-        if not checked_queries:
-            return "❌ Invalid operation: All candidate queries have been explored or in the current frontier."
-
-        # Add the checked queries to the frontier
-        self.frontier.update(checked_queries)
-
-        # Record the process 
-        for checked_query in checked_queries:
-            self.trace_graph.record_process(query, checked_query, "expand_query")
-        
-        #self.explored.add(query)
-
-        return {"CURRENT FRONTIER": list(self.frontier)}
-
+    @validate_input_query_in_frontier
+    @validate_output_query_not_explored
     def select_query_and_search(
         self, query: str, final_query: str
-    ) -> dict[str, list[str]] | str:
-        """Select the best `query` from the CURRENT FRONTIER and perform web search.
+    ) -> dict[str, list[str]]:
+        """Select the best query from the current frontier and perform web search.
 
-        This method selects the most promising query from the frontier for web search. The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search. Then, OPTIONALLY add advanced search operators (AND, OR, NOT, quotes, site:, filetype:, etc.) to improve search precision and relevance. Finally, perform an actual web search using the final query and return the results. The agent should return the search results as a list of strings.
+        The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search. Then, OPTIONALLY add advanced search operators (AND, OR, NOT, quotes, site:, filetype:, etc.) to improve search precision and relevance. Finally, perform an actual web search using the final query and return the results. The agent should return the search results as a list of strings.
+
+        If the search results are not sufficient to answer the user's initial query, the agent should process and select another query from the current frontier and perform web search again, or generate new queries based on the search results.
 
         Args:
-            query (str): The input query from the CURRENT FRONTIER that is selected for web search.
+            query (str): The input query from the current frontier that is selected for web search.
             final_query (str): The final query with optional advanced search operators added to the selected query that will be used for searching the web.
 
         Returns:
-            dict[str, list[str]] | str: The search results from the web search or the error message.
+            dict[str, list[str]]: The search results from the web search.
         """
+        # Add the new query to the frontier if it has passed the frontier and explored validation
+        self.frontier.add(final_query)
 
-        # Pop the selected query from the frontier
-        if query not in self.frontier:
-            return self._not_in_frontier_error_message(
-                func_name="select_query_and_search", query=query
+        # NOTE: prevent searching huggingface website to avoid answer leakage
+        search_results = self.search_tool(final_query + " -site:huggingface.co")
+        self.search_counter += 1
+        self.trace_graph.record_process(query, final_query, "enhance_query_for_search")
+        for result in search_results:
+            self.trace_graph.record_process(
+                final_query, str(result["url"]), "search_google"
             )
 
-        # Check if the final query has been explored
-        checked_query = self._check_explored(final_query)
-        if checked_query != final_query:
-            return checked_query  # This will be the error message from the _check_explored method
-
-        # It is possible the final_query is in the frontier, and we should remove it in this case.
-        if final_query in self.frontier:
-            self.frontier.remove(final_query)
-        
-        # NOTE: prevent searching huggingface website to avoid answer leakage
-        final_query += " -site:huggingface.co"
-        # Search the web
-        search_results = self.search_tool(final_query)
-    
-        
-        self.search_counter += 1
-
-        # Record the process and add the popped query to explored set
-        
-        self.trace_graph.record_process(query, final_query, "select_and_enhance_search_query")
-
-        is_research_okay = False
-        for result in search_results:
-            if 'description' not in result:
-                continue
-            is_research_okay = True
-            # Todo
-            self.trace_graph.record_process(final_query, str(result['description']), "search_web")
-        if not is_research_okay:
-            logger.error("Error with google search! Consider trying again.")
-            return "Error with google search! Consider trying again."
-
-        #Note: Do not add the original query to explored set, as it is not the final query.
-        #self.explored.add(query)
+        # Modify the frontier and explored set after the search
+        self.explored.add(query)
         self.explored.add(final_query)
+        self.frontier.remove(query)
+        self.frontier.remove(final_query)
 
+        return {"search_results": [str(result) for result in search_results]}
 
-        # NOTE: whether to remind the current frontier here? We currently think this step needs to focus on reflecting the search results, not another query from the frontier.
-        # Todo: think about what fields we can remove from search google. Potentailly useful fields: 'title', 'url', 'description'.
-        return {"SEARCH RESULTS": [str(result) for result in search_results]}
+    @validate_output_query_not_explored
+    def generate_new_queries(
+        self, search_results: list[str], new_queries: list[str]
+    ) -> dict[str, list[str]]:
+        """Generate new queries when the search results are not sufficient to answer the user's initial query.
 
-    def reflect_or_complete(
-        self,
-        search_results: list[str],
-        final_answer: str | None,
-        new_queries: list[str] | None,
-    ) -> str | dict[list[str]]:
-        """Reflect on SEARCH RESULTS selected from previously seen SEARCH RESULTS, and decide whether to complete the task or generate new queries.
-        If the task is completed, return the final answer; otherwise, generate new queries to continue the research. 
-        This function should ALWAYS be called before by the deep research assistant before giving the final answer.
-
-        Do NOT complete the task too early! You should think about new queries, unless one of the following conditions is met:
-            - The initial query can be answered definitively based on the search results.
-            - You have done 6 rounds of search.
+        The agent should reflect on the search results and generate new queries to continue the deep research.
 
         Args:
-            search_results (list[str]): The search results selected from previous SEARCH RESULTS. 
-            IMPORTANT: These MUST be EXACT copies of previously seen SEARCH RESULTS from the 'select_query_and_search' function. 
-            Do NOT modify, summarize, or paraphrase the search results. Copy them word-for-word exactly as they appeared in the SEARCH RESULTS.
-            final_answer (str | None): The final answer if the task is completed, otherwise `None`.
-            new_queries (list[str] | None): The new queries to continue the research if the task is not completed, otherwise `None`.
+            search_results (list[str]): The search results from the web search.
+            new_queries (list[str]): The new queries to be added to the frontier.
 
         Returns:
-            str | dict[list[str]]: If the task is completed, returns the final answer; otherwise, returns the updated frontier including any newly added queries.
+            dict[str, list[str]]: The current frontier after the generating process.
         """
-        if final_answer:
-            logger.info("`Whether to complete`: Completing task")
-            for result in search_results:
-                self.trace_graph.record_process(
-                    result, final_answer, "complete_task"
-                )
-            return final_answer#, search_results
-        elif new_queries:
-            logger.info("`Whether to complete`: Generating new queries based on search results.")
-            for new_query in new_queries:
-                if new_query not in self.explored:
-                    self.frontier.add(new_query)
-                    for result in search_results:
-                        self.trace_graph.record_process(str(result), new_query, "reflect_on_search_results")
-            return {"CURRENT FRONTIER:": list(self.frontier)}
-        else:
-            return "❌ Invalid operation: The task is not completed. Please continue the research with the new queries."
+        self.frontier.update(new_queries)
+        for new_query in new_queries:
+            self.trace_graph.record_process(
+                search_results, new_query, "generate_queries"
+            )
+        return {"frontier": list(self.frontier)}
+
+    def complete_task(
+        self, search_results: list[str], final_answer: str
+    ) -> dict[str, str | list[str]]:
+        """Complete the deep research when search results are sufficient to answer the user's initial query.
+
+        The agent should return the final answer and the search results to terminate the deep research.
+
+        Args:
+            search_results (list[str]): The search results from the web search.
+            final_answer (str): The final answer to the user's initial query.
+
+        Returns:
+            dict[str, str | list[str]]: The final answer and the search results.
+        """
+        return {"answer": final_answer, "search_results": search_results}
 
     def get_tools(self) -> list[FunctionTool]:
-        """Get the tools for the query processing toolkit.
-
-        Note: These tools will not track usage. Use `get_query_specific_tools()`
-        to get tools that track usage in a specific query graph.
-        """
+        """Get the tools for the query processing toolkit."""
         return [
             FunctionTool(self.rewrite_query),
             FunctionTool(self.expand_query),
             FunctionTool(self.select_query_and_search),
-            FunctionTool(self.reflect_or_complete),
+            FunctionTool(self.generate_new_queries),
+            FunctionTool(self.complete_task),
             FunctionTool(ThinkingToolkit().think),
             FunctionTool(ThinkingToolkit().reflect),
         ]
@@ -359,6 +282,7 @@ class QueryProcessingGraph:
         """
         # O(1) lookup for source node ID using the mapping
         source_node_id = self._data_to_node.get(from_data)
+        target_node_id = self._data_to_node.get(to_data)
 
         # If source not found, create it (shouldn't happen in normal usage)
         if source_node_id is None:
@@ -368,10 +292,11 @@ class QueryProcessingGraph:
             self.new_node_id += 1
 
         # Add the target node
-        target_node_id = self.new_node_id
-        self._graph.add_node(target_node_id, data=to_data)
-        self._data_to_node[to_data] = target_node_id
-        self.new_node_id += 1
+        if target_node_id is None:
+            target_node_id = self.new_node_id
+            self._graph.add_node(target_node_id, data=to_data)
+            self._data_to_node[to_data] = target_node_id
+            self.new_node_id += 1
 
         # Add the edge
         self._graph.add_edge(source_node_id, target_node_id, action=action)

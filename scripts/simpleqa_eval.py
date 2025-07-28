@@ -87,7 +87,7 @@ def main(agent_type: str, num_questions: int, start_idx: int):
     scores = []
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
-    output_file = f"results/{agent_type}_simpleqa_startidx_{start_idx}_nquestions_{num_questions}.json"
+    output_file = f"results/{agent_type}_simpleqa_from={start_idx}_to={start_idx+num_questions}.json"
     for i, example in enumerate(
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
@@ -134,5 +134,3 @@ def main(agent_type: str, num_questions: int, start_idx: int):
 
 if __name__ == "__main__":
     main()
-
-# %%

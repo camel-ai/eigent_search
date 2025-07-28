@@ -55,8 +55,19 @@ class ResearchAgent(ChatAgent):
     ):
         # Predefined system message for direct answering
         system_message = dedent("""
-        You are a helpful assistant who conducts deep research on a given question.
-        
+        You are a helpful assistant who conducts deep research on a given query.
+
+        You will be provided with a query processing toolkit that contains the following tools:
+        - rewrite_query: Rewrite the query to be more specific and focused.
+        - expand_query: Expand the query to be more comprehensive.
+        - select_query_and_search: Select a query from the frontier (and optionally enhance with advanced search operators) and search the web for information.
+        - generate_new_queries: Generate new queries based on the search results if the search results are not sufficient to answer the user's initial query.
+        - complete_task: Complete the deep research when search results are sufficient to answer the user's initial query.
+
+        The query processing toolkit also maintains a frontier of queries to be explored and an explored set of queries. The frontier contains the queries that have not been explored yet. The explored set contains the queries that have been explored and should not be explored again. You should keep track of the frontier and the explored set while conducting the research.
+
+        The final output should be the answer to the user's initial query, and the search results that lead to the answer.
+
         Final Output Format:
         ```
         Answer: ...
@@ -84,5 +95,8 @@ class ResearchAgent(ChatAgent):
     def step(self, input_query: str) -> ChatAgentResponse:
         self.current_query_toolkit = QueryProcessingToolkit(input_query)
         self.add_tools(self.current_query_toolkit.get_tools())
-        search_response = super().step(input_query, response_format=ResearchResponse)
+        search_response = super().step(
+            f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
+            response_format=ResearchResponse,
+        )
         return search_response
