@@ -190,9 +190,10 @@ class QueryProcessingToolkit(BaseToolkit):
 
         # Modify the frontier and explored set after the search
         self.explored.add(query)
-        self.explored.add(final_query)
         self.frontier.remove(query)
-        self.frontier.remove(final_query)
+        if final_query != query:
+            self.explored.add(final_query)
+            self.frontier.remove(final_query)
 
         return {"search_results": [str(result) for result in search_results]}
 
