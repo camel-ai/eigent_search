@@ -176,13 +176,56 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             dict[str, list[str]]: The search results from the web search.
         """
-        # Add the new query to the frontier if it has passed the frontier and explored validation
-        self.frontier.add(final_query)
 
         # NOTE: prevent searching huggingface website to avoid answer leakage
         search_results = self.search_tool(final_query + " -site:huggingface.co")
         self.search_counter += 1
         self.trace_graph.record_process(query, final_query, "enhance_query_for_search")
+
+        # If search on the final query returns an error, handle it gracefully
+        if "error" in search_results[0]:
+            error_message = search_results[0]["error"]
+            self.explored.add(final_query)
+
+            # Fall back to the original query, if enhanced query is different from the original query
+            if final_query != query:
+                self.explored.add(final_query)
+                logger.info(
+                    f"[select_query_and_search] No valid search results found for the enhanced query: {final_query}. Falling back with the original query: {query}."
+                )
+                search_results_orig = self.search_tool(query + " -site:huggingface.co")
+                self.search_counter += 1
+                self.trace_graph.record_process(
+                    query, query, "enhance_query_for_search"
+                )
+
+                if "error" in search_results_orig[0]:
+                    error_message_orig = search_results_orig[0]["error"]
+                    logger.error(
+                        f"[select_query_and_search] Error searching original query: {query}. Error message from search tool:{error_message_orig}"
+                    )
+                    self.explored.add(query)
+                    self.frontier.remove(query)
+                    return {"None": error_message_orig}
+
+                for result_orig in search_results_orig:
+                    self.trace_graph.record_process(
+                        query, str(result_orig["url"]), "search_google"
+                    )
+
+                self.explored.add(query)
+                self.frontier.remove(query)
+                return {
+                    "search_results": [str(result) for result in search_results_orig]
+                }
+
+            # If the final query is the same as the original query, return an error message
+            else:
+                logger.error(
+                    f"[select_query_and_search] Error searching both enhanced and original query: {query}. Error message from search tool: {error_message}"
+                )
+                return {"None": error_message}
+
         for result in search_results:
             if "url" in result:
                 self.trace_graph.record_process(
@@ -196,7 +239,6 @@ class QueryProcessingToolkit(BaseToolkit):
         self.frontier.remove(query)
         if final_query != query:
             self.explored.add(final_query)
-            self.frontier.remove(final_query)
 
         return {"search_results": [str(result) for result in search_results]}
 
