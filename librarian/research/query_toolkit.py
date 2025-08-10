@@ -162,7 +162,7 @@ class QueryProcessingToolkit(BaseToolkit):
     @validate_output_query_not_explored
     def select_query_and_search(
         self, query: str, enhanced_query: str
-    ) -> dict[str, list[str]]:
+    ) -> dict[str, dict[str, str]]:
         """Select the best query from the current frontier and perform web search.
 
         The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search. Then, OPTIONALLY add advanced search operators (AND, OR, NOT, quotes, site:, filetype:, etc.) to improve search precision and relevance. Finally, perform an actual web search using the enhanced query first, and fall back to the original query if the enhanced query fails.
@@ -174,7 +174,7 @@ class QueryProcessingToolkit(BaseToolkit):
             enhanced_query (str): The enhanced query with optional advanced search operators added to the selected query that will be used for searching the web. If the enhanced query leads to an error in search, search results of the original query will be returned.
 
         Returns:
-            dict[str, list[str]]: The search results from the web search.
+            dict[str, dict[str, str]]: The search results from the web search. The key is the URL and the value is the string of the title, description, and long description of the result.
         """
         # Record enhancement and add to frontier if needed
         if enhanced_query != query:
@@ -198,39 +198,35 @@ class QueryProcessingToolkit(BaseToolkit):
         def search_and_record(query_str: str, action: str = "search_google"):
             results = self.search_tool(query_str + " -site:huggingface.co")
             self.search_counter += 1
-
-            # Record results in trace graph
-            if results and len(results) > 0 and "error" in results[0]:
-                self.trace_graph.record_process(query_str, results[0]["error"], action)
-            else:
-                for result in results:
-                    self.trace_graph.record_process(
-                        query_str, str(result["url"]), action
-                    )
-            return results
-
-        # If queries are identical, just search once
-        if enhanced_query == query:
-            results = search_and_record(query)
+            # Check if search has returned anything valid
             if "error" in results[0]:
-                return {"search_results": "Search failed. Please try other candidates."}
-            return {"search_results": [str(r) for r in results]}
+                self.trace_graph.record_process(query_str, results[0]["error"], action)
+                return {"None": results[0]["error"]}
+            # linearize valid search results to dictionary of strings
+            results: dict[str, str] = {
+                result["url"]: (
+                    f"Title: {result['title']}\n"
+                    f"Description: {result['description']}\n"
+                    f"Long Description: {result['long_description']}"
+                )
+                for result in results
+            }
+            # Record results in trace graph
+            for url in results.keys():
+                self.trace_graph.record_process(query_str, url, action)
+            return results
 
         # Try enhanced query first
         enhanced_results = search_and_record(enhanced_query)
-        if "error" not in enhanced_results[0]:
-            return {"search_results": [str(r) for r in enhanced_results]}
-
-        # Fall back to original query
-        self.trace_graph.record_process(enhanced_query, query, "query_fallback")
-        original_results = search_and_record(query)
-        if "error" in original_results[0]:
-            return {
-                "search_results": "Both original and enhanced queries failed. Please try other candidates."
-            }
-
-        # Return results from original query
-        return {"search_results": [str(r) for r in original_results]}
+        if "None" not in enhanced_results:
+            return {"search_results": enhanced_results}
+        else:
+            if query != enhanced_query:
+                # Fall back to original query
+                self.trace_graph.record_process(enhanced_query, query, "query_fallback")
+                return {"search_results": search_and_record(query)}
+            else:
+                return {"search_results": enhanced_results}
 
     def _extract_urls_from_search_results(
         self, search_results: list[str]
