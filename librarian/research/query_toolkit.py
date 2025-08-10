@@ -176,34 +176,195 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             dict[str, list[str]]: The search results from the web search.
         """
-        # Add the new query to the frontier if it has passed the frontier and explored validation
-        self.frontier.add(final_query)
 
         # NOTE: prevent searching huggingface website to avoid answer leakage
         search_results = self.search_tool(final_query + " -site:huggingface.co")
         self.search_counter += 1
         self.trace_graph.record_process(query, final_query, "enhance_query_for_search")
+
+        # If search on the final query returns an error, handle it gracefully
+        if "error" in search_results[0]:
+            error_message = search_results[0]["error"]
+            self.explored.add(final_query)
+
+            # Fall back to the original query, if enhanced query is different from the original query
+            if final_query != query:
+                self.explored.add(final_query)
+                logger.info(
+                    f"[select_query_and_search] No valid search results found for the enhanced query: {final_query}. Falling back with the original query: {query}."
+                )
+                search_results_orig = self.search_tool(query + " -site:huggingface.co")
+                self.search_counter += 1
+                self.trace_graph.record_process(
+                    query, query, "enhance_query_for_search"
+                )
+
+                if "error" in search_results_orig[0]:
+                    error_message_orig = search_results_orig[0]["error"]
+                    logger.error(
+                        f"[select_query_and_search] Error searching original query: {query}. Error message from search tool:{error_message_orig}"
+                    )
+                    self.explored.add(query)
+                    self.frontier.remove(query)
+                    return {"None": error_message_orig}
+
+                for result_orig in search_results_orig:
+                    self.trace_graph.record_process(
+                        query, str(result_orig["url"]), "search_google"
+                    )
+
+                self.explored.add(query)
+                self.frontier.remove(query)
+                return {
+                    "search_results": [str(result) for result in search_results_orig]
+                }
+
+            # If the final query is the same as the original query, return an error message
+            else:
+                logger.error(
+                    f"[select_query_and_search] Error searching both enhanced and original query: {query}. Error message from search tool: {error_message}"
+                )
+                return {"None": error_message}
+
         for result in search_results:
-            self.trace_graph.record_process(
-                final_query, str(result["url"]), "search_google"
-            )
+            if "url" in result:
+                self.trace_graph.record_process(
+                    final_query, str(result["url"]), "search_google"
+                )
+            else:
+                logger.warning(f"Unexpected search result:{str(result)}")
 
         # Modify the frontier and explored set after the search
         self.explored.add(query)
         self.frontier.remove(query)
         if final_query != query:
             self.explored.add(final_query)
-            self.frontier.remove(final_query)
 
         return {"search_results": [str(result) for result in search_results]}
+
+    def _extract_urls_from_search_results(
+        self, search_results: list[str]
+    ) -> list[str] | str:
+        """Extract URLs from the search results formatted as JSON strings.
+
+        Args:
+            search_results (list[str]): The search results from the web search, each formatted as a JSON string.
+
+        Returns:
+            list[str] | str: A list of URLs extracted from the search results, or an error message string.
+        """
+        import ast
+
+        # Extract URLs from search results
+        urls = []
+        for i, result_str in enumerate(search_results, 1):
+            # 1) Check if result_str is JSON-like format
+            json_validation_error = self._validate_json_format(result_str, i)
+            if json_validation_error:
+                logger.error(json_validation_error)
+                return json_validation_error
+
+            try:
+                # Parse the string representation of the dictionary
+                result_dict = ast.literal_eval(result_str)
+
+                # Validate it's actually a dictionary
+                if not isinstance(result_dict, dict):
+                    error_message = f"ERROR: Search result {i} parsed successfully but is not a dictionary. Got {type(result_dict).__name__}: {str(result_dict)[:100]}..."
+                    logger.error(error_message)
+                    return error_message
+
+                # 2) Check if 'url' field is present in the search result
+                if "url" not in result_dict:
+                    available_keys = list(result_dict.keys())
+                    error_message = f"ERROR: Search result {i} is missing required 'url' field. Available fields: {available_keys}. Content: {str(result_dict)[:200]}..."
+                    logger.error(error_message)
+                    return error_message
+
+                # Validate URL value
+                url_value = result_dict["url"]
+                if not isinstance(url_value, str) or not url_value.strip():
+                    error_message = f"ERROR: Search result {i} has invalid 'url' field. Expected non-empty string, got {type(url_value).__name__}: '{url_value}'"
+                    logger.error(error_message)
+                    return error_message
+
+                # URL looks good, add it to the list
+                urls.append(url_value.strip())
+
+            except (ValueError, SyntaxError) as e:
+                # Parsing failed after JSON format validation
+                error_message = f"ERROR: Search result {i} failed to parse despite passing JSON validation. Parse error: {str(e)[:100]}... Original: {result_str[:200]}..."
+                logger.error(error_message)
+                return error_message
+
+        # Success - return the extracted URLs
+        return urls
+
+    def _validate_json_format(self, result_str: str, result_num: int) -> str | None:
+        """Validate that a result string looks like JSON format.
+
+        Args:
+            result_str: The string to validate
+            result_num: The result number for error messages
+
+        Returns:
+            str | None: Error message if invalid, None if valid
+        """
+        # Check basic type and content
+        if not isinstance(result_str, str):
+            return f"ERROR: Search result {result_num} must be a string, got {type(result_str).__name__}: {result_str}"
+
+        if not result_str or not result_str.strip():
+            return f"ERROR: Search result {result_num} is empty or whitespace-only"
+
+        result_str = result_str.strip()
+
+        # Must look like a dictionary (starts with { and ends with })
+        if not (result_str.startswith("{") and result_str.endswith("}")):
+            return f"ERROR: Search result {result_num} is not in dictionary format. Expected format: {{'key': 'value', ...}}. Got: {result_str[:100]}..."
+
+        # Check for basic JSON structure patterns
+        import re
+
+        # Should contain key-value patterns
+        if not re.search(r'["\'][\w\s_-]+["\']:\s*["\']', result_str):
+            return f"ERROR: Search result {result_num} does not contain valid key-value pairs. Expected format like 'key': 'value'. Got: {result_str[:100]}..."
+
+        # Check for balanced braces (basic check)
+        open_braces = result_str.count("{")
+        close_braces = result_str.count("}")
+        if open_braces != close_braces:
+            return f"ERROR: Search result {result_num} has unbalanced braces. Found {open_braces} opening '{{' and {close_braces} closing '}}'. Content: {result_str[:200]}..."
+
+        # Check for the problematic repeated bracket pattern
+        if re.search(r"(\}|\]){3,}", result_str):
+            return f"ERROR: Search result {result_num} contains repeated closing brackets/braces (like }}}}}} or ]]]]]). This indicates malformed JSON. Content: {result_str[:200]}..."
+
+        # Check for required field patterns (should contain 'url' somewhere)
+        if "'url'" not in result_str and '"url"' not in result_str:
+            return f"ERROR: Search result {result_num} does not appear to contain a 'url' field. Expected search results should have 'url' field. Content: {result_str[:200]}..."
+
+        # Looks valid
+        return None
 
     @validate_output_query_not_explored
     def generate_new_queries(
         self, search_results: list[str], new_queries: list[str]
-    ) -> dict[str, list[str]]:
+    ) -> dict[str, list[str]] | str:
         """Generate new queries when the search results are not sufficient to answer the user's initial query.
 
         The agent should reflect on the search results and generate new queries to continue the deep research.
+
+        The search_results should be formatted as strings representing JSON objects following the Google Search API schema. Do not make up search results, only use previously seen search results.
+        Each search result must contain these fields:
+        - result_id: Unique identifier (integer)
+        - title: Title of the web page or document (string)
+        - description: Brief description or snippet from the content (string)
+        - long_description: Extended description, may be 'N/A' if not available (string)
+        - url: Web address of the source (string)
+
+        Example search result format:
+        "{'result_id': 5, 'title': 'CIS Awards - IEEE Computational Intelligence Society', 'description': 'Prize items include a bronze medal, certificate and honorarium. View past IEEE Frank Rosenblatt Award Recipients (PDF) ... 2010 to 2021. He was a \"Finland\\xa0...', 'long_description': 'N/A', 'url': 'https://cis.ieee.org/awards/13-cis-awards'}"
 
         Args:
             search_results (list[str]): The search results from the web search.
@@ -212,27 +373,52 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             dict[str, list[str]]: The current frontier after the generating process.
         """
+
+        urls = self._extract_urls_from_search_results(search_results)
+        # Check if urls is a string (error message)
+        if isinstance(urls, str):
+            return urls  # Return the error message directly
+
         self.frontier.update(new_queries)
-        for new_query in new_queries:
-            self.trace_graph.record_process(
-                search_results, new_query, "generate_queries"
-            )
+        for url in urls:
+            for new_query in new_queries:
+                self.trace_graph.record_process(str(url), new_query, "generate_queries")
         return {"frontier": list(self.frontier)}
 
     def complete_task(
         self, search_results: list[str], final_answer: str
-    ) -> dict[str, str | list[str]]:
+    ) -> dict[str, str | list[str]] | str:
         """Complete the deep research when search results are sufficient to answer the user's initial query.
 
         The agent should return the final answer and the search results to terminate the deep research.
 
+        The search_results should be formatted as strings representing JSON objects following the Google Search API schema. Do not make up search results, only use previously seen search results.
+        Each search result must contain these fields:
+        - result_id: Unique identifier (integer)
+        - title: Title of the web page or document (string)
+        - description: Brief description or snippet from the content (string)
+        - long_description: Extended description, may be 'N/A' if not available (string)
+        - url: Web address of the source (string)
+
+        Example search result format
+        "{'result_id': 5, 'title': 'CIS Awards - IEEE Computational Intelligence Society', 'description': 'Prize items include a bronze medal, certificate and honorarium. View past IEEE Frank Rosenblatt Award Recipients (PDF) ... 2010 to 2021. He was a \"Finland\\xa0...', 'long_description': 'N/A', 'url': 'https://cis.ieee.org/awards/13-cis-awards'}"
+
         Args:
-            search_results (list[str]): The search results from the web search.
+            search_results (list[str]): The search results from web search, each formatted as a JSON string with the above schema.
             final_answer (str): The final answer to the user's initial query.
 
         Returns:
             dict[str, str | list[str]]: The final answer and the search results.
         """
+
+        urls = self._extract_urls_from_search_results(search_results)
+        # Check if urls is a string (error message)
+        if isinstance(urls, str):
+            return urls  # Return the error message directly
+
+        for url in urls:
+            self.trace_graph.record_process(str(url), final_answer, "complete_task")
+
         return {"answer": final_answer, "search_results": search_results}
 
     def get_tools(self) -> list[FunctionTool]:
@@ -355,16 +541,18 @@ class QueryProcessingGraph:
                 prefix = "└─" if is_last else "├─"
                 lines.append(f"{indent}{prefix}[{edge_data}]─>\n")
 
-                # Recursively render successor
+                # Handle cycles and already visited nodes differently
                 if successor not in visited:
                     child_indent = indent + ("    " if is_last else "│   ")
                     lines.extend(
                         render_component(graph, successor, visited, child_indent)
                     )
                 else:
-                    # Handle cycles
+                    # Show what we're cycling back to
+                    successor_data = graph.nodes[successor].get("data", "")
+                    formatted_successor = format_data(successor_data)
                     lines.append(
-                        f"{indent}{'    ' if is_last else '│   '}... (cycle detected)\n"
+                        f"{indent}{'    ' if is_last else '│   '}↺ {successor}: {formatted_successor} (back reference)\n"
                     )
 
             return lines
