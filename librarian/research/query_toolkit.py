@@ -161,86 +161,76 @@ class QueryProcessingToolkit(BaseToolkit):
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
     def select_query_and_search(
-        self, query: str, final_query: str
+        self, query: str, enhanced_query: str
     ) -> dict[str, list[str]]:
         """Select the best query from the current frontier and perform web search.
 
-        The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search. Then, OPTIONALLY add advanced search operators (AND, OR, NOT, quotes, site:, filetype:, etc.) to improve search precision and relevance. Finally, perform an actual web search using the final query and return the results. The agent should return the search results as a list of strings.
+        The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search. Then, OPTIONALLY add advanced search operators (AND, OR, NOT, quotes, site:, filetype:, etc.) to improve search precision and relevance. Finally, perform an actual web search using the enhanced query first, and fall back to the original query if the enhanced query fails.
 
         If the search results are not sufficient to answer the user's initial query, the agent should process and select another query from the current frontier and perform web search again, or generate new queries based on the search results.
 
         Args:
             query (str): The input query from the current frontier that is selected for web search.
-            final_query (str): The final query with optional advanced search operators added to the selected query that will be used for searching the web.
+            enhanced_query (str): The enhanced query with optional advanced search operators added to the selected query that will be used for searching the web. If the enhanced query leads to an error in search, search results of the original query will be returned.
 
         Returns:
             dict[str, list[str]]: The search results from the web search.
         """
+        # Record enhancement and add to frontier if needed
+        if enhanced_query != query:
+            self.trace_graph.record_process(
+                query, enhanced_query, "enhance_query_for_search"
+            )
+            self.frontier.add(enhanced_query)
+        else:
+            # If queries are identical, no need to search twice
+            logger.info(
+                "[select_query_and_search] Query and enhanced query are identical, performing single search"
+            )
 
-        # NOTE: prevent searching huggingface website to avoid answer leakage
-        search_results = self.search_tool(final_query + " -site:huggingface.co")
-        self.search_counter += 1
-        self.trace_graph.record_process(query, final_query, "enhance_query_for_search")
+        # Update frontier and explored sets; the search will be conducted anyway
+        for q in [enhanced_query, query]:
+            if q in self.frontier:
+                self.explored.add(q)
+                self.frontier.remove(q)
 
-        # If search on the final query returns an error, handle it gracefully
-        if "error" in search_results[0]:
-            error_message = search_results[0]["error"]
-            self.explored.add(final_query)
+        # Helper function to perform search and handle results
+        def search_and_record(query_str: str, action: str = "search_google"):
+            results = self.search_tool(query_str + " -site:huggingface.co")
+            self.search_counter += 1
 
-            # Fall back to the original query, if enhanced query is different from the original query
-            if final_query != query:
-                self.explored.add(final_query)
-                logger.info(
-                    f"[select_query_and_search] No valid search results found for the enhanced query: {final_query}. Falling back with the original query: {query}."
-                )
-                search_results_orig = self.search_tool(query + " -site:huggingface.co")
-                self.search_counter += 1
-                self.trace_graph.record_process(
-                    query, query, "enhance_query_for_search"
-                )
-
-                if "error" in search_results_orig[0]:
-                    error_message_orig = search_results_orig[0]["error"]
-                    logger.error(
-                        f"[select_query_and_search] Error searching original query: {query}. Error message from search tool:{error_message_orig}"
-                    )
-                    self.explored.add(query)
-                    self.frontier.remove(query)
-                    return {"None": error_message_orig}
-
-                for result_orig in search_results_orig:
+            # Record results in trace graph
+            if results and len(results) > 0 and "error" in results[0]:
+                self.trace_graph.record_process(query_str, results[0]["error"], action)
+            else:
+                for result in results:
                     self.trace_graph.record_process(
-                        query, str(result_orig["url"]), "search_google"
+                        query_str, str(result["url"]), action
                     )
+            return results
 
-                self.explored.add(query)
-                self.frontier.remove(query)
-                return {
-                    "search_results": [str(result) for result in search_results_orig]
-                }
+        # If queries are identical, just search once
+        if enhanced_query == query:
+            results = search_and_record(query)
+            if "error" in results[0]:
+                return {"search_results": "Search failed. Please try other candidates."}
+            return {"search_results": [str(r) for r in results]}
 
-            # If the final query is the same as the original query, return an error message
-            else:
-                logger.error(
-                    f"[select_query_and_search] Error searching both enhanced and original query: {query}. Error message from search tool: {error_message}"
-                )
-                return {"None": error_message}
+        # Try enhanced query first
+        enhanced_results = search_and_record(enhanced_query)
+        if "error" not in enhanced_results[0]:
+            return {"search_results": [str(r) for r in enhanced_results]}
 
-        for result in search_results:
-            if "url" in result:
-                self.trace_graph.record_process(
-                    final_query, str(result["url"]), "search_google"
-                )
-            else:
-                logger.warning(f"Unexpected search result:{str(result)}")
+        # Fall back to original query
+        self.trace_graph.record_process(enhanced_query, query, "query_fallback")
+        original_results = search_and_record(query)
+        if "error" in original_results[0]:
+            return {
+                "search_results": "Both original and enhanced queries failed. Please try other candidates."
+            }
 
-        # Modify the frontier and explored set after the search
-        self.explored.add(query)
-        self.frontier.remove(query)
-        if final_query != query:
-            self.explored.add(final_query)
-
-        return {"search_results": [str(result) for result in search_results]}
+        # Return results from original query
+        return {"search_results": [str(r) for r in original_results]}
 
     def _extract_urls_from_search_results(
         self, search_results: list[str]
