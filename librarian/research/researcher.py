@@ -63,6 +63,7 @@ class ResearchAgent(ChatAgent):
         - select_query_and_search: Select a query from the frontier (and optionally enhance with advanced search operators) and search the web for information.
         - generate_new_queries: Generate new queries based on the search results if the search results are not sufficient to answer the user's initial query.
         - complete_task: Complete the deep research when search results are sufficient to answer the user's initial query.
+        - reflect: Reflect on explored queries and current search results, and think about what we should do next to better resolve the initial query. Use this tool whenever possible, to reflect explicitly.
 
         The query processing toolkit also maintains a frontier of queries to be explored and an explored set of queries. The frontier contains the queries that have not been explored yet. The explored set contains the queries that have been explored and should not be explored again. You should keep track of the frontier and the explored set while conducting the research.
 

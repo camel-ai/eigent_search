@@ -17,8 +17,8 @@ from __future__ import annotations
 import networkx as nx
 import logging
 from functools import wraps
-
-from camel.toolkits import FunctionTool, BaseToolkit, SearchToolkit, ThinkingToolkit
+from typing import Optional
+from camel.toolkits import FunctionTool, BaseToolkit, SearchToolkit
 
 logger = logging.getLogger(__name__)
 
@@ -230,7 +230,7 @@ class QueryProcessingToolkit(BaseToolkit):
 
     @validate_output_query_not_explored
     def generate_new_queries(
-        self, search_results: dict[str, str], new_queries: list[str]
+        self, search_results: Optional[dict[str, str]], new_queries: list[str]
     ) -> dict[str, list[str]] | str:
         """Generate new queries when the search results are not sufficient to answer the user's initial query.
 
@@ -253,7 +253,7 @@ class QueryProcessingToolkit(BaseToolkit):
         return {"frontier": list(self.frontier)}
 
     def complete_task(
-        self, search_results: dict[str, str], final_answer: str
+        self, search_results: Optional[dict[str, str]], final_answer: str
     ) -> dict[str, str | list[str]] | str:
         """Complete the deep research when search results are sufficient to answer the user's initial query.
 
@@ -282,9 +282,30 @@ class QueryProcessingToolkit(BaseToolkit):
             FunctionTool(self.select_query_and_search),
             FunctionTool(self.generate_new_queries),
             FunctionTool(self.complete_task),
-            FunctionTool(ThinkingToolkit().think),
-            FunctionTool(ThinkingToolkit().reflect),
+            # FunctionTool(ThinkingToolkit().think),
+            FunctionTool(self.reflect),
         ]
+
+    def reflect(self, reflection: str) -> str:
+        """Reflect on explored queries and current search results, and think about what we should do next to better resolve the initial query.
+
+        Use this tool whenever possible, to reflect explicitly.
+
+        Args:
+            reflection (str): A comprehensive reflection on the process.
+
+        Returns:
+            str: The recorded reflection.
+        """
+        try:
+            logger.info(f"Reflection: {reflection}")
+            self.trace_graph.record_process("reflection", reflection, "reflection")
+            return f"Reflection: {reflection}"
+
+        except Exception as e:
+            error_msg = f"Error recording reflection: {e}"
+            logger.error(error_msg)
+            return error_msg
 
 
 class QueryProcessingGraph:
