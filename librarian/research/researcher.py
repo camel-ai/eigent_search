@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from textwrap import dedent
 from pydantic import BaseModel, Field
 from camel.models import BaseModelBackend
@@ -23,6 +24,7 @@ from camel.responses import ChatAgentResponse
 from camel.agents.chat_agent import ChatAgent
 
 from .query_toolkit import QueryProcessingToolkit
+from .custom_browsing_toolkit import get_custom_browsing_toolkit
 
 # AgentOps decorator setting
 try:
@@ -92,10 +94,26 @@ class ResearchAgent(ChatAgent):
         )
         self.current_query_toolkit = None
 
-    def step(self, input_query: str) -> ChatAgentResponse:
+    def step(self, input_query: str, browsing: bool = False) -> ChatAgentResponse:
+        if browsing:
+            # Use async version for browsing
+            return asyncio.run(self.astep(input_query, browsing=browsing))
+        else:
+            # Use sync version for non-browsing
+            self.current_query_toolkit = QueryProcessingToolkit(input_query)
+            self.add_tools(self.current_query_toolkit.get_tools())
+            search_response = super().step(
+                f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
+                response_format=ResearchResponse,
+            )
+            return search_response
+
+    async def astep(self, input_query: str, browsing: bool = False) -> ChatAgentResponse:
         self.current_query_toolkit = QueryProcessingToolkit(input_query)
         self.add_tools(self.current_query_toolkit.get_tools())
-        search_response = super().step(
+        if browsing:
+            self.add_tools(get_custom_browsing_toolkit().get_tools())
+        search_response = await super().astep(
             f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
             response_format=ResearchResponse,
         )

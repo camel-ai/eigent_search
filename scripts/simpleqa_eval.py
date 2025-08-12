@@ -60,7 +60,8 @@ logger = logging.getLogger(__name__)
 @click.option("--agent_type", "-a", type=click.Choice(AGENTS.keys()), required=True)
 @click.option("--num_questions", "-n", type=int, default=5)
 @click.option("--start_idx", "-s", type=int, default=0, help="Start index for the test samples.")
-def main(agent_type: str, num_questions: int, start_idx: int):
+@click.option("--browsing", "-b", is_flag=True, default=False, help="Enable browsing capabilities for research agent.")
+def main(agent_type: str, num_questions: int, start_idx: int, browsing: bool):
     # setup the agent for evaluation
     load_dotenv()  # load the openai key from .env
     model = ModelFactory.create(
@@ -87,12 +88,19 @@ def main(agent_type: str, num_questions: int, start_idx: int):
     scores = []
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
-    output_file = f"results/{agent_type}_simpleqa_from={start_idx}_to={start_idx+num_questions}.json"
+    # Include browsing in filename if enabled
+    browsing_suffix = "_browsing" if browsing and agent_type == "research" else ""
+    output_file = f"results/{agent_type}{browsing_suffix}_simpleqa_from={start_idx}_to={start_idx+num_questions}.json"
     for i, example in enumerate(
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
         
-        response = agent.step(f"{example['problem']}" )
+        # Prepare step arguments based on agent type
+        step_kwargs = {}
+        if agent_type == "research":
+            step_kwargs["browsing"] = browsing
+            
+        response = agent.step(f"{example['problem']}", **step_kwargs)
         response = eval(response.msgs[0].content)
         eval_request = evaluator.create_request(
             problem=example["problem"],

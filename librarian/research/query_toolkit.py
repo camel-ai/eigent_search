@@ -230,7 +230,7 @@ class QueryProcessingToolkit(BaseToolkit):
 
     @validate_output_query_not_explored
     def generate_new_queries(
-        self, search_results: dict[str, str], new_queries: list[str]
+        self, search_results: dict[str, str] | None, new_queries: list[str]
     ) -> dict[str, list[str]] | str:
         """Generate new queries when the search results are not sufficient to answer the user's initial query.
 
@@ -253,7 +253,7 @@ class QueryProcessingToolkit(BaseToolkit):
         return {"frontier": list(self.frontier)}
 
     def complete_task(
-        self, search_results: dict[str, str], final_answer: str
+        self, search_results: dict[str, str] | None, final_answer: str
     ) -> dict[str, str | list[str]] | str:
         """Complete the deep research when search results are sufficient to answer the user's initial query.
 
