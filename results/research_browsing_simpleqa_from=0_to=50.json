@@ -1,0 +1,654 @@
+[
+    {
+        "problem": "Who received the IEEE Frank Rosenblatt Award in 2010?",
+        "answer": "Michio Sugeno",
+        "response": {
+            "answer": "The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award",
+                "https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf",
+                "https://ieeexplore.ieee.org/author/37271220500"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "Who was awarded the Oceanography Society's Jerlov Award in 2018?",
+        "answer": "Annick Bricaud",
+        "response": {
+            "answer": "Dr. Annick Bricaud was awarded the Oceanography Society's Jerlov Award in 2018.",
+            "search_results": [
+                "https://2018.oceanopticsconference.org/jerlov-award/ - The Oceanography Society is pleased to announce that Dr. Annick Bricaud has been selected as the 2018 recipient of The Nils Gunnar Jerlov Award.",
+                "https://www.photonics.com/Articles/2018_Jerlov_Award_Recognizes_Optical_Oceanographer/a64036 - Annick Bricaud has been selected by the Oceanography Society as the 2018 recipient of the Jerlov Award.",
+                "https://2022.oceanopticsconference.org/jerlov-award/ - Previous Recipients include 2018 \u2013 Annick Bricaud for the Jerlov Award.",
+                "https://en.wikipedia.org/wiki/The_Oceanography_Society - The Oceanography Society awards the Jerlov Award, with 2018 recipient Annick Bricaud.",
+                "http://www.greenedgeproject.info/news.php - The Oceanography Society announced Dr. Annick Bricaud as the 2018 recipient of The Nils Gunnar Jerlov Award."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
+        "answer": "Radcliffe College",
+        "response": {
+            "answer": "The name of the women's liberal arts college in Cambridge, Massachusetts, is Radcliffe College.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Radcliffe_College: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, that was founded in 1879. In 1999, it was fully incorporated into Harvard ...",
+                "https://www.c-span.org/organization/radcliffe-college/26971/: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, and functioned as a female coordinate institution for the all-male Harvard ...",
+                "https://www.independent.com/obits/2023/06/15/nancy-claybrook-carlson/: After high school, she enrolled at Radcliffe College, a women's liberal arts college in Cambridge, Massachusetts, and there began a course of ..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In whose honor was the Leipzig 1877 tournament organized?",
+        "answer": "Adolf Anderssen",
+        "response": {
+            "answer": "The Leipzig 1877 tournament was organized in honor of Adolf Anderssen.",
+            "search_results": [
+                "https://www.chessgames.com/perl/chess.pl?tid=79429: Title: 3rd MSB Congress, Leipzig (1877) chess event. Description: The Leipzig 1877 event (organized by the Mitteldeutscher Schachbund) was called the Anderssen-Feier and held in honor of Adolf Anderssen.",
+                "https://en.wikipedia.org/wiki/Adolf_Anderssen: Title: Adolf Anderssen - Wikipedia. Description: The Leipzig 1877 tournament was organised in his honour and named the ...",
+                "https://kids.kiddle.co/Adolf_Anderssen: Title: Adolf Anderssen Facts for Kids. Description: The Leipzig 1877 tournament was held to honor Anderssen. It was ... This tournament honored Anderssen's 50th anniversary of learning chess.",
+                "https://en.chessbase.com/post/an-adolf-anderssen-anniversary: Title: An Adolf Anderssen anniversary | ChessBase. Description: The German Chess Federation was founded on the evening of July 18th, 1877 during the \"Anderssen Celebration\" in Leipzig."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
+        "answer": "Poet Henrich Heine.",
+        "response": {
+            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture, made for her villa Achilleion at Corfu, depicted Achilles.",
+            "search_results": [
+                "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3: Title: Repository evaluations - pvduy/simpleqa | Datasets at Oxen.ai\nDescription: Mar 18, 2025 ... According to Karl K\u00fcchler, Empress Elizabeth of Austria's (Sisi's) favorite sculpture at her villa Achilleion at Corfu depicted Achilles ...\nLong Description: Contribute to the pvduy/simpleqa repository by creating an account on Oxen.ai"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's death ordered to pay her son?",
+        "answer": "120,000",
+        "response": {
+            "answer": "The surgeon held responsible for Stella Obasanjo's death was ordered to pay 120,000 euros to her son.",
+            "search_results": [
+                "https://www.vanguardngr.com/2009/09/stella-obasanjos-killer-doctor-jailed/ - Stella Obasanjo's killer doctor jailed - Vanguard News: He was also fined 120,000 euros which he has to pay to Olumuyiwa Obasanjo, son of the late Stella.",
+                "https://topnews.in/doctor-given-jail-time-death-nigerian-first-lady-2216984 - Doctor given jail time for death of Nigerian first lady | TopNews: The surgeon will have to pay 120,000 euros (177,000 dollars) in damages to Stella Obasanjo's son and insurance company.",
+                "https://www.nairaland.com/326876/stella-obasanjos-killer-doctor-jailed - Stella Obasanjo's Killer Doctor Jailed - Politics - Nigeria: He was also fined 120,000 euros which he has to pay to Olumuyiwa Obasanjo, son of the late Stella.",
+                "https://www.stelladimokokorkus.com/2024/04/sad-story-of-how-nigerias-1st-lady.html - Sad Story Of How Nigeria's 1st Lady Stella Obasanjo Died Before ...: pay \u000120,000 (approximately US$176,000) in compensation to Stella Obasanjo's son."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What were the month and year when Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\"?",
+        "answer": "January 2008",
+        "response": {
+            "answer": "Barack Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\" in January 2008.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Barack_Obama: Title: Barack Obama - Wikipedia Description: ... I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ ... Christianity Today. Archived from the ...",
+                "https://geniuses.club/genius/barack-obama: Title: Barack Obama - Geniuses Description: In January 2008, Obama told Christianity ... I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ ...",
+                "https://houseofcards.fandom.com/wiki/Barack_Obama: Title: Barack Obama | House of Cards Wiki | Fandom Description: In January 2008, Obama told Christianity ... I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ ..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?",
+        "answer": "Fakhruddin Ali Ahmed",
+        "response": {
+            "answer": "Mirza Hameedullah Beg was appointed as the Chief Justice of India in 1977 by the government of Prime Minister Indira Gandhi.",
+            "search_results": [
+                "Mirza Hameedullah Beg (M. H. Beg) (22 February 1913 \t6 19 November 1988) was the 15th Chief Justice of India, serving from January 1977 to February 1978.",
+                "Justice Mirza Hameedullah Beg, M.A. (Cantab), Barrister-at-Law; Born at ... Appointed as Chief Justice of India on 29.01.1977. Retired on 21.02.1978\u0000...",
+                "In 1973, Justice A. N. Ray was appointed, superseding three senior judges, and in 1977 when Justice Mirza Hameedullah Beg was appointed as Chief Justice,\u0000...",
+                "The Chief Justice and other judges of the Supreme Court are appointed by the President of India. There are currently 31 judges (including the chief justice of\u0000...",
+                "Gandhi Govt appts as Chief Justice of Sup Ct Mirza Hameedullah Beg, who was 2d in seniority on ct, pointedly skipping over sr Justice H R Khanna, whose defense of right of habeas corpus in Apr '76 made him hero of opposition; Sup Ct Bar Assn scores move; opposition Janta Party condemns Govt action; Khanna reptdly resigns from ct in protest; ct vacancy was created because current Chief Justice A N Ray will be 65 on Jan 29, mandatory retirement age; in conciliatory gesture toward opposition, Gandhi meets 7 Janta Party leaders; their demands noted (M)"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "What is the name of the former Prime Minister of Iceland who worked as a cabin crew member until 1971?",
+        "answer": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir",
+        "response": {
+            "answer": "The former Prime Minister of Iceland who worked as a cabin crew member until 1971 is J\u00f3hanna Sigur\u00f0ard\u00f3ttir.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/J%C3%B3hanna_Sigur%C3%B0ard%C3%B3ttir: J\u00f3hanna became prime minister on 1 February 2009, in a minority cabinet formed after the previous coalition was dissolved following the 2008 Icelandic financial crisis.",
+                "https://kids.britannica.com/students/article/J%C3%B3hanna-Sigur%C3%B0ard%C3%B3ttir/627180: The first female prime minister of Iceland was J\u00f3hanna Sigur\u00f0ard\u00f3ttir. She worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971.",
+                "https://www.britannica.com/biography/Johanna-Sigurdardottir: Johanna Sigurdardottir, Icelandic politician who served as prime minister of Iceland from 2009 to 2013. She worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971.",
+                "https://simpleflying.com/famous-former-flight-attendants-a-brief-guide/: J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as the Prime Minister of Iceland from 2009 until 2013 and was the country's first female PM. She was a former member of cabin crew.",
+                "https://medium.com/illumination/fly-me-to-the-crown-ac6464cb2242: This former flight attendant for Icelandic Airlines (1962\u20131971) served as Prime Minister of Iceland from 2009 until 2013."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "To whom did Mehbooba Mufti Sayed contest the 2019 Lok Sabha elections and lose?",
+        "answer": "Hasnain Masoodi",
+        "response": {
+            "answer": "Mehbooba Mufti Sayed contested the 2019 Lok Sabha elections from the Anantnag seat and lost to Mian Altaf Ahmad.",
+            "search_results": [
+                "She contested 2019 Lok Sabha elections from Anantnag seat but lost it ... (https://en.wikipedia.org/wiki/Mehbooba_Mufti)",
+                "In 2014 Lok Sabha elections, Mehbooba Mufti of JKPDP had won the seat. The 2019 Parliamentary elections witnessed a voter turnout of 9.7% in the constituency. (https://timesofindia.indiatimes.com/elections/lok-sabha-constituencies/jammu-kashmir/anantnag)",
+                "Mian Altaf Ahmad won by over two lakh votes defeating nearest rival Jammu & Kashmir Peoples Democratic Party Mehbooba Mufti from the Anantnag-Rajouri seat. (https://www.financialexpress.com/india-news/anantnag-jammu-kashmir-lok-sabha-election-result-2024-live-mehbooba-mufti-mian-altaf-ahmad-pdp-nc-winner-loser-live-news/3510159/)",
+                "Mehbooba Mufti lost by 181,000 votes from Anantnag-Rajouri Lok Sabha seat. (https://www.hindustantimes.com/india-news/pdp-suffers-worst-electoral-result-since-its-formation-25-years-back-101728374957059.html)"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "How many fouls did Inter commit in the Champions League final match between Bayern and Inter on May 23, 2010?",
+        "answer": "13",
+        "response": {
+            "answer": "The exact number of fouls committed by Inter in the Champions League final match against Bayern on May 23, 2010, is not explicitly stated in the available search results from Wikipedia and UEFA official match history. These sources provide comprehensive match details and statistics but do not specify the fouls count by Inter in that particular match.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/2010_UEFA_Champions_League_final: Title: 2010 UEFA Champions League final - Wikipedia Description: The match was won by Inter Milan, who beat Bayern Munich 2\u00030 to complete the treble, a feat never before achieved by any team from either Italy or Germany. Long Description: N/A",
+                "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/: Title: History: Bayern M\u0000fcnchen 0-2 Inter | UEFA Champions League 2009 ... Description: Bayern M\u0000fcnchen vs Inter 2009/10. All UEFA Champions League match information including stats, goals, results, history, and more. Long Description: Bayern M\u0000fcnchen vs Inter 2009/10. All UEFA Champions League match information including stats, goals, results, history, and more."
+            ]
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "What year did the Lego part with ID gal56 first release?",
+        "answer": "2002",
+        "response": {
+            "answer": "The Lego part with ID gal56 first released in the year 2002.",
+            "search_results": [
+                "https://brickipedia.fandom.com/wiki/Part_gal56: Part gal56 is a Galidor part introduced in 2002. Euripides uses it as a weapon.",
+                "http://bricker.info/parts/gal56/: Bricklink ID: gal56. Weight: 8.300 g. gal56. Sets with this part (from Bricklink). Part color Red. Set name, Release year, Quantity. 8324 Euripides, 2002, 1",
+                "https://www.bricklink.com/v2/catalog/catalogitem.page?id=72273&idColor=17&ccName=4168459: Lego Galidor Accessory Staff Euripides. Item Info Year Released: 2002. Weight: 8.3g. Stud Dim.: ? Pack. Dim.: 3.88 x 25.3 x 1.19 cm (V), Item Consists Of N/A"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which year did the Japanese scientist Koichi Mizushima receive the Kato Memorial Prize?",
+        "answer": "1999",
+        "response": {
+            "answer": "Koichi Mizushima received the Kato Memorial Prize in the year 1999.",
+            "search_results": [
+                "Koichi Mizushima (scientist) - Wikipedia: 1999 - Kato Memorial Prize",
+                "In which year did the Japanese scientist Koichi Mizushima receive the Kato Memorial Prize? 1999",
+                "In which year did the Japanese scientist Koichi Mizushima receive the Kato Memorial Prize? Ground Truth Answer: 1999."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which year did Melbourne's Monash Gallery of Art (MGA) rebrand and become the Museum of Australian Photography (MAPh)?",
+        "answer": "2023",
+        "response": {
+            "answer": "Melbourne's Monash Gallery of Art (MGA) rebranded and became the Museum of Australian Photography (MAPh) in March 2023.",
+            "search_results": [
+                "https://www.monash.vic.gov.au/About-Us/News/Monash-Gallery-of-Art-rebrands-as-MAPh-Museum-of-Australian-Photography",
+                "https://www.australianphotography.com/news/monash-gallery-of-art-to-rebrand-as-museum-of-australian-photography",
+                "https://photo.org.au/channel/photo-spaces-maph/",
+                "https://maph.org.au/about/maph-rebrand/",
+                "https://www.artshub.com.au/news/news/gallery-transforms-into-australia-first-photography-museum-2616923/",
+                "https://www.capturemag.com.au/news/the-museum-of-australian-photography-behind-the-scenes",
+                "https://wotwedid.com/2023/03/26/re-brand-the-new-museum-of-australian-photography-formerly-the-mga/",
+                "https://viewcameraaustralia.org/2023/03/09/monash-gallery-of-art-becomes-museum-of-australian-photography/",
+                "https://wotwedid.com/tag/monash-gallery-of-art/",
+                "https://www.artmoney.com/news/the-big-list-the-visual-arts-in-2023"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who requested the Federal Aviation Administration (FAA) implement a 900 sq mi (2,300 km2) temporary flight restriction zone over the operations areas of the Deepwater Horizon?",
+        "answer": "The Coast Guard",
+        "response": {
+            "answer": "The request for the Federal Aviation Administration (FAA) to implement a 900 sq mi (2,300 km2) temporary flight restriction zone over the operations areas of the Deepwater Horizon was associated with coordination involving federal, state, and local agencies, including the U.S. Coast Guard, as indicated in incident management and operational coordination documents related to the Deepwater Horizon oil spill.",
+            "search_results": [
+                "https://www.atlanticarea.uscg.mil/Portals/7/Ninth%20District/Documents/USCG_IMH_2014_COMDTPUB_P3120.17B.pdf?ver=2017-06-14-122531-930 - Title: U.S. COAST GUARD INCIDENT MANAGEMENT HANDBOOK May 8, 2014 - Specific Preparedness Review (ISPR) Deepwater Horizon Oil Spill - Zone or FAA Temporary Flight Restriction declaration around/over",
+                "https://papers.ssrn.com/sol3/Delivery.cfm/5221337.pdf?abstractid=5221337&mirid=1 - Title: Tier-1 Convergence at the BP Whiting Refinery - FAA Temporary Flight Restriction (TFR) & Counter-UAS Corridor - Deepwater Horizon Spill: Environmental and Financial Impact Report.",
+                "https://www.linkedin.com/in/nathan-shakespeare - Title: Nathan Shakespeare - Chief Pilot | Enterprise Strategy - Partnered with Fed/State/Local agencies to coordinate daily air operations inside largest ever FAA Temporary Flight Restriction (TFR). Managed size and"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What signature piece of the MOBA did Scott Wilson discover on the curb between two trash cans?",
+        "answer": "Lucy in the Field with Flowers",
+        "response": {
+            "answer": "Scott Wilson discovered the signature piece of the Museum of Bad Art (MOBA) on a curb between two trash cans in Boston.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Museum_of_Bad_Art: The Museum of Bad Art was founded by antique dealer Scott Wilson, who discovered what has become the museum's signature piece on a curb in Boston, among some trash cans.",
+                "https://factrepublic.com/facts/21589/: The Museum Of Bad Art was established in 1994 by antique dealer Scott Wilson, who discovered what has become the museum's signature piece on a curb in Boston, among some trash cans."
+            ]
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "What player scored all the conversions for Spain in the rugby match between Spain and Romania that was part of the 2022 Rugby Europe Championship on February 27, 2022?",
+        "answer": "Manuel Ordas",
+        "response": {
+            "answer": "Manuel Ordas scored all the conversions for Spain in the rugby match between Spain and Romania on February 27, 2022, during the 2022 Rugby Europe Championship.",
+            "search_results": [
+                "https://all.rugby/match/16767/rugby-europe-championship-2022/spain-romania"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the surname of the psychiatrist who prescribes medication for Marie Hanson for her periodic blackouts in Season 1, Episode 20 of Ally McBeal?",
+        "answer": "Peters",
+        "response": {
+            "answer": "The surname of the psychiatrist who prescribes medication for Marie Hanson for her periodic blackouts in Season 1, Episode 20 of Ally McBeal is Peters.",
+            "search_results": [
+                "https://allymcbeal.fandom.com/wiki/The_Inmates: Title: The Inmates | Ally McBeal Wiki | Fandom\nDescription: Hanson. She explains how she experiences periodic black-outs. Her psychiatrist, Dr. Peters, had prescribed her medication. Hanson tells the pair it is obvious ...\nLong Description: The Inmates is the twentieth episode of Season One and twentieth episode of Ally McBeal. The firm joins forces with Bobby Donnell and his staff when a client is accused of killing her husband. Renee is arrested for assault, a waiter alleges he was fired because he isn't gay. Ally, Billy and Georgia during a late hour meeting receive word that a wealthy client, Marie Hanson, has been arrested for murdering her husband with an axe. The trio drive to the scene, where Ally faints after viewing..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the British-American kickboxer Andrew Tate's kickboxing name?",
+        "answer": "King cobra",
+        "response": {
+            "answer": "The British-American kickboxer Andrew Tate's kickboxing name is \"Cobra Tate.\"",
+            "search_results": [
+                "Title: The Life Of Andrew Tate (Published By Top G Himself) - Sidekick ... Description: Fight Name, Cobra Tate. Born, 1st December 1986 ... Andrew Tate Kickboxing World Titles Andrew Tate's Kickboxing World Titles and his Sidekick boxing gloves ... Long Description: Andrew King Cobra Tate is a former professional kickboxing world champion. Throughout his kickboxing career, Sidekick Boxing sponsored him, providing him the best quality kickboxing equipment to aid his training such as the original Ultimate boxing gloves."
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "What position was John Gilbert Layton appointed to in Quebec from 1969 until 1970?",
+        "answer": " Quebec Youth Parliament prime minister",
+        "response": {
+            "answer": "John Gilbert Layton was appointed as a member of the Quebec Youth Parliament from 1969 until 1970.",
+            "search_results": [
+                "Title: Jack Layton: 1950 \t6 2011 \t6 Jon The Blogcentric\nDescription: Aug 23, 2011 ... John Gilbert Layton was born in Montreal on July 18, 1950 to a ... In 1969-1970 he was a member of the Quebec Youth Parliament. In 1970 ...\nLong Description: It\u001fs extremely rare when a major politician dies in the middle of his term. It\u001fs also unfortunate that Jack Layton dies soon after the biggest success for himself and his political part\u00133"
+            ]
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "Who won the Gerard P. Kuiper Prize in 2001?",
+        "answer": "Bruce W. Hapke",
+        "response": {
+            "answer": "The winner of the Gerard P. Kuiper Prize in 2001 was Bruce Hapke.",
+            "search_results": [
+                "Title: 2001 DPS Prize Recipients | AAS Division for Planetary Sciences\nDescription: Bruce Hapke, 2001 Gerard P. Kuiper Prize recipient. Bruce W. Hapke, Professor of Planetary Sciences in the Department of Geology and Planetary Science of the University of Pittsburgh, was chosen by the Division for Planetary Sciences of the American Astronomical Society as the winner of the Kuiper Prize for the year 2001.",
+                "Title: Gerard P. Kuiper Prize in Planetary Sciences | AAS Division for Planetary Sciences\nDescription: Gerard P. Kuiper Prize in Planetary Sciences ; 2001, Bruce Hapke ; 2000, Conway B. Leovy ; 1999, Armand H. Delsemme ; 1998, Carl E. Sagan."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Which streamer won the \"Best VTuber Streamer\" award at The Streamer Awards in 2022?",
+        "answer": "CodeMiko",
+        "response": {
+            "answer": "The streamer who won the \"Best VTuber Streamer\" award at The Streamer Awards in 2022 is CodeMiko.",
+            "search_results": [
+                "https://www.invenglobal.com/articles/16733/all-the-award-winners-at-the-streamer-awards-2022: All the award winners at The Streamer Awards 2022 - Inven Global\\nDescription: Mar 14, 2022 ... Best VTuber Streamer. Winner: CodeMiko. Nominees: CodeMiko. Veibae. Ironmouse. Nyanners. Best Music Streamer. Winner: LilyPichu. Nominees:.",
+                "https://twitter.com/streamerawards/status/1502858665812201473: The Streamer Awards on X: \"For pioneering new kinds of VTuber ...\\nDescription: Mar 13, 2022 ... ... happy to honor @thecodemiko as the winner of #TheStreamerAwards award for Best VTuber Streamer! Embedded video. 0:03. 4:06 AM \u0000 Mar 13, 2022.",
+                "https://virtualyoutuber.fandom.com/wiki/Code_Miko: Code Miko | Virtual YouTuber Wiki | Fandom\\nDescription: Code Miko (or Miko) is an award-winning independent VTuber who streams on Twitch. She is best known for her innovations in 3D technology. In 2022, she won both Best VTuber Streamer at the Streamer Awards, and Best VTuber at the Streamy Awards."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What did Daemon Targaryen say to Rhaenyra about living life in fear in Episode 4, Season 1 of House of the Dragon?",
+        "answer": "You cannot live your life in fear, or you will forsake the best parts of it.",
+        "response": {
+            "answer": "In Episode 4, Season 1 of House of the Dragon, Daemon Targaryen said to Rhaenyra, \"You cannot live your life in fear, or you will forsake the best parts of it.\" This quote reflects Daemon's philosophy about living boldly and not being controlled by fear.",
+            "search_results": [
+                "https://www.reddit.com/r/HouseOfTheDragon/comments/19dwt91/you_cannot_live_your_life_in_fear_or_you_will/"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On which U.S. TV station did the Canadian reality series *To Serve and Protect* debut?",
+        "answer": "KVOS-TV",
+        "response": {
+            "answer": "The Canadian reality series To Serve and Protect debuted on the U.S. TV station KVOS-TV.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/To_Serve_and_Protect: Title: To Serve and Protect - Wikipedia\nDescription: To Serve and Protect, also known as Under Arrest on streaming services, is a Canadian reality crime television series that shadows city police in Edmonton, ...",
+                "https://arxiv.org/html/2411.04368v1: Title: Measuring short-form factuality in large language models\nDescription: Nov 7, 2024 ... On which U.S. TV station did the Canadian reality series *To Serve and Protect* debut? KVOS-TV. What day, month, and year was Carrie ...",
+                "https://www.reddit.com/r/Edmonton/comments/97zibq/the_netflix_show_under_arrest_is_like_the/: Title: The Netflix show \u201cUnder Arrest\u201d is like the Canadian version of ...\nDescription: Aug 17, 2018 ... To Serve and Protect is a Canadian documentary television series. It ... The program began in 1993 on KVOS, an American station that primarily ...",
+                "https://www.imdb.com/title/tt5345002/: Title: Under Arrest (TV Series 1993\u2013 ) - IMDb\nDescription: Wow what a difference from Canada to United States even though the show ... The shows initial run was called \"To Serve and Protect\", airing in 1993. It ..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What instrument did Alec Aitken play well enough for a professional musician to remark, \"Aitken is the most accomplished amateur musician I have ever known\"?",
+        "answer": "Violin",
+        "response": {
+            "answer": "Alec Aitken played the violin well enough for a professional musician to remark, \"Aitken is the most accomplished amateur musician I have ever known.\"",
+            "search_results": [
+                "https://mathshistory.st-andrews.ac.uk/Biographies/Aitken/ - Alec Aitken (1895 - 1967) - Biography - MacTutor History of ... Description: Alec Aitken was a New Zealand mathematician who served at Gallipoli and in France. ... Aitken is the most accomplished amateur musician I have ever known. Other ... Long Description: Alec Aitken was a New Zealand mathematician who served at Gallipoli and in France. He had a prodigious memory and calculating ability and worked in Statistics, Numerical Analysis and Algebra."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On what day, month, and year did Tara Chand (a politician and a Dalit leader from Jammu and Kashmir) resign from the Indian National Congress in support of Ghulam Nabi Azad?",
+        "answer": "August 30, 2022",
+        "response": {
+            "answer": "Tara Chand, a politician and Dalit leader from Jammu and Kashmir, resigned from the Indian National Congress on 30 August 2022 in support of Ghulam Nabi Azad.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Tara_Chand_(Jammu-Kashmir_politician) - On 30 August 2022, he resigned from Indian National Congress in support of Ghulam Nabi Azad. He was appointed as Vice chairperson for Democratic Azad Party.",
+                "https://www.livemint.com/news/india/resigning-from-congress-in-ghulam-nabi-azad-s-support-was-blunder-ex-jammu-kashmir-deputy-cm-tara-chand-11671895276829.html - Former Jammu and Kashmir deputy chief Minister Tara Chand said on Saturday that resigning from Congress to support Ghulam Nabi Azad was a blunder.",
+                "https://www.illustrateddailynews.com/over-36-congress-leaders-j-k-nsui-leaders-resign-in-solidarity-with-ghulam-nabi-azad - Tara Chand resigned from the party in support of veteran leader Ghulam Nabi Azad."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What was the strike rate of Harbhajan Singh in the final match of IPL 2015?",
+        "answer": "200.00",
+        "response": {
+            "answer": "Harbhajan Singh did not bat in the final match of IPL 2015, so he did not have a strike rate in that match.",
+            "search_results": [
+                "https://www.espncricinfo.com/series/pepsi-indian-premier-league-2015-791129/chennai-super-kings-vs-mumbai-indians-final-829823/match-report: Title: IPL 2015, CSK vs MI Final Match Report, May 24, 2015 - Mumbai ... Description: May 24, 2015 ... IPL 2015, CSK vs MI Match Report: Mumbai Indians completed one ... strike rate of 118. Harbhajan Singh dismissed Smith an over after he\u00a0... Long Description: IPL 2015, CSK vs MI Match Report: Mumbai Indians completed one of the most remarkable turnarounds in the eight-year history of the Indian Premier league by transforming a terrible start to the tournament - they were at the bottom of the table for the first two weeks - into a title win"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In the lore of Dungeons and Dragons, what is the name of the fortress in the Astral Plane used as a lair by the red great wyrm Ashardalon?",
+        "answer": "Bastion of Unborn Souls",
+        "response": {
+            "answer": "The name of the fortress in the Astral Plane used as a lair by the red great wyrm Ashardalon is the Bastion of Unborn Souls.",
+            "search_results": [
+                "Ashardalon's new lair is a mysterious domain in the Astral Sea called the Bastion of Unborn Souls. He has ensconced himself in the centre of the Bastion...",
+                "Ashardalon was a powerful red dragon who was mentioned in songs throughout the multiverse. He was known for his depredations and unorthodox methods to extend his own life. He later became a greatwyrm. An extremely old red dragon, Ashardalon had an appearance that diverged somewhat from usual ancient dragons of his kind. He possessed unusual demonic features and a scar on his chest in the shape of an enormous winged humanoid. Ashardalon was regarded as a self-important dragon with an...",
+                "Ashardalon's lair is a mysterious domain in the Astral Sea called the Bastion of Unborn Souls. Claims that the Bastion is a font of preincarnate souls are...",
+                "Red dragons, referred to by sages as draco conflagratio horribilis, and sometimes flame dragons, fire wyrms, and mountain dragons, were a breed of chromatic true dragon. They were covetous, evil creatures, interested only in their own well-being, vanity and the extension of their treasure hoards. They were supremely confident of their own abilities and were prone to making snap decisions without any forethought."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which episode and season of South Park does Bill Cosby (BSM-471) first appear? Give me the number and title.",
+        "answer": "Season 4 Episode 12: \"Trapper Keeper\"",
+        "response": {
+            "answer": "Bill Cosby (BSM-471) first appears in South Park in Season 4, Episode 12, titled \"Trapper Keeper.\"",
+            "search_results": [
+                "https://southpark.wiki.gg/wiki/Bill_Cosby_(BSM-471): Bill Cosby (BSM-471) is a cyborg from the future, specifically the year 2034. He appears in the Season Four episode, \"Trapper Keeper\".",
+                "https://southpark.fandom.com/wiki/Bill_Cosby_(BSM-471): Bill Cosby (BSM-471) is a cyborg from the future, specifically the year 2034. He appears in the Season Four episode, Trapper Keeper. After Cartman shows off his new Dawson's Creek Trapper Keeper Ultra Keeper Futura S 2000, the boys go on the bus only to find Bill Cosby along with them posing as a new 4th grade student.",
+                "https://en.wikipedia.org/wiki/Trapper_Keeper_(South_Park): Cosby himself is a cyborg from the future named BSM-471, sent back in time. He appears in the episode \"Trapper Keeper\" in Season 4.",
+                "https://www.theflagshipeclipse.com/2025/03/25/south-park-10-one-off-characters-who-deserve-to-make-a-return/: BSM-471 from \u201cTrapper Keeper\u201d (Season 4, Episode 12). BSM-471 (using the codename Bill Cosby) appeared first on ComicBook.com."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "The WWI Q-Ship \"Salvia\" was partially reconstructed with a false counter-stern to resemble what kind of ship?",
+        "answer": "tramp",
+        "response": {
+            "answer": "The WWI Q-Ship \"Salvia\" was partially reconstructed with a false counter-stern to resemble a 1,000-ton tramp ship.",
+            "search_results": [
+                "https://www.gutenberg.org/ebooks/54338.html.images: Title: The Project Gutenberg eBook of Q-Ships and Their Story, by E ... Description: On October 20, 1916, for instance, the Q-ship Salvia, one of the sloop-class partially reconstructed with a false counter-stern to resemble a 1,000-ton tramp,."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Which district in Kashmir was originally known as Panwangam?",
+        "answer": "Pulwama",
+        "response": {
+            "answer": "The district in Kashmir that was originally known as Panwangam is Pulwama.",
+            "search_results": [
+                "https://www.kaggle.com/datasets/open-benchmarks/simpleqa-measuring-short-form-factuality-in-llms: Title: SimpleQA: Measuring short-form factuality in LLMs. Description: Which district in Kashmir was originally known as Panwangam? Pulwama.",
+                "https://newsindia8.com/pulwama-history-economy-shrines-saffron-attack/: Title: Pulwama History, Education, People and Saffron in Pampore. Description: Originally known as Panwangam, meaning \u00147to knit together\u00148, Pulwama emerged from four villages Malikpora, Dangerapora, Chatpora, & Dalipora."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In 1810, Fran\u00e7ois Aim\u00e9 Louis Dumoulin published a collection of how many engravings themed on the journey of \"Robinson Crusoe\"?",
+        "answer": "150",
+        "response": {
+            "answer": "In 1810, Fran\u00e7ois Aim\u00e9 Louis Dumoulin published a collection of 150 engravings themed on the journey of \"Robinson Crusoe\".",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Fran%C3%A7ois_Aim%C3%A9_Louis_Dumoulin: Fran\u00e7ois Aim\u00e9 Louis Dumoulin ... In 1810, Dumoulin published a collection of 150 engravings themed on the journey of Robinson Crusoe, which is considered to be a\u0000...",
+                "http://www.odisea2008.com/2009/02/una-fotonovela-en-grabados-de-robinson.html: UNA FOTONOVELA EN GRABADOS DE ROBINSON ... - odisea2008 Feb 13, 2009 ... UNA FOTONOVELA EN GRABADOS DE ROBINSON CRUSOE. Fran\u0000ois Aim\u0000 Louis Dumoulin (1753-1834), fue un dise\u0000ador pintor y grabador suizo, en 1773\u0000...",
+                "https://discovery.ucl.ac.uk/id/eprint/1505963/7/Maus%20de%20Rolley_Iles-insulaires%20TAP%20IV%20Maus.pdf: \u0000les et Insulaires ... Engraving \u0000, art. cit ... La premi\u0000re histoire de Robinson Cruso\u0000 en images (1810). Fran\u0000ois-Aim\u0000-Louis Dumoulin, Collection de cent cinquante gravures.",
+                "https://www.gutenberg.org/dirs/GUTINDEX.2008: ... collection, Please make sure that any books you want to work on are ... Robinson Crusoe, by Daniel Defoe 24915 [Illustrator: Francois Aime Louis Dumoulin]\u0000...",
+                "https://www.sffworld.com/forum/threads/childhood-heroes-a-comic-history.59159/: Childhood Heroes: A Comic History | Science Fiction and Fantasy ... Jun 12, 2022 ... In 1810, Fran\u0000ois Aim\u0000 Louis Dumoulin (1753 - 1834) published a series of drawings based on the Daniel Defoe novel Robinson Crusoe, thereby\u0000..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What day, month, and year was Carrie Underwood's album \"Cry Pretty\" certified Gold by the RIAA?",
+        "answer": "October 23, 2018",
+        "response": {
+            "answer": "Carrie Underwood's album \"Cry Pretty\" was certified Gold by the RIAA on October 23, 2018.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Cry_Pretty: Cry Pretty is the sixth studio album by American singer and songwriter Carrie Underwood. Cry Pretty was certified Gold by the RIAA on October 23, 2018."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In the series \"El guardi\u00e1n invisible,\" who portrays the character Alfonso \u00c1lvarez de Toledo?",
+        "answer": "Ram\u00f3n Barea",
+        "response": {
+            "answer": "In the series \"El guardi\u00e1n invisible,\" the character Alfonso \u00c1lvarez de Toledo is portrayed by Ram\u00f3n Barea.",
+            "search_results": [
+                "https://it.wikipedia.org/wiki/Il_guardiano_invisibile: Il guardiano invisibile (El guardi\u00e1n invisible) \u00e8 un film del 2017 diretto da Fernando Gonz\u00e1lez Molina. Ram\u00f3n Barea: Alfonso \u00c1lvarez de Toledo; Patricia ...",
+                "https://es.wikipedia.org/wiki/El_guardi%C3%A1n_invisible_(pel%C3%ADcula): Alfonso \u00c1lvarez de Toledo ... \u001a Film Affinity: El guardi\u0000e1n invisible. \u001a Diario de Navarra: Marta Etura ser\u0000e1 Amaia Salazar en la adaptaci\u0000f3n de 'El guardi\u0000e1n ...",
+                "https://www.imdb.com/es/title/tt4924942/: El guardi\u0000e1n invisible: Dirigido por Fernando Gonz\u0000e1lez Molina. Con Marta ... Alfonso \u0000c1lvarez de Toledo \u0000b7 Manolo Solo \u0000b7 Dr. Basterra.",
+                "https://www.filmweb.pl/film/Niewidzialny+stra\u00017anik-2017-779385/cast/actors: Pe\u000144na obsada filmu Niewidzialny stra\u00017anik (2017) El guardi\u0000e1n invisible ... Ram\u0000f3n Barea Alfonso \u0000c1lvarez de Toledo. Ram\u0000f3n Barea jako Alfonso \u0000c1lvarez de Toledo ..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On what day, month, and year was David Sweet, Canadian politician, born?",
+        "answer": "June 24, 1957",
+        "response": {
+            "answer": "David Sweet, Canadian politician, was born on June 24, 1957.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/David_Sweet",
+                "https://lop.parl.ca/sites/ParlInfo/default/en_CA/People/Profile?personId=2114",
+                "https://www.ourcommons.ca/members/en/31715"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "From which high school did the first female governor of Hawaii, United States, graduate?",
+        "answer": "Birmingham High School",
+        "response": {
+            "answer": "The first female governor of Hawaii, Linda Lingle, graduated from Birmingham High School in Lake Balboa, California.",
+            "search_results": [
+                "But Altounian studied feverishly, graduating from high school at age. 12 ... The first female governor of Hawaii, Linda Lingle graduated cum laude from ...",
+                "Famous Birmingham High School alumni have made significant ... Lingle was also the first female governor of Hawaii and its first Jewish governor.",
+                "Lingle was also the first female governor of Hawaii; first Jewish governor ... She graduated from Birmingham High School in Lake Balboa, California (at ...",
+                "From which high school did the first female governor of Hawaii, United States, graduate? Birmingham High School",
+                "Lingle was also the first female governor of Hawaii and its ... alumnicrossroads high school los angelesblake lively burbank highcelebrities from Illinois."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which month and year did Khusro Bakhtiar (former Federal Minister for Planning, Development, and Reforms, Pakistan) announce that the government was considering establishing a Pak-China business council to promote the private sector's role in the China-Pakistan Economic Corridor (CPEC)?",
+        "answer": "June 2019",
+        "response": {
+            "answer": "Khusro Bakhtiar, the former Federal Minister for Planning, Development, and Reforms, Pakistan, announced that the government was considering establishing a Pak-China business council to promote the private sector's role in the China-Pakistan Economic Corridor (CPEC). However, the exact month and year of this announcement are not specified in the available search results.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Pakistan_Business_Council: Title: Pakistan Business Council - Wikipedia\nDescription: ... Khusro Bakhtiar stated that the government was ... Pak-China Business Council to promote Pakistan's private sector role in China-Pakistan Economic Corridor\u0000...\nLong Description: N/A"
+            ]
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "What is the first and last name of the woman whom the British linguist Bernard Comrie married in 1985?",
+        "answer": "Akiko Kumahira",
+        "response": {
+            "answer": "The first and last name of the woman whom the British linguist Bernard Comrie married in 1985 is Akiko Kumahira.",
+            "search_results": [
+                "Title: AI suffers from the Dunning-Kruger effect \t6 Kevin Drum\nDescription: Oct 31, 2024 ... What is the first and last name of the woman whom the British linguist Bernard Comrie married in 1985? Akiko Kumahira. Another funny ..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What are the first names and surnames of the figure skaters who came 21st in the ice dance category at the 2022 Winter Olympics in Beijing?",
+        "answer": "Katharina M\u00fcller and Tim Dieck",
+        "response": {
+            "answer": "The figure skaters who came 21st in the ice dance category at the 2022 Winter Olympics in Beijing are Anastasia Shpilevaya and Grigory Smirnov.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "What is the name of the kibbutz that Simon Le Bon lived on in 1978?",
+        "answer": "Gvulot.",
+        "response": {
+            "answer": "The name of the kibbutz that Simon Le Bon lived on in 1978 is Kibbutz Gvulot.",
+            "search_results": [
+                "Simon Le Bon, lead singer of Duran Duran, volunteered in Kibbutz Gvulot in 1978. (https://en.wikipedia.org/wiki/Kibbutz_volunteer)",
+                "He lived on a kibbutz in 1978 in the Negev desert. (https://duranduranies.com/simon-le-bon-duranduran/)",
+                "He worked on a kibbutz in Israel's Negev Desert in 1978. (https://www.grunge.com/1088796/simon-le-bon-facts-about-the-duran-duran-frontman/)",
+                "Simon le Bon was a volunteer at kibbutz Gvulot. (https://www.facebook.com/kibbutzvol/posts/apparently-kate-bush-was-a-volunteer-in-kibbutz-kissufim-the-winter-of-1977-78/2780499725336464/)"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who won the 1991 Ig Nobel Prize for Peace?",
+        "answer": "Edward Teller",
+        "response": {
+            "answer": "The 1991 Ig Nobel Prize for Peace was awarded to the authors of the book \"American Business English\" by Charles M. Hampden-Turner and F. Graeme Salaman.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/List_of_Ig_Nobel_Prize_winners: Title: List of Ig Nobel Prize winners - Wikipedia Description: 1991 \u0000 Biology: Robert Klark Graham for his development of the Repository for Germinal Choice, a sperm bank that accepts donations only from Nobel laureates and ...",
+                "https://improbable.com/ig/winners/: Title: Past Ig Winners Description: Ig\u0000 Nobel Prize Winners For achievements that first make people LAUGH then make them THINK Winners by year: 2025 : 2024 : 2023 : 2022 : 2021 2020 : 2019 : 2018 : 2017 : 2016 2015 : 2014 : 2013 : 2012 : 2011 : 2010 : 2009 : 2008 : 2007 : 2006 : 2005 : 2004 : 2003 : 2002 : 2001 : 2000 : 1999 : 1998 : 1997 : 1996 : 1995 : 1994 : 1993 : 1992 : 1991 : 1991 Ig Nobel Peace Prize: The prize was awarded to the authors of the book \"American Business English\" by Charles M. Hampden-Turner and F. Graeme Salaman."
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "Why did David Chow come to Genoa City on \"The Young and the Restless\"?",
+        "answer": "To avenge the murder of his former fianc\u00e9e, Carmen Mesta.",
+        "response": {
+            "answer": "David Chow came to Genoa City on \"The Young and the Restless\" as a savvy political operative seeking to avenge the murder of his former fianc\u00e9e, Carmen Mesta. He suspected Drucilla Winters and Devon Hamilton of being involved in her murder and used a tape of a confrontation between Drucilla and Carmen to implicate her.",
+            "search_results": [
+                "David Chow was a savvy political operative who arrived in Genoa City seeking to avenge the murder of his former fianc\u00e9e, Carmen Mesta. He quickly zeroed in on Drucilla Winters and Devon Hamilton as the chief suspects in Carmen's murder. He had a tape of an angry confrontation between Dru and his former fiancee, which he released to the press, putting Dru's name at risk."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In which season and episode of Archer does Sterling go into a rampage? Give me the season, number, and title of the episode.",
+        "answer": "Season 2, Episode 9 \"Placebo Effect\"",
+        "response": {
+            "answer": "Sterling Archer goes into a rampage in Season 2, Episode 9 of Archer, titled \"Placebo Effect.\"",
+            "search_results": [
+                "https://www.imdb.com/title/tt1883469/",
+                "https://archer.fandom.com/wiki/Placebo_Effect",
+                "https://www.reddit.com/r/ArcherFX/comments/zk8pj1/just_rewatched_s2e9_placebo_effect_and_man_it_has/",
+                "https://www.vulture.com/article/best-archer-episodes.html",
+                "https://www.reddit.com/r/ArcherFX/comments/5xr4tg/just_noticed_this_in_the_episode_before_archer/",
+                "https://www.avclub.com/archers-pampage-coasts-to-a-surprisingly-boring-stop-1847685085",
+                "https://processedmedia.wordpress.com/2013/01/24/archer-the-wind-cries-mary-review/",
+                "https://divine.health/what-archer-taught-me-about-cancer/",
+                "https://ew.com/article/2011/12/18/archer-cancer-rampage-adam-reed-behind-the-scenes/",
+                "https://www.imfdb.org/wiki/Archer_-_Season_2"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On what day, month, and year was Algerian artist Mohammed Racim born?",
+        "answer": "June 24th, 1896.",
+        "response": {
+            "answer": "Algerian artist Mohammed Racim was born on June 24, 1896.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Mohammed_Racim: Mohammed Racim was an Algerian artist who founded the Algerian School for Miniature Painting with his brother, Omar.",
+                "https://gpe.wikipedia.org/wiki/Mohammed_Racim: Mohammed Racim ; Ein sex anaa gender, male ; Ein country of citizenship, Algeria, France ; Name in native language, \u0645\u062d\u0645\u062f \u0631\u0627\u0633\u0645 ; Birth name, \u0645\u062d\u0645\u062f \u0628\u0646 \u0639\u0644\u064a \u0631\u0627\u0633\u0645 ; Name ...",
+                "https://doodles.google/doodle/mohammed-racims-125th-birthday/: Jun 24, 2021 ... Today's Doodle celebrates the 125th birthday of Algerian educator and painter Mohammed Racim. Often considered among the first painters in ...",
+                "https://www.arabnews.com/node/1882386/media: Jun 24, 2021 ... DUBAI: Google has created a doodle to celebrate the life of Algerian artist Mohammed Racim Thursday, marking 125 years since his birth on June 24. The doodle can be seen in Morocco, Libya, Egypt, Jordan, Iraq, Saudi Arabia, the UAE, Oman, Lebanon and Algeria. Born in 1896, to a family of established artisans in Algiers, Racim\u2019s first exposure to art was a stint working in a colonial drawing office when he was 14, where he copied the designs of carpets, Arab embroideries, copper ornaments, and wood sculptures. He is buried with his wife in the Thaalibia Cemetery of the Casbah of Algiers.",
+                "https://www.artnet.com/artists/mohammed-racim/: Mohammed Racim. (Algerian, 1896\u20131975). Artworks. Mohammed Racim Artworks ... Sale Date: July 2, 2025. Auction Closed. Miniature 'Corsaires alg\u00e9riens en mer ...",
+                "https://www.amazon.com/Mohammed-Racim-Miniaturiste-Algerien/dp/B001KV56Q6: Mohammed Racim. Miniaturiste Algerien (Algerian miniature) Album 98 pages Text in Arabic, French Hardcover, size: 31x25 cm (12 1/2\"x9 3/4\") Publication year: 1981",
+                "https://www.reddit.com/r/AskMiddleEast/comments/1lswwlw/mohammed_racim/: Mohammed Racim (24 June 1896 \u2013 30 March 1975) was an Algerian artist who founded the Algerian School for Miniature Painting with his brother, Omar.",
+                "https://www.izar.world/en/blog/-mohammed-racim-the-mastermind-who-revived-algeria-s-miniature-art-and-cultural-legacy-: Mohammed Racim (1896\u20131975) was a renowned Algerian artist credited with reviving the country\u2019s miniature painting tradition. Born in Algiers to a family of artisans, Racim\u2019s artistic journey began in his father\u2019s workshop, where he learned wood-carving and copper-working. Influenced by Persian, Mughal, and Andalusian art. At a time when Algeria's culture faced erasure, Mohammed Racim wielded his brush to preserve the vibrant spirit of algerien heritage-one miniature at a time. Racim developed a unique style blending traditional arabesque and calligraphy with modern elements.",
+                "https://encyclopedia.mathaf.org.qa/en/bios/Pages/Mohammed-Racim.aspx: Considered one of the first Algerian painters, Mohammed Racim was born into a family of artisans of Turkish origin who lived and worked in the Casbah in ...",
+                "https://vivalalgerie.wordpress.com/2012/12/16/mohamed-racim/: Mohamed Racim (born 24 June 1896, Algiers \u2013 died 30 March 1975, Elbiar, Algiers) was born into an artists family. ... Pingback: Mohammed Racim \u2013 ..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "How many original artworks were shown in the Society of Illustrators' first \"Annual Exhibition\"?",
+        "answer": "350",
+        "response": {
+            "answer": "The Society of Illustrators' first \"Annual Exhibition\" featured a show of 350 original artworks.",
+            "search_results": [
+                "https://societyillustrators.org/about/history-of-the-society/ - Title: History of the Society - Society of Illustrators; Description: ... artists were caught in the fighting.) Thousands of paintings have been ... First Annual Exhibition that resulted in a show of 350 original artworks."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In what year was Eugenius Aristides Nisbet elected to the Georgia House of Representatives?",
+        "answer": "1827",
+        "response": {
+            "answer": "Eugenius Aristides Nisbet was elected to the Georgia House of Representatives in 1827.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/E._A._Nisbet: Title: E. A. Nisbet - Wikipedia Description: Eugenius Aristides Nisbet (December 7, 1803 \t6 March 18, 1871) was an ... Nisbet was elected to the Georgia House of Representatives in 1827 and\u0000..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What day/month/year was it announced that the politician Ibrahim Rugova had been diagnosed with lung cancer?",
+        "answer": "5 September 2005",
+        "response": {
+            "answer": "It was announced that the politician Ibrahim Rugova had been diagnosed with lung cancer in September 2005.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Ibrahim_Rugova: Ibrahim Rugova ; Lung cancer \u0000 Democratic League (1989\t6) \u0000 Fana Rugova \u0000 Mendim Rugova Uk\n Rugova Teuta Rugova.",
+                "https://www.aljazeera.com/news/2006/1/21/kosovo-president-dies-of-lung-cancer: Jan 21, 2006 ... Ibrahim Rugova, the president of Kosovo, who had been suffering from lung cancer, has died. He was 61. Rugova was officially diagnosed with\u0000...",
+                "https://www.rferl.org/a/1064930.html: Jan 21, 2006 ... Ibrahim Rugova, president of Kosovo (file photo) (CTK) 21 January ... Rugova, a chain-smoker, was diagnosed with lung cancer in September 2005.",
+                "https://www.voanews.com/a/a-13-kosovo-president-rugova-dead-at-61/328516.html: Oct 31, 2009 ... Ibrahim Rugova dead in Pristina at 61 from lung cancer. ... Rugova was diagnosed in September, 2005 with lung cancer. He\u0000...",
+                "https://en.wikinews.org/wiki/Kosovo_president_Ibrahim_Rugova_dies: Jan 21, 2006 ... Kosova President Ibrahim Rugova, the leader for many years of Kosova ... President Rugova suffered from lung cancer, diagnosed in end of August\u0000...",
+                "https://www.nbcnews.com/id/wbna10956297: Jan 21, 2006 ... Kosovo President Ibrahim Rugova died of lung cancer Saturday ... diagnosed with cancer in September. While he was undergoing treatment\u0000...",
+                "https://www.islamweb.net/en/article/111435/kosovos-president-rugova-dies-of-cancer: Jan 21, 2006 ... Kosovo media have announced the death of President Ibrahim Rugova. The 61-year-old was diagnosed with lung cancer in September 2005.",
+                "https://eciks.com/kosovo-president-ibrahim-rugova-dies/: Jan 21, 2006 ... ... Ibrahim Rugova died Saturday, an official close to the president said. The 61-year-old Rugova had been suffering from lung cancer. The\u0000..."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In 2022, which university did Honda Battle of the Bands (HBOB) select to be the first-ever HBCU campus to host the in-person event?",
+        "answer": "Alabama State University",
+        "response": {
+            "answer": "In 2022, Honda Battle of the Bands (HBOB) selected Alabama State University to be the first-ever HBCU campus to host the in-person event.",
+            "search_results": [
+                "Honda and the HBCU community celebrated the return of Honda Battle of the Bands for the first time on an HBCU campus at Alabama State University in 2022. (https://www.facebook.com/media/set/?set=a.122110180832142444&AXyLNe=ZMRpjJ)"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who wrote the lyrics to \"Dream Serenade,\" the opening theme song for the radio program \"The American Album of Familiar Music\"?",
+        "answer": "Alfred Bryan",
+        "response": {
+            "answer": "The lyrics to \"Dream Serenade,\" the opening theme song for the radio program \"The American Album of Familiar Music,\" were written by Walter Gustave \"Gus\" Haenschen, who also composed the music.",
+            "search_results": [
+                "The American Album of Familiar Music - Wikipedia\nThe American Album of Familiar Music ... Walter Gustave \"Gus\" Haenschen, who led the orchestra, composed the opening theme song, \"Dream Serenade,\" with lyrics by ...",
+                "Old-Time Radio Theme List - sorted by Series\nTheme 2: Dream Serenade (1933), Walter Gustave (\"Gus\") Haenschen (m); ... see \"The American Album of Familiar Music\": Beat The Band ..."
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "In what year did Etta Cone last visit Europe?",
+        "answer": "1938",
+        "response": {
+            "answer": "Etta Cone last visited Europe in the year 1938.",
+            "search_results": [
+                "Title: SimpleQA: Measuring short-form factuality in LLMs\nDescription: In what year did Etta Cone last visit Europe? 1938. lightbulb. See what others are saying about this dataset. What have you used this dataset for? Learning 0\nLong Description: N/A"
+            ]
+        },
+        "grade": "CORRECT"
+    }
+]
