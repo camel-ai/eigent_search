@@ -1,0 +1,309 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d2" for="edge" attr.name="action" attr.type="string"/>
+<key id="d1" for="node" attr.name="label" attr.type="string"/>
+<key id="d0" for="node" attr.name="data" attr.type="string"/>
+<graph edgedefault="directed"><node id="0">
+  <data key="d0">In whose honor was the Leipzig 1877 tournament organized?</data>
+  <data key="d1">In whose honor was the Leipzig 1877 tournament organized?</data>
+</node>
+<node id="1">
+  <data key="d0">"Leipzig 1877 tournament" honor</data>
+  <data key="d1">"Leipzig 1877 tournament" honor</data>
+</node>
+<node id="2">
+  <data key="d0">https://en.wikipedia.org/wiki/Adolf_Anderssen</data>
+  <data key="d1">https://en.wikipedia.org/wiki/Adolf_Anderssen</data>
+</node>
+<node id="3">
+  <data key="d0">https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3</data>
+  <data key="d1">https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3</data>
+</node>
+<node id="4">
+  <data key="d0">https://news.ycombinator.com/item?id=42001816</data>
+  <data key="d1">https://news.ycombinator.com/item?id=42001816</data>
+</node>
+<node id="5">
+  <data key="d0">https://kids.kiddle.co/Adolf_Anderssen</data>
+  <data key="d1">https://kids.kiddle.co/Adolf_Anderssen</data>
+</node>
+<node id="6">
+  <data key="d0">https://news.ycombinator.com/item?id=41997727</data>
+  <data key="d1">https://news.ycombinator.com/item?id=41997727</data>
+</node>
+<node id="7">
+  <data key="d0">reflection</data>
+  <data key="d1">reflection</data>
+</node>
+<node id="8">
+  <data key="d0">The search results provide conflicting information about the honor for which the Leipzig 1877 tournament was organized. One source (Wikipedia on Adolf Anderssen) states that the tournament was organized in honor of Adolf Anderssen, named the "Anderssen-Feier" (Anderssen Celebration). Another source from Oxen.ai mentions it was organized in honor of Wilhelm Steinitz becoming the first official World Chess Champion. Additional sources mention honoring Anderssen's 50th anniversary of learning chess. To resolve this conflict and provide a definitive answer, I should look for more authoritative sources or historical records specifically about the Leipzig 1877 tournament and its dedication.</data>
+  <data key="d1">The search results provide conflicting information about the honor for which the Leipzig 1877 tourna...</data>
+</node>
+<node id="9">
+  <data key="d0">Leipzig 1877 chess tournament history</data>
+  <data key="d1">Leipzig 1877 chess tournament history</data>
+</node>
+<node id="10">
+  <data key="d0">Leipzig 1877 tournament Anderssen-Feier</data>
+  <data key="d1">Leipzig 1877 tournament Anderssen-Feier</data>
+</node>
+<node id="11">
+  <data key="d0">Leipzig 1877 tournament Wilhelm Steinitz</data>
+  <data key="d1">Leipzig 1877 tournament Wilhelm Steinitz</data>
+</node>
+<node id="12">
+  <data key="d0">Leipzig 1877 chess tournament dedication</data>
+  <data key="d1">Leipzig 1877 chess tournament dedication</data>
+</node>
+<node id="13">
+  <data key="d0">Anderssen-Feier Leipzig 1877</data>
+  <data key="d1">Anderssen-Feier Leipzig 1877</data>
+</node>
+<node id="14">
+  <data key="d0">"Anderssen-Feier" AND "Leipzig 1877"</data>
+  <data key="d1">"Anderssen-Feier" AND "Leipzig 1877"</data>
+</node>
+<node id="15">
+  <data key="d0">https://www.chessgames.com/perl/chess.pl?tid=79429</data>
+  <data key="d1">https://www.chessgames.com/perl/chess.pl?tid=79429</data>
+</node>
+<node id="16">
+  <data key="d0">https://www.schachbund.de/die-anderssen-feier-in-leipzig-1877.html</data>
+  <data key="d1">https://www.schachbund.de/die-anderssen-feier-in-leipzig-1877.html</data>
+</node>
+<node id="17">
+  <data key="d0">https://de.chessbase.com/post/200-jahre-adolf-anderssen</data>
+  <data key="d1">https://de.chessbase.com/post/200-jahre-adolf-anderssen</data>
+</node>
+<node id="18">
+  <data key="d0">"Leipzig 1877" AND "tournament" AND "Anderssen-Feier"</data>
+  <data key="d1">"Leipzig 1877" AND "tournament" AND "Anderssen-Feier"</data>
+</node>
+<node id="19">
+  <data key="d0">https://www.schachbund.de/dem1879.html</data>
+  <data key="d1">https://www.schachbund.de/dem1879.html</data>
+</node>
+<node id="20">
+  <data key="d0">https://www.schachbund.de/news/genug-des-stumpfsinns-remis-richard-der-fuenfte-kam-aus-altenburg.html</data>
+  <data key="d1">https://www.schachbund.de/news/genug-des-stumpfsinns-remis-richard-der-fuenfte-kam-aus-altenburg.htm...</data>
+</node>
+<node id="21">
+  <data key="d0">"Leipzig 1877" AND "tournament" AND "Wilhelm Steinitz"</data>
+  <data key="d1">"Leipzig 1877" AND "tournament" AND "Wilhelm Steinitz"</data>
+</node>
+<node id="22">
+  <data key="d0">https://www.chess.com/blog/Steakanator/winners-pov-breslau-1889</data>
+  <data key="d1">https://www.chess.com/blog/Steakanator/winners-pov-breslau-1889</data>
+</node>
+<node id="23">
+  <data key="d0">https://en.chessbase.com/post/an-adolf-anderssen-anniversary</data>
+  <data key="d1">https://en.chessbase.com/post/an-adolf-anderssen-anniversary</data>
+</node>
+<node id="24">
+  <data key="d0">"Leipzig 1877" AND "chess tournament" AND history</data>
+  <data key="d1">"Leipzig 1877" AND "chess tournament" AND history</data>
+</node>
+<node id="25">
+  <data key="d0">https://www.chess.com/blog/fabelhaft/curt-von-bardeleben</data>
+  <data key="d1">https://www.chess.com/blog/fabelhaft/curt-von-bardeleben</data>
+</node>
+<node id="26">
+  <data key="d0">https://www.chessgames.com/player/adolf_anderssen.html</data>
+  <data key="d1">https://www.chessgames.com/player/adolf_anderssen.html</data>
+</node>
+<node id="27">
+  <data key="d0">"Leipzig 1877" AND "chess tournament" AND dedication</data>
+  <data key="d1">"Leipzig 1877" AND "chess tournament" AND dedication</data>
+</node>
+<node id="28">
+  <data key="d0">https://sciarium.com/files/science/physical_training/chess/games_collections/sets/</data>
+  <data key="d1">https://sciarium.com/files/science/physical_training/chess/games_collections/sets/</data>
+</node>
+<node id="29">
+  <data key="d0">https://www.scribd.com/document/546936683/HighlightBooks</data>
+  <data key="d1">https://www.scribd.com/document/546936683/HighlightBooks</data>
+</node>
+<node id="30">
+  <data key="d0">https://anyflip.com/wueey/intf/basic</data>
+  <data key="d1">https://anyflip.com/wueey/intf/basic</data>
+</node>
+<node id="31">
+  <data key="d0">https://timenote.info/en/Adolf-Anderssen</data>
+  <data key="d1">https://timenote.info/en/Adolf-Anderssen</data>
+</node>
+<node id="32">
+  <data key="d0">https://ebin.pub/on-the-origin-of-good-moves-a-skeptics-guide-at-getting-better-at-chess-9056918796-9789056918798.html</data>
+  <data key="d1">https://ebin.pub/on-the-origin-of-good-moves-a-skeptics-guide-at-getting-better-at-chess-9056918796-...</data>
+</node>
+<node id="33">
+  <data key="d0">The Leipzig 1877 tournament was organized in honor of Adolf Anderssen. It was named the "Anderssen-Feier" (Anderssen Celebration) to celebrate him.</data>
+  <data key="d1">The Leipzig 1877 tournament was organized in honor of Adolf Anderssen. It was named the "Anderssen-F...</data>
+</node>
+<edge source="0" target="1">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="1" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="3">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="4">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="5">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="6">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="2" target="9">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="2" target="10">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="2" target="11">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="2" target="12">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="2" target="13">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="2" target="33">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="3" target="9">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="3" target="10">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="3" target="11">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="3" target="12">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="3" target="13">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="5" target="9">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="5" target="10">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="5" target="11">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="5" target="12">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="5" target="13">
+  <data key="d2">generate_new_queries</data>
+</edge>
+<edge source="5" target="33">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="7" target="8">
+  <data key="d2">reflection</data>
+</edge>
+<edge source="9" target="24">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="10" target="18">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="11" target="21">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="12" target="27">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="13" target="14">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="14" target="15">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="14" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="14" target="16">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="14" target="5">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="14" target="17">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="15" target="33">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="16" target="33">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="17" target="33">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="18" target="15">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="18" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="18" target="5">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="18" target="19">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="18" target="20">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="21" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="21" target="3">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="21" target="5">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="21" target="22">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="21" target="23">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="24" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="24" target="3">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="24" target="25">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="24" target="26">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="27" target="28">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="27" target="29">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="27" target="30">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="27" target="31">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="27" target="32">
+  <data key="d2">search_google</data>
+</edge>
+</graph></graphml>

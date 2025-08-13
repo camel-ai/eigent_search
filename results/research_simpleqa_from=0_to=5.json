@@ -1,0 +1,73 @@
+[
+    {
+        "problem": "Who received the IEEE Frank Rosenblatt Award in 2010?",
+        "answer": "Michio Sugeno",
+        "response": {
+            "answer": "The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award: Title: IEEE Frank Rosenblatt Award - Wikipedia\nDescription: 2010: Michio Sugeno; 2009: John J. Hopfield; 2008: Teuvo Kohonen; 2007 ... List of IEEE Frank Rosenblatt Award recipients \u00b7 Stub icon. This science awards\u00a0...",
+                "https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf: Title: IEEE Frank Rosenblatt Award Recipients\nDescription: IEEE FRANK ROSENBLATT AWARD. RECIPIENTS. 1 of 3. 2026 \u2013 ANDREW G. BARTO ... 2010 \u2013 MICHIO SUGENO. Faculty of Culture and Information. Science, Doshisha\u00a0...",
+                "https://cis.ieee.org/awards/ieee-awards: Title: IEEE Awards - IEEE Computational Intelligence Society\nDescription: Prize items include a bronze medal, certificate and honorarium. View past IEEE Frank Rosenblatt Award Recipients (PDF) ... 2010 to 2021. He was a \"Finland\u00a0...",
+                "https://corporate-awards.ieee.org/corporate-awards/: Title: IEEE Awards | IEEE Awards\nDescription: The award recipient statistics will provide an overview of the number ... IEEE Frank Rosenblatt Award. The IEEE Frank Rosenblatt Award was established\u00a0...",
+                "https://ethw.org/IEEE_Frank_Rosenblatt_Award: Title: IEEE Frank Rosenblatt Award - Engineering and Technology History ...\nDescription: Dec 2, 2024 ... The IEEE Frank Rosenblatt Award was established in 2004. The award ... Recipient selection is administered through the Technical Field\u00a0..."
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "Who was awarded the Oceanography Society's Jerlov Award in 2018?",
+        "answer": "Annick Bricaud",
+        "response": {
+            "answer": "Dr. Annick Bricaud was awarded the Oceanography Society's Jerlov Award in 2018.",
+            "search_results": [
+                "https://2018.oceanopticsconference.org/jerlov-award/ - The Oceanography Society is pleased to announce that Dr. Annick Bricaud has been selected as the 2018 recipient of The Nils Gunnar Jerlov Award.",
+                "https://www.photonics.com/Articles/2018_Jerlov_Award_Recognizes_Optical_Oceanographer/a64036 - Annick Bricaud has been selected by the Oceanography Society as the 2018 recipient of the Jerlov Award. The award recognizes Bricaud's group.",
+                "https://en.wikipedia.org/wiki/The_Oceanography_Society - 2018 \u2013 Annick Bricaud; 2016 \u2013 Curtis Mobley; 2014 \u2013 George W. Kattawar ... ^ \"Jerlov Award Meet | The Oceanography Society\". tos.org. Retrieved 2021-08",
+                "https://2022.oceanopticsconference.org/jerlov-award/ - For more information visit: https://tos.org/jerlov-award. Previous Recipients. 2018 \u2013 Annick Bricaud ... Oceanography Society's 2020 Nils Gunnar Jerlov Award.",
+                "https://tosmc.memberclicks.net/jerlov-award - The Oceanography Society proudly recognizes Dr. Curtis Mobley as the 2016 recipient of the Jerlov Award for his lifetime of achievements and contributions to"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
+        "answer": "Radcliffe College",
+        "response": {
+            "answer": "The name of the women's liberal arts college in Cambridge, Massachusetts, is Radcliffe College.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Radcliffe_College: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, that was founded in 1879. In 1999, it was fully incorporated into Harvard.",
+                "https://www.c-span.org/organization/radcliffe-college/26971/: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, and functioned as a female coordinate institution for the all-male Harvard.",
+                "https://www.independent.com/obits/2023/06/15/nancy-claybrook-carlson/: After high school, she enrolled at Radcliffe College, a women's liberal arts college in Cambridge, Massachusetts.",
+                "https://the-margaret-marks.fandom.com/wiki/Seven_Sisters: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, and functioned as the female coordinate institution for the all-male Harvard.",
+                "https://news.ycombinator.com/item?id=42001816: What's the name of the women's liberal arts college in Cambridge, Massachusetts?"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In whose honor was the Leipzig 1877 tournament organized?",
+        "answer": "Adolf Anderssen",
+        "response": {
+            "answer": "The Leipzig 1877 tournament was organized in honor of Adolf Anderssen. It was named the \"Anderssen-Feier\" (Anderssen Celebration) to celebrate him.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Adolf_Anderssen: The Leipzig 1877 tournament was organised in his honour and named the \"Anderssen-Feier\" (Anderssen Celebration); Anderssen finished second in the tournament.",
+                "https://www.chessgames.com/perl/chess.pl?tid=79429: The Leipzig 1877 event (organized by the Mitteldeutscher Schachbund) was called the Anderssen-Feier and held in honor of Adolf Anderssen. He seemed to have lost none of his strength, finishing =2nd in the tournament.",
+                "https://www.schachbund.de/die-anderssen-feier-in-leipzig-1877.html: Die Anderssen-Feier in Leipzig 1877 was held in honor of Adolf Anderssen.",
+                "https://kids.kiddle.co/Adolf_Anderssen: The Leipzig 1877 tournament was held to honor Anderssen. It was called the \"Anderssen-Feier\" (Anderssen Celebration).",
+                "https://de.chessbase.com/post/200-jahre-adolf-anderssen: Anl\u00e4sslich seines 50-j\u00e4hrigen Schachjubil\u00e4ums wurde am Abend des 18. Juli 1877, w\u00e4hrend der \"Anderssen-Feier\" in Leipzig der Deutsche Schachbund gegr\u00fcndet."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
+        "answer": "Poet Henrich Heine.",
+        "response": {
+            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture, which was made for her villa Achilleion at Corfu, depicted Achilles.",
+            "search_results": [
+                "According to Karl K\u00fcchler, Empress Elizabeth of Austria's (Sisi's) favorite sculpture at her villa Achilleion at Corfu depicted Achilles."
+            ]
+        },
+        "grade": "INCORRECT"
+    }
+]

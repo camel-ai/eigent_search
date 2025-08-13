@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d2" for="edge" attr.name="action" attr.type="string"/>
+<key id="d1" for="node" attr.name="label" attr.type="string"/>
+<key id="d0" for="node" attr.name="data" attr.type="string"/>
+<graph edgedefault="directed"><node id="0">
+  <data key="d0">Who was awarded the Oceanography Society's Jerlov Award in 2018?</data>
+  <data key="d1">Who was awarded the Oceanography Society's Jerlov Award in 2018?</data>
+</node>
+<node id="1">
+  <data key="d0">"Oceanography Society" "Jerlov Award" 2018 recipient</data>
+  <data key="d1">"Oceanography Society" "Jerlov Award" 2018 recipient</data>
+</node>
+<node id="2">
+  <data key="d0">https://2018.oceanopticsconference.org/jerlov-award/</data>
+  <data key="d1">https://2018.oceanopticsconference.org/jerlov-award/</data>
+</node>
+<node id="3">
+  <data key="d0">https://www.photonics.com/Articles/2018_Jerlov_Award_Recognizes_Optical_Oceanographer/a64036</data>
+  <data key="d1">https://www.photonics.com/Articles/2018_Jerlov_Award_Recognizes_Optical_Oceanographer/a64036</data>
+</node>
+<node id="4">
+  <data key="d0">https://en.wikipedia.org/wiki/The_Oceanography_Society</data>
+  <data key="d1">https://en.wikipedia.org/wiki/The_Oceanography_Society</data>
+</node>
+<node id="5">
+  <data key="d0">https://2022.oceanopticsconference.org/jerlov-award/</data>
+  <data key="d1">https://2022.oceanopticsconference.org/jerlov-award/</data>
+</node>
+<node id="6">
+  <data key="d0">https://tosmc.memberclicks.net/jerlov-award</data>
+  <data key="d1">https://tosmc.memberclicks.net/jerlov-award</data>
+</node>
+<node id="7">
+  <data key="d0">Dr. Annick Bricaud was awarded the Oceanography Society's Jerlov Award in 2018.</data>
+  <data key="d1">Dr. Annick Bricaud was awarded the Oceanography Society's Jerlov Award in 2018.</data>
+</node>
+<edge source="0" target="1">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="1" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="3">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="4">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="5">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="6">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="2" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="3" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="4" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="5" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="6" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+</graph></graphml>

@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d2" for="edge" attr.name="action" attr.type="string"/>
+<key id="d1" for="node" attr.name="label" attr.type="string"/>
+<key id="d0" for="node" attr.name="data" attr.type="string"/>
+<graph edgedefault="directed"><node id="0">
+  <data key="d0">Who received the IEEE Frank Rosenblatt Award in 2010?</data>
+  <data key="d1">Who received the IEEE Frank Rosenblatt Award in 2010?</data>
+</node>
+<node id="1">
+  <data key="d0">"IEEE Frank Rosenblatt Award" 2010 recipient</data>
+  <data key="d1">"IEEE Frank Rosenblatt Award" 2010 recipient</data>
+</node>
+<node id="2">
+  <data key="d0">https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award</data>
+  <data key="d1">https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award</data>
+</node>
+<node id="3">
+  <data key="d0">https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf</data>
+  <data key="d1">https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf</data>
+</node>
+<node id="4">
+  <data key="d0">https://cis.ieee.org/awards/ieee-awards</data>
+  <data key="d1">https://cis.ieee.org/awards/ieee-awards</data>
+</node>
+<node id="5">
+  <data key="d0">https://corporate-awards.ieee.org/corporate-awards/</data>
+  <data key="d1">https://corporate-awards.ieee.org/corporate-awards/</data>
+</node>
+<node id="6">
+  <data key="d0">https://ethw.org/IEEE_Frank_Rosenblatt_Award</data>
+  <data key="d1">https://ethw.org/IEEE_Frank_Rosenblatt_Award</data>
+</node>
+<node id="7">
+  <data key="d0">The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno.</data>
+  <data key="d1">The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno.</data>
+</node>
+<edge source="0" target="1">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="1" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="3">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="4">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="5">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="6">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="2" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="3" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="4" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="5" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="6" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+</graph></graphml>

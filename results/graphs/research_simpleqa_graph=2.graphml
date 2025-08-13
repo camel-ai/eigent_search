@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d2" for="edge" attr.name="action" attr.type="string"/>
+<key id="d1" for="node" attr.name="label" attr.type="string"/>
+<key id="d0" for="node" attr.name="data" attr.type="string"/>
+<graph edgedefault="directed"><node id="0">
+  <data key="d0">What's the name of the women's liberal arts college in Cambridge, Massachusetts?</data>
+  <data key="d1">What's the name of the women's liberal arts college in Cambridge, Massachusetts?</data>
+</node>
+<node id="1">
+  <data key="d0">"women's liberal arts college" AND "Cambridge, Massachusetts"</data>
+  <data key="d1">"women's liberal arts college" AND "Cambridge, Massachusetts"</data>
+</node>
+<node id="2">
+  <data key="d0">https://en.wikipedia.org/wiki/Radcliffe_College</data>
+  <data key="d1">https://en.wikipedia.org/wiki/Radcliffe_College</data>
+</node>
+<node id="3">
+  <data key="d0">https://www.c-span.org/organization/radcliffe-college/26971/</data>
+  <data key="d1">https://www.c-span.org/organization/radcliffe-college/26971/</data>
+</node>
+<node id="4">
+  <data key="d0">https://www.independent.com/obits/2023/06/15/nancy-claybrook-carlson/</data>
+  <data key="d1">https://www.independent.com/obits/2023/06/15/nancy-claybrook-carlson/</data>
+</node>
+<node id="5">
+  <data key="d0">https://the-margaret-marks.fandom.com/wiki/Seven_Sisters</data>
+  <data key="d1">https://the-margaret-marks.fandom.com/wiki/Seven_Sisters</data>
+</node>
+<node id="6">
+  <data key="d0">https://news.ycombinator.com/item?id=42001816</data>
+  <data key="d1">https://news.ycombinator.com/item?id=42001816</data>
+</node>
+<node id="7">
+  <data key="d0">The name of the women's liberal arts college in Cambridge, Massachusetts, is Radcliffe College.</data>
+  <data key="d1">The name of the women's liberal arts college in Cambridge, Massachusetts, is Radcliffe College.</data>
+</node>
+<edge source="0" target="1">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="1" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="3">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="4">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="5">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="6">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="2" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="3" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="4" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="5" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+<edge source="6" target="7">
+  <data key="d2">complete_task</data>
+</edge>
+</graph></graphml>

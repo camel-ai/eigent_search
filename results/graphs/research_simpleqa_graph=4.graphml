@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d2" for="edge" attr.name="action" attr.type="string"/>
+<key id="d1" for="node" attr.name="label" attr.type="string"/>
+<key id="d0" for="node" attr.name="data" attr.type="string"/>
+<graph edgedefault="directed"><node id="0">
+  <data key="d0">According to Karl Küchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?</data>
+  <data key="d1">According to Karl Küchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which ...</data>
+</node>
+<node id="1">
+  <data key="d0">"Karl Küchler" "Empress Elizabeth of Austria" favorite sculpture depiction villa Achilleion Corfu</data>
+  <data key="d1">"Karl Küchler" "Empress Elizabeth of Austria" favorite sculpture depiction villa Achilleion Corfu</data>
+</node>
+<node id="2">
+  <data key="d0">https://news.ycombinator.com/item?id=42001816</data>
+  <data key="d1">https://news.ycombinator.com/item?id=42001816</data>
+</node>
+<node id="3">
+  <data key="d0">https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3</data>
+  <data key="d1">https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3</data>
+</node>
+<node id="4">
+  <data key="d0">According to Karl Küchler, Empress Elizabeth of Austria's favorite sculpture, which was made for her villa Achilleion at Corfu, depicted Achilles.</data>
+  <data key="d1">According to Karl Küchler, Empress Elizabeth of Austria's favorite sculpture, which was made for her...</data>
+</node>
+<edge source="0" target="1">
+  <data key="d2">enhance_query_for_search</data>
+</edge>
+<edge source="1" target="2">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="1" target="3">
+  <data key="d2">search_google</data>
+</edge>
+<edge source="3" target="4">
+  <data key="d2">complete_task</data>
+</edge>
+</graph></graphml>
