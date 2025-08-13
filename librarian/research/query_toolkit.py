@@ -448,3 +448,28 @@ class QueryProcessingGraph:
             result_lines.extend(render_component(self._graph, root, visited))
 
         return "".join(result_lines)
+
+    def save_graph(self, filename: str) -> str:
+        """Save the trace graph as GraphML format."""
+        try:
+            if not filename.endswith(".graphml"):
+                filename += ".graphml"
+
+            # Add readable labels for better visualization
+            for node_id in self._graph.nodes():
+                node_data = self._graph.nodes[node_id]["data"]
+                # Keep original data and add truncated label
+                self._graph.nodes[node_id]["label"] = (
+                    str(node_data)[:100] + "..."
+                    if len(str(node_data)) > 100
+                    else str(node_data)
+                )
+
+            nx.write_graphml(self._graph, filename)
+            logger.info(f"Graph saved to {filename}")
+            return f"✅ Graph successfully saved to {filename}"
+
+        except Exception as e:
+            error_msg = f"❌ Error saving graph: {e}"
+            logger.error(error_msg)
+            return error_msg

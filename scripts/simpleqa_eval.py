@@ -28,7 +28,7 @@ from librarian.baseline import (
     DirectAnswerAgent,
     ChainOfThoughtAgent,
     KnowledgeThenReasoningAgent,
-    DirectAnswerAgentWithGoogleSearch
+    DirectAnswerAgentWithGoogleSearch,
 )
 from librarian.research import ResearchAgent
 
@@ -59,8 +59,13 @@ logger = logging.getLogger(__name__)
 @click.command()
 @click.option("--agent_type", "-a", type=click.Choice(AGENTS.keys()), required=True)
 @click.option("--num_questions", "-n", type=int, default=5)
-@click.option("--start_idx", "-s", type=int, default=0, help="Start index for the test samples.")
-def main(agent_type: str, num_questions: int, start_idx: int):
+@click.option(
+    "--start_idx", "-s", type=int, default=0, help="Start index for the test samples."
+)
+@click.option(
+    "--save_graphs", "-g", type=bool, default=0, help="Save graphs flag. True/False"
+)
+def main(agent_type: str, num_questions: int, start_idx: int, save_graphs: bool):
     # setup the agent for evaluation
     load_dotenv()  # load the openai key from .env
     model = ModelFactory.create(
@@ -81,8 +86,8 @@ def main(agent_type: str, num_questions: int, start_idx: int):
 
     # load the dataset
     dataset = load_dataset("basicv8vc/SimpleQA")
-    
-    test_samples = list(dataset["test"])[start_idx: start_idx+num_questions]
+
+    test_samples = list(dataset["test"])[start_idx : start_idx + num_questions]
 
     scores = []
     results = []
@@ -91,8 +96,7 @@ def main(agent_type: str, num_questions: int, start_idx: int):
     for i, example in enumerate(
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
-        
-        response = agent.step(f"{example['problem']}" )
+        response = agent.step(f"{example['problem']}")
         response = eval(response.msgs[0].content)
         eval_request = evaluator.create_request(
             problem=example["problem"],
@@ -120,6 +124,11 @@ def main(agent_type: str, num_questions: int, start_idx: int):
                 f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
             )
 
+        if save_graphs and agent_type == "research":
+            fig_path = f"results/graphs/{agent_type}_simpleqa_graph={i}.graphml"
+            agent.current_query_toolkit.trace_graph.save_graph(fig_path)
+            logger.info(f"Process graph figure saved to {fig_path}")
+
         # save results every 50 examples or at the end
         if (i + 1) % 50 == 0 or i == num_questions - 1:
             with open(output_file, "w") as f:
@@ -131,6 +140,7 @@ def main(agent_type: str, num_questions: int, start_idx: int):
     tqdm.write(
         f"[{agent_type}] Accuracy (n={num_questions}): {sum(scores) / len(scores)}"
     )
+
 
 if __name__ == "__main__":
     main()
