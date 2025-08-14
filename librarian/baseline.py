@@ -14,6 +14,7 @@
 """Predefined :class:`ChatAgent` subclasses for baseline agents."""
 
 from textwrap import dedent
+from typing import Any
 from pydantic import BaseModel, Field
 from camel.models import BaseModelBackend
 from camel.messages import BaseMessage
@@ -36,11 +37,6 @@ except (ImportError, AttributeError):
 class DirectAnswerResponse(BaseModel):
     answer: str = Field(..., description="The predicted answer.")
 
-class ResearchResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    search_results: list[str] = Field(
-        ..., description="The search results that lead to the answer."
-    )
 
 @track_agent(name="DirectAnswerAgent")
 class DirectAnswerAgent(ChatAgent):
@@ -120,8 +116,15 @@ class KnowledgeThenReasoningAgent(ChatAgent):
         )
 
 
-@track_agent(name="DirectAnswerAgent")
-class DirectAnswerAgentWithGoogleSearch(ChatAgent):
+class ResearchResponse(BaseModel):
+    answer: str = Field(..., description="The answer to the research question.")
+    search_results: list[str] = Field(
+        ..., description="The search results that lead to the answer."
+    )
+
+
+@track_agent(name="SimpleResearchAgent")
+class SimpleResearchAgent(ChatAgent):
     r"""A :class:`ChatAgent` that outputs a direct answer with a predefined response format. It has access to google search tools."""
 
     def __init__(self, model: BaseModelBackend, *args, **kwargs):
@@ -135,8 +138,61 @@ class DirectAnswerAgentWithGoogleSearch(ChatAgent):
         Search Results: ...
         ```
         """).strip()
-        super().__init__(system_message=system_message, model=model, tools = [FunctionTool(SearchToolkit().search_google)], *args, **kwargs)
+        super().__init__(
+            system_message=system_message,
+            model=model,
+            tools=[FunctionTool(SearchToolkit().search_google)],
+            *args,
+            **kwargs,
+        )
+
+    def search_google(
+        self,
+        query: str,
+        number_of_result_pages: int = 5,
+    ) -> list[dict[str, Any]]:
+        r"""Use Google search engine to search information for the given query.
+
+        Args:
+            query (str): The query to be searched.
+            number_of_result_pages (int): The number of result pages to
+                retrieve. Adjust this based on your task - use fewer results
+                for focused searches and more for comprehensive searches.
+                (default: :obj:`5`)
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries where each dictionary
+            represents a search result.
+
+                For web search, each dictionary contains:
+                - 'result_id': A number in order.
+                - 'title': The title of the website.
+                - 'description': A brief description of the website.
+                - 'long_description': More detail of the website.
+                - 'url': The URL of the website.
+
+                Example web result:
+                {
+                    'result_id': 1,
+                    'title': 'OpenAI',
+                    'description': 'An organization focused on ensuring that
+                    artificial general intelligence benefits all of humanity.',
+                    'long_description': 'OpenAI is a non-profit artificial
+                    intelligence research company. Our goal is to advance
+                    digital intelligence in the way that is most likely to
+                    benefit humanity as a whole',
+                    'url': 'https://www.openai.com'
+                }
+
+        """
+        query += " -site:huggingface.co"
+        return SearchToolkit().search_google(
+            query,
+            search_type="web",
+            number_of_result_pages=number_of_result_pages,
+            start_page=1,
+        )
 
     def step(self, input_message: str) -> ChatAgentResponse:
-        return super().step( input_message, response_format=ResearchResponse)
-        #return super().step( input_message + " -site:huggingface.co", response_format=ResearchResponse)
+        return super().step(input_message, response_format=ResearchResponse)
+        # return super().step( input_message + " -site:huggingface.co", response_format=ResearchResponse)
