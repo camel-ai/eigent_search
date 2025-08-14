@@ -70,7 +70,16 @@ logger = logging.getLogger(__name__)
 @click.option(
     "--start_idx", "-s", type=int, default=0, help="Start index for the test samples."
 )
-def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
+@click.option(
+    "--save_graphs", "-g", is_flag=True, help="Boolean flag for whether to save graphs."
+)
+def main(
+    agent_type: str,
+    model_name: str,
+    num_questions: int,
+    start_idx: int,
+    save_graphs: bool,
+):
     # setup the agent for evaluation
     load_dotenv()  # load the openai key from .env
     # for ollama models, we need to specify the url that hosts the model
@@ -138,8 +147,13 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
             )
 
+        if save_graphs and agent_type == "research":
+            fig_path = f"results/graphs/{agent_type}_simpleqa_graph={i}.graphml"
+            agent.current_query_toolkit.trace_graph.save_graph(fig_path)
+            logger.info(f"Process graph figure saved to {fig_path}")
+
         # save results every 50 examples or at the end
-        if (i + 1) % 50 == 0 or i == num_questions - 1:
+        if (i + 1) % 10 == 0 or i == num_questions - 1:
             with open(output_file, "w") as f:
                 json.dump(results, f, indent=4)
             tqdm.write(f"Results saved to {output_file}")

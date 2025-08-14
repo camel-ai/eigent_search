@@ -213,7 +213,9 @@ class QueryProcessingToolkit(BaseToolkit):
             }
             # Record results in trace graph
             for url in results.keys():
-                self.trace_graph.record_process(query_str, url, action, content=results[url])
+                self.trace_graph.record_process(
+                    query_str, url, action, content=results[url]
+                )
             return results
 
         # Try enhanced query first
@@ -348,14 +350,14 @@ class QueryProcessingGraph:
         # If source not found, create it (shouldn't happen in normal usage)
         if source_node_id is None:
             source_node_id = self.new_node_id
-            self._graph.add_node(source_node_id, data=from_data, **attr)
+            self._graph.add_node(source_node_id, data=from_data)
             self._data_to_node[from_data] = source_node_id
             self.new_node_id += 1
 
         # Add the target node
         if target_node_id is None:
             target_node_id = self.new_node_id
-            self._graph.add_node(target_node_id, data=to_data)
+            self._graph.add_node(target_node_id, data=to_data, **attr)
             self._data_to_node[to_data] = target_node_id
             self.new_node_id += 1
 
@@ -448,3 +450,18 @@ class QueryProcessingGraph:
             result_lines.extend(render_component(self._graph, root, visited))
 
         return "".join(result_lines)
+
+    def save_graph(self, filename: str) -> str:
+        """Save the trace graph as GraphML format."""
+        try:
+            if not filename.endswith(".graphml"):
+                filename += ".graphml"
+
+            nx.write_graphml(self._graph, filename)
+            logger.info(f"Graph saved to {filename}")
+            return f"✅ Graph successfully saved to {filename}"
+
+        except Exception as e:
+            error_msg = f"❌ Error saving graph: {e}"
+            logger.error(error_msg)
+            return error_msg
