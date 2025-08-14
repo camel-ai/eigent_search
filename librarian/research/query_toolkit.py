@@ -282,7 +282,6 @@ class QueryProcessingToolkit(BaseToolkit):
             FunctionTool(self.select_query_and_search),
             FunctionTool(self.generate_new_queries),
             FunctionTool(self.complete_task),
-            # FunctionTool(ThinkingToolkit().think),
             FunctionTool(self.reflect),
         ]
 
