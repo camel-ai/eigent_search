@@ -153,7 +153,7 @@ def main(
             logger.info(f"Process graph figure saved to {fig_path}")
 
         # save results every 50 examples or at the end
-        if (i + 1) % 10 == 0 or i == num_questions - 1:
+        if (i + 1) % 50 == 0 or i == num_questions - 1:
             with open(output_file, "w") as f:
                 json.dump(results, f, indent=4)
             tqdm.write(f"Results saved to {output_file}")
