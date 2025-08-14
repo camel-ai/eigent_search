@@ -213,7 +213,7 @@ class QueryProcessingToolkit(BaseToolkit):
             }
             # Record results in trace graph
             for url in results.keys():
-                self.trace_graph.record_process(query_str, url, action)
+                self.trace_graph.record_process(query_str, url, action, content=results[url])
             return results
 
         # Try enhanced query first
@@ -329,13 +329,14 @@ class QueryProcessingGraph:
         """Get the trace graph."""
         return self._graph
 
-    def record_process(self, from_data: str, to_data: str, action: str) -> str:
+    def record_process(self, from_data: str, to_data: str, action: str, **attr) -> str:
         """Record a process in the trace graph.
 
         Args:
             from_data (str): The source data.
             to_data (str): The target data after processing.
             action (str): The type of processing action performed.
+            attr: keyword arguments, optional, Set or change node attributes using key=value.
 
         Returns:
             str: The node ID of the newly created target node.
@@ -347,7 +348,7 @@ class QueryProcessingGraph:
         # If source not found, create it (shouldn't happen in normal usage)
         if source_node_id is None:
             source_node_id = self.new_node_id
-            self._graph.add_node(source_node_id, data=from_data)
+            self._graph.add_node(source_node_id, data=from_data, **attr)
             self._data_to_node[from_data] = source_node_id
             self.new_node_id += 1
 
