@@ -24,9 +24,11 @@ uv sync
 
 3. Run the evaluation script:
 ```bash
-# run first five SimpleQA examples
-python scripts/simpleqa_eval.py -a research -n 5 
+# run first five SimpleQA examples, starting from the first question
+python scripts/simpleqa_eval.py -a research -n 5 -s 1
 ```
+
+Please see input parameters inside the script.
 
 4. View results in the `results` directory.
 
