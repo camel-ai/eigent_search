@@ -28,16 +28,16 @@ from librarian.baseline import (
     DirectAnswerAgent,
     ChainOfThoughtAgent,
     KnowledgeThenReasoningAgent,
-    DirectAnswerAgentWithGoogleSearch,
+    SimpleResearchAgent,
 )
 from librarian.research import ResearchAgent
 
 AGENTS = {
     "research": ResearchAgent,
+    "simple_research": SimpleResearchAgent,
     "direct_answer": DirectAnswerAgent,
     "chain_of_thought": ChainOfThoughtAgent,
     "knowledge_then_reasoning": KnowledgeThenReasoningAgent,
-    "direct_w_google": DirectAnswerAgentWithGoogleSearch,
 }
 
 MODEL_NAMES = {
