@@ -28,7 +28,7 @@ from librarian.baseline import (
     DirectAnswerAgent,
     ChainOfThoughtAgent,
     KnowledgeThenReasoningAgent,
-    DirectAnswerAgentWithGoogleSearch
+    DirectAnswerAgentWithGoogleSearch,
 )
 from librarian.research import ResearchAgent
 
@@ -40,6 +40,11 @@ AGENTS = {
     "direct_w_google": DirectAnswerAgentWithGoogleSearch,
 }
 
+MODEL_NAMES = {
+    "gpt-4o-mini": ModelType.GPT_4O_MINI,
+    "gpt-4.1-mini": ModelType.GPT_4_1_MINI,
+    "gpt-oss": "gpt-oss:120b",  # Ollama model for now
+}
 
 logging.basicConfig(
     level=logging.INFO,
@@ -58,19 +63,33 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.option("--agent_type", "-a", type=click.Choice(AGENTS.keys()), required=True)
+@click.option(
+    "--model_name", "-m", type=click.Choice(MODEL_NAMES.keys()), default="gpt-4.1-mini"
+)
 @click.option("--num_questions", "-n", type=int, default=5)
-@click.option("--start_idx", "-s", type=int, default=0, help="Start index for the test samples.")
-def main(agent_type: str, num_questions: int, start_idx: int):
+@click.option(
+    "--start_idx", "-s", type=int, default=0, help="Start index for the test samples."
+)
+def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     # setup the agent for evaluation
     load_dotenv()  # load the openai key from .env
-    model = ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
-        model_type=ModelType.GPT_4_1_MINI,
-        model_config_dict={"temperature": 0.5},
-    )
+    # for ollama models, we need to specify the url that hosts the model
+    if model_name == "gpt-oss":
+        model = ModelFactory.create(
+            model_platform=ModelPlatformType.OLLAMA,
+            model_type="gpt-oss:120b",
+            url="http://129.212.188.6:7861/v1",
+            model_config_dict={"temperature": 0.0},
+        )
+    else:
+        model = ModelFactory.create(
+            model_platform=ModelPlatformType.OPENAI,
+            model_type=MODEL_NAMES[model_name],
+            model_config_dict={"temperature": 0.0},
+        )
     agent = AGENTS[agent_type](model=model)
 
-    # setup the evaluator
+    # setup the evaluator; don't use the same model as the agent
     eval_model = ModelFactory.create(
         model_platform=ModelPlatformType.OPENAI,
         model_type=ModelType.GPT_4_1_MINI,
@@ -81,18 +100,17 @@ def main(agent_type: str, num_questions: int, start_idx: int):
 
     # load the dataset
     dataset = load_dataset("basicv8vc/SimpleQA")
-    
-    test_samples = list(dataset["test"])[start_idx: start_idx+num_questions]
+
+    test_samples = list(dataset["test"])[start_idx : start_idx + num_questions]
 
     scores = []
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
-    output_file = f"results/{agent_type}_simpleqa_from={start_idx}_to={start_idx+num_questions}.json"
+    output_file = f"results/{agent_type}_simpleqa_from={start_idx}_to={start_idx + num_questions}.json"
     for i, example in enumerate(
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
-        
-        response = agent.step(f"{example['problem']}" )
+        response = agent.step(f"{example['problem']}")
         response = eval(response.msgs[0].content)
         eval_request = evaluator.create_request(
             problem=example["problem"],
@@ -131,6 +149,7 @@ def main(agent_type: str, num_questions: int, start_idx: int):
     tqdm.write(
         f"[{agent_type}] Accuracy (n={num_questions}): {sum(scores) / len(scores)}"
     )
+
 
 if __name__ == "__main__":
     main()
