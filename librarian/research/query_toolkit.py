@@ -58,7 +58,7 @@ def validate_output_query_not_explored(func):
         # Find output query parameters
         output_params = {
             "rewrite_query": "rewritten_query",
-            "expand_query": "expanded_queries",
+            "decompose_query": "decomposed_queries",
             "select_query_and_search": "final_query",
             "generate_new_queries": "new_queries",
         }
@@ -96,7 +96,9 @@ def validate_output_query_not_explored(func):
 class QueryProcessingToolkit(BaseToolkit):
     """Toolkit for processing queries for deep research.
 
-    This toolkit provides methods for query rewriting, expansion, selection, and generation. Each method follows a pattern where it takes the original input and the intended output as parameters, then returns the intended output. This allows LLMs to understand the expected behavior through the docstring and call the function appropriately.
+    This toolkit provides methods for query rewriting, expansion, selection, and generation. 
+    Each method follows a pattern where it takes the original input and the intended output as parameters, then returns the intended output. 
+    This allows LLMs to understand the expected behavior through the docstring and call the function appropriately.
     """
 
     def __init__(self, initial_query: str) -> None:
@@ -117,7 +119,9 @@ class QueryProcessingToolkit(BaseToolkit):
     def rewrite_query(self, query: str, rewritten_query: str) -> dict[str, list[str]]:
         """Rewrite a selected query from the current frontier to improve search effectiveness.
 
-        This step is OPTIONAL and should only be used when the input query is vague, fuzzy, or doesn't clearly convey the user's intent. For clear, specific queries, this step can be skipped. The agent should provide a more specific, detailed, or differently phrased version of the original query when rewriting is needed.
+        This step is OPTIONAL and should only be used when the input query is vague, fuzzy, or doesn't clearly convey the user's intent. 
+        For clear, specific queries, this step can be skipped. 
+        The agent should provide a more specific, detailed, or differently phrased version of the original query when rewriting is needed.
 
         Args:
             query (str): The input query from the current frontier that requires rewriting.
@@ -133,17 +137,21 @@ class QueryProcessingToolkit(BaseToolkit):
 
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
-    def expand_query(
+    def decompose_query(
         self, query: str, expanded_queries: list[str]
     ) -> dict[str, list[str]]:
-        """Expand the input query selected from the current frontier into multiple related search queries.
+        """
+        Break a complex query into multiple, narrower sub-queries
+        to improve search precision, recall, and coverage.
 
-        The agent should expand queries using two main strategies:
-
-        (1) associations - related concepts, synonyms, broader/narrower terms, or
-        (2) decomposition - breaking down complex queries into simpler, more focused components.
-
-        This helps capture different aspects and variations of the input query for comprehensive research.
+        The decomposition focuses on identifying distinct concepts, entities, or
+        relationships in the input query and generating targeted queries for each.
+        This helps:
+            • Retrieve more relevant and focused search results for each aspect.
+            • Increase coverage by searching multiple variations independently.
+            • Enable multi-hop search workflows where different sub-queries
+            retrieve complementary evidence.
+            • Reduce noise from overly broad or compound search terms.
 
         Args:
             query (str): The input query from the current frontier that requires expanding.
@@ -155,7 +163,7 @@ class QueryProcessingToolkit(BaseToolkit):
         # Add the new queries to the frontier if they have passed the frontier and explored validation
         self.frontier.update(expanded_queries)
         for new_query in expanded_queries:
-            self.trace_graph.record_process(query, new_query, "expand_query")
+            self.trace_graph.record_process(query, new_query, "decompose_query")
         return {"frontier": list(self.frontier)}
 
     @validate_input_query_in_frontier
@@ -163,11 +171,20 @@ class QueryProcessingToolkit(BaseToolkit):
     def select_query_and_search(
         self, query: str, enhanced_query: str
     ) -> dict[str, dict[str, str]]:
-        """Select the best query from the current frontier and perform web search.
+        """
+        Select the best query from the current frontier and perform a web search, optionally
+        enhancing the query with advanced operators to maximize precision and minimize cost.
 
-        The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search. Then, OPTIONALLY add advanced search operators (AND, OR, NOT, quotes, site:, filetype:, etc.) to improve search precision and relevance. Finally, perform an actual web search using the enhanced query first, and fall back to the original query if the enhanced query fails.
+        Selection criteria: 
+        • the input query MUST be selected from current frontier queries.
+        • specificity: narrower scopes > broad topics (e.g., named entities, exact phrases)
+        • clarity: low ambiguity, well-formed grammar, concrete intent
+        • search_potential: likelihood to surface authoritative sources (prior hits, known sites)
 
-        If the search results are not sufficient to answer the user's initial query, the agent should process and select another query from the current frontier and perform web search again, or generate new queries based on the search results.
+        Enhancement (optional):
+        - Add operators to improve precision: quotes for exact phrases, AND/OR/NOT, site:, filetype:, and time filters.
+        - Respect query-specific filters: `time_window`, `site_filters`, `filetype_filters`.
+        - Fallback to the original query if the enhanced query yields errors or no results.
 
         Args:
             query (str): The input query from the current frontier that is selected for web search.
@@ -278,7 +295,7 @@ class QueryProcessingToolkit(BaseToolkit):
         """Get the tools for the query processing toolkit."""
         return [
             FunctionTool(self.rewrite_query),
-            FunctionTool(self.expand_query),
+            FunctionTool(self.decompose_query),
             FunctionTool(self.select_query_and_search),
             FunctionTool(self.generate_new_queries),
             FunctionTool(self.complete_task),
@@ -286,9 +303,21 @@ class QueryProcessingToolkit(BaseToolkit):
         ]
 
     def reflect(self, reflection: str) -> str:
-        """Reflect on explored queries and current search results, and think about what we should do next to better resolve the initial query.
+        """
+        Review current progress toward answering the initial query and decide the next action.
 
-        Use this tool whenever possible, to reflect explicitly.
+        The reflection process:
+        1. Evaluate whether the collected evidence and search results are sufficient
+           to confidently and comprehensively answer the initial query.
+            • If sufficient: terminate the research by calling `complete_task` with
+              the final answer and supporting search results.
+        2. If insufficient:
+            • Option A – Generate new queries: If recent search results reveal
+              new leads, missing aspects, or unexplored angles, call
+              `generate_new_queries` to add targeted queries to the frontier.
+            • Option B – Switch to another frontier query: If other queries in the
+              frontier have higher potential to close knowledge gaps, select one
+              and call `select_query_and_search`.
 
         Args:
             reflection (str): A comprehensive reflection on the process.

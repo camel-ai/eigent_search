@@ -1,37 +1,12 @@
 # CAMEL-AI DeepResearch
 
-## Development Logs
+Branch to explore new toolkit design
 
-- [X] Base module design.
-- [ ] Create evaluation guidelines.
-- [X] Establish base evaluation at `evaluation`; evaluators for SimpleQA and BrowseComp are both ready. 
-- [X] Create simple single agent baselines.
+## Version Record
 
-## Get Started
+### Version 1 (15.08.2025)
+- improve system prompt and docstring
+- decouple select and search
+- add reflection
 
-1. Clone the repository:
-```bash
-git clone https://github.com/camel-ai/librarian.git
-```
-
-2. Install dependencies:
-```bash
-cd librarian
-uv venv --python 3.10 --prompt "(deep_research) " .venv
-source .venv/bin/activate
-uv sync
-```
-
-3. Run the evaluation script:
-```bash
-# run first five SimpleQA examples, starting from the first question
-python scripts/simpleqa_eval.py -a research -n 5 -s 1
-```
-
-Please see input parameters inside the script.
-
-4. View results in the `results` directory.
-
-## License
-
-This project is licensed under the Apache License 2.0.
+Accuracy 0.72
