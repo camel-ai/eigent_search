@@ -4,7 +4,7 @@ Branch to explore new toolkit design
 
 ## Version Record
 
-### Version 1 (15.08.2025)
+### Version 1.0 (15.08.2025)
 - improve system prompt and docstring
 - decouple select and search
 - add reflection
