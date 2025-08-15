@@ -25,6 +25,7 @@ from camel.agents.chat_agent import ChatAgent
 
 from .query_toolkit import QueryProcessingToolkit
 from .custom_browsing_toolkit import get_custom_browsing_toolkit
+from .web_content_toolkit import WebContentToolkit
 
 # AgentOps decorator setting
 try:
@@ -65,8 +66,15 @@ class ResearchAgent(ChatAgent):
         - select_query_and_search: Select a query from the frontier (and optionally enhance with advanced search operators) and search the web for information.
         - generate_new_queries: Generate new queries based on the search results if the search results are not sufficient to answer the user's initial query.
         - complete_task: Complete the deep research when search results are sufficient to answer the user's initial query.
+        - extract_web_content: Extract the main content from a web page given its URL. Returns title, content, status, and word count. Use this tool when the search results from select_query_and_search do not contain enough detail to answer the query - extract the full content from promising URLs to get more comprehensive information.
 
         The query processing toolkit also maintains a frontier of queries to be explored and an explored set of queries. The frontier contains the queries that have not been explored yet. The explored set contains the queries that have been explored and should not be explored again. You should keep track of the frontier and the explored set while conducting the research.
+
+        Research Strategy:
+        1. Start with select_query_and_search to get an overview from search results
+        2. If the search result descriptions/snippets don't contain enough detail to fully answer the query, use extract_web_content on the most promising URLs to get the full page content
+        3. Only complete_task when you have sufficient information to provide a comprehensive answer
+        4. If you cannot find the answer after extracting content from relevant pages, generate new queries to explore different aspects
 
         The final output should be the answer to the user's initial query, and the search results that lead to the answer.
 
@@ -83,13 +91,21 @@ class ResearchAgent(ChatAgent):
             **kwargs,
         )
         self.current_query_toolkit = None
+        self.web_content_toolkit = WebContentToolkit()
 
     def reset(self):
         super().reset()
+        if self.current_query_toolkit:
+            self.remove_tools(
+                [
+                    tool.get_function_name()
+                    for tool in self.current_query_toolkit.get_tools()
+                ]
+            )
         self.remove_tools(
             [
                 tool.get_function_name()
-                for tool in self.current_query_toolkit.get_tools()
+                for tool in self.web_content_toolkit.get_tools()
             ]
         )
         self.current_query_toolkit = None
@@ -102,6 +118,7 @@ class ResearchAgent(ChatAgent):
             # Use sync version for non-browsing
             self.current_query_toolkit = QueryProcessingToolkit(input_query)
             self.add_tools(self.current_query_toolkit.get_tools())
+            self.add_tools(self.web_content_toolkit.get_tools())
             search_response = super().step(
                 f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
                 response_format=ResearchResponse,
@@ -111,6 +128,7 @@ class ResearchAgent(ChatAgent):
     async def astep(self, input_query: str, browsing: bool = False) -> ChatAgentResponse:
         self.current_query_toolkit = QueryProcessingToolkit(input_query)
         self.add_tools(self.current_query_toolkit.get_tools())
+        self.add_tools(self.web_content_toolkit.get_tools())
         if browsing:
             self.add_tools(get_custom_browsing_toolkit().get_tools())
         search_response = await super().astep(

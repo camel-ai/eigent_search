@@ -7,7 +7,10 @@ requires-python = ">=3.10,<3.13"
 dependencies = [
     "camel-ai[all]>=0.2.74",
     "faiss-cpu==1.10.0",    # compatible macOS arm64 wheel
-    "traceroot==0.0.4a5"    # force pre-release so uv won't block it
+    "traceroot==0.0.4a5",    # force pre-release so uv won't block it
+    "beautifulsoup4>=4.12.0",
+    "readability-lxml>=0.8.1",
+    "requests>=2.28.0"
 ]
 
 [build-system]

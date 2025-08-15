@@ -19,6 +19,7 @@ import logging
 from functools import wraps
 
 from camel.toolkits import FunctionTool, BaseToolkit, SearchToolkit, ThinkingToolkit
+from .web_content_toolkit import WebContentToolkit
 
 logger = logging.getLogger(__name__)
 
