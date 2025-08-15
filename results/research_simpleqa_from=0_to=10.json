@@ -3,26 +3,21 @@
         "problem": "Who received the IEEE Frank Rosenblatt Award in 2010?",
         "answer": "Michio Sugeno",
         "response": {
-            "answer": "The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno.",
+            "answer": "The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno.\n\nDetailed Information Extracted:\nThe IEEE Frank Rosenblatt Award is a Technical Field Award established by the IEEE Board of Directors in 2004. It is presented for outstanding contributions to the advancement of the design, practice, techniques, or theory in biologically and linguistically motivated computational paradigms and systems, including neural networks, connectionist systems, evolutionary computation, fuzzy systems, and hybrid intelligent systems. The award is named after Frank Rosenblatt, the creator of the perceptron. Recipients receive a bronze medal, certificate, and honorarium.\n\nAccording to the Engineering and Technology History Wiki, the recipients around 2010 include:\n- 2009: John J. Hopfield\n- 2010: Michio Sugeno\n- 2011: Hans-Paul Schwefel\n\nThis confirms that Michio Sugeno received the IEEE Frank Rosenblatt Award in 2010.",
             "search_results": [
-                "https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award: 2010: Michio Sugeno; 2009: John J. Hopfield; 2008: Teuvo Kohonen; 2007 ... List of IEEE Frank Rosenblatt Award recipients.",
-                "https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf: IEEE FRANK ROSENBLATT AWARD. RECIPIENTS. 1 of 3. 2026 \t6 ANDREW G. BARTO ... 2010 \t6 MICHIO SUGENO. Faculty of Culture and Information. Science, Doshisha ...",
-                "https://ieeexplore.ieee.org/author/37271220500: He is the first recipient of IEEE CIS Pioneer Award in Fuzzy Systems with Zadeh, in 2000. He was the recipient of the 2010 IEEE Frank Rosenblatt Award, and also ..."
+                "https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award",
+                "https://ethw.org/IEEE_Frank_Rosenblatt_Award"
             ]
         },
-        "grade": "INCORRECT"
+        "grade": "CORRECT"
     },
     {
         "problem": "Who was awarded the Oceanography Society's Jerlov Award in 2018?",
         "answer": "Annick Bricaud",
         "response": {
-            "answer": "The Oceanography Society's Jerlov Award in 2018 was awarded to Dr. Annick Bricaud.",
+            "answer": "The Oceanography Society awarded Dr. Annick Bricaud the Jerlov Award in 2018. She was recognized for her significant contributions to the advancement of knowledge about the nature and consequences of light in the ocean. Dr. Bricaud is internationally known for her groundbreaking work in ocean optics, including experimental and theoretical studies on seawater optical properties, bio-optical relationships based on fieldwork, and algorithms for deriving biogeochemical products from satellite ocean color. She is a senior research scientist at the Laboratoire d\u2019Oc\u00e9anographie de Villefranche (LOV), CNRS \u2013 Sorbonne Universit\u00e9, Villefranche-sur-Mer, France, and has published extensively with over 11,400 citations. She is also noted as one of the first female researchers in optical oceanography and has mentored numerous students globally.",
             "search_results": [
-                "https://2018.oceanopticsconference.org/jerlov-award/ - The Oceanography Society is pleased to announce that Dr. Annick Bricaud has been selected as the 2018 recipient of The Nils Gunnar Jerlov Award.",
-                "https://www.photonics.com/Articles/2018_Jerlov_Award_Recognizes_Optical_Oceanographer/a64036 - Annick Bricaud has been selected by the Oceanography Society as the 2018 recipient of the Jerlov Award.",
-                "https://en.wikipedia.org/wiki/The_Oceanography_Society - Lists 2018 Jerlov Award recipient as Annick Bricaud.",
-                "https://2022.oceanopticsconference.org/jerlov-award/ - Confirms 2018 Jerlov Award recipient Annick Bricaud.",
-                "http://www.greenedgeproject.info/news.php - Announces Dr. Annick Bricaud as 2018 Jerlov Award recipient."
+                "The Oceanography Society is pleased to announce that Dr. Annick Bricaud has been selected as the 2018 recipient of The Nils Gunnar Jerlov Award recognizing her contributions to the advancement of our knowledge of the nature and consequences of light in the ocean. Dr. Bricaud is recognized internationally for her groundbreaking contributions to ocean optics, which cover experimental and theoretical studies on seawater optical properties, fieldwork-based bio-optical relationships, and algorithms for deriving biogeochemical products from satellite ocean color. She is a senior research scientist at the Laboratoire d\u2019Oc\u00e9anographie de Villefranche (LOV), CNRS \u2013 Sorbonne Universit\u00e9, Villefranche-sur-Mer, France, which she joined in 1976. Her 75 papers received the outstanding number of 11,400 citations, and many opened new avenues of research. Annick mentored numerous students, in France and worldwide, and has a long record of contribution to community service. She is among the first female researchers in optical oceanography."
             ]
         },
         "grade": "CORRECT"
@@ -31,27 +26,24 @@
         "problem": "What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
         "answer": "Radcliffe College",
         "response": {
-            "answer": "The name of the women's liberal arts college in Cambridge, Massachusetts is Wellesley College. Radcliffe College was also a women's liberal arts college in Cambridge, but it was fully incorporated into Harvard University in 1999.",
+            "answer": "The women's liberal arts college in Cambridge, Massachusetts, is Radcliffe College. Founded in 1879, Radcliffe College was historically a women's liberal arts college that operated as the female coordinate institution for Harvard University. In 1999, Radcliffe College was fully incorporated into Harvard University and ceased to exist as an independent undergraduate college. Its legacy continues through the Radcliffe Institute for Advanced Study at Harvard.",
             "search_results": [
-                "https://en.wikipedia.org/wiki/Radcliffe_College: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, that was founded in 1879. In 1999, it was fully incorporated into Harvard.",
-                "https://lesley.edu/: Lesley University is a private, coeducational university in Cambridge, Massachusetts, not specifically a women's liberal arts college.",
-                "https://www.wellesley.edu/: Wellesley College is one of the most academically challenging institutions of higher education in the country, and is widely acknowledged as a top women's liberal arts college.",
-                "https://www.harvard.edu/: Harvard University is a prestigious university in Cambridge, Massachusetts, but it is not a women's liberal arts college.",
-                "https://simple.wikipedia.org/wiki/Radcliffe_College: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, the female college attached to Harvard University."
+                "Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, founded in 1879 and fully incorporated into Harvard University in 1999. It was historically the female coordinate institution for Harvard and one of the Seven Sisters colleges."
             ]
         },
-        "grade": "INCORRECT"
+        "grade": "CORRECT"
     },
     {
         "problem": "In whose honor was the Leipzig 1877 tournament organized?",
         "answer": "Adolf Anderssen",
         "response": {
-            "answer": "The Leipzig 1877 tournament was organized in honor of Adolf Anderssen.",
+            "answer": "The Leipzig 1877 chess tournament was organized in honor of Adolf Anderssen. It was named the \"Anderssen-Feier\" (Anderssen Celebration) to commemorate the 50th anniversary of Anderssen learning chess. Anderssen was a prominent German chess master, regarded as one of the leading players of his time, and the tournament was held to celebrate his contributions to the game.",
             "search_results": [
-                "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3: Title: Repository evaluations - pvduy/simpleqa | Datasets at Oxen.ai\nDescription: Mar 18, 2025 ... In whose honor was the Leipzig 1877 tournament organized? Adolf Anderssen. [\"The Leipzig 1877 chess tournament was organized in honor o, ...",
-                "https://en.wikipedia.org/wiki/Adolf_Anderssen: Title: Adolf Anderssen - Wikipedia\nDescription: Karl Ernst Adolf Anderssen (6 July 1818 \t6 March 1879) was a German chess master. He won the great international tournaments of 1851 and 1862,\u0000...",
-                "https://en.chessbase.com/post/an-adolf-anderssen-anniversary: Title: An Adolf Anderssen anniversary | ChessBase\nDescription: Mar 13, 2019 ... ... event that the German Chess Federation was founded on the evening of July 18th, 1877 during the \"Anderssen Celebration\" in Leipzig. The\u0000...",
-                "https://kids.kiddle.co/Adolf_Anderssen: Title: Adolf Anderssen Facts for Kids\nDescription: Jun 5, 2025 ... The Leipzig 1877 tournament was held to honor Anderssen. It was ... This tournament honored Anderssen's 50th anniversary of learning chess.\nLong Description: Learn Adolf Anderssen facts for kids"
+                "https://en.wikipedia.org/wiki/Adolf_Anderssen",
+                "https://kids.kiddle.co/Adolf_Anderssen",
+                "https://en.chessbase.com/post/an-adolf-anderssen-anniversary",
+                "https://www.chessgames.com/player/adolf_anderssen.html",
+                "https://simple.wikipedia.org/wiki/Adolf_Anderssen"
             ]
         },
         "grade": "CORRECT"
@@ -60,11 +52,9 @@
         "problem": "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
         "answer": "Poet Henrich Heine.",
         "response": {
-            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture, made for her villa Achilleion at Corfu, depicted Achilles.",
+            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture, which was made for her villa Achilleion at Corfu, depicted Achilles.",
             "search_results": [
-                "https://news.ycombinator.com/item?id=42001816",
-                "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3",
-                "https://news.ycombinator.com/item?id=41997727"
+                "https://news.ycombinator.com/item?id=42001816"
             ]
         },
         "grade": "INCORRECT"
@@ -73,9 +63,9 @@
         "problem": "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's death ordered to pay her son?",
         "answer": "120,000",
         "response": {
-            "answer": "The surgeon held responsible for Stella Obasanjo's death was ordered to pay her son $176,000, which is approximately \u00163,000. Converted to euros, this amount is roughly around 130,000 to 140,000 euros, depending on the exchange rate at the time.",
+            "answer": "The surgeon held responsible for Stella Obasanjo's death was ordered to pay 120,000 euros in damages to her son.",
             "search_results": [
-                "https://www.nairaland.com/326945/doctor-jailed-obasanjo-death/1"
+                "https://topnews.in/doctor-given-jail-time-death-nigerian-first-lady-2216984"
             ]
         },
         "grade": "CORRECT"
@@ -84,9 +74,12 @@
         "problem": "What were the month and year when Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\"?",
         "answer": "January 2008",
         "response": {
-            "answer": "Barack Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\" in an interview published in March 2008.",
+            "answer": "Barack Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\" in an interview that was reported on March 28, 2008. This is the month and year when he made this statement publicly in the context of his religious beliefs.\n\nExtracted content from HuffPost article dated March 28, 2008, states: \"In a recent interview with Christianity Today, presidential candidate Barack Obama shared his religious beliefs, and answered questions on questions central to evangelical interests, such as abortion. 'I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ. I believe that that faith gives me a path to be cleansed of sin and have eternal life. But most importantly, I believe in the example that Jesus set by feeding the hungry and healing the sick and always prioritizing the least of these over the powerful.'\"",
             "search_results": [
-                "Obama: \"I Believe In The Redemptive Death And Resurrection Of Christ\" | HuffPost Latest News, Mar 28, 2008: In a recent interview with Christianity Today, presidential candidate Barack Obama shared his religious beliefs, and answered questions on questions central to evangelical interests, such as abortion. \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ.\""
+                "https://www.huffpost.com/entry/obama-i-believe-in-the-re_n_83208",
+                "https://en.wikipedia.org/wiki/Barack_Obama",
+                "https://www.christianitytoday.com/2010/10/joni-eareckson-tada-on-something-greater-than-healing/",
+                "https://www.huffpost.com/entry/obama-i-believe-in-the-re_n_83208"
             ]
         },
         "grade": "INCORRECT"
@@ -95,13 +88,9 @@
         "problem": "Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?",
         "answer": "Fakhruddin Ali Ahmed",
         "response": {
-            "answer": "Mirza Hameedullah Beg was appointed the Chief Justice of India in January 1977 by the President of India, following the recommendation and advice process involving the incumbent Chief Justice, other judges, and the Prime Minister of India at the time, Indira Gandhi. The appointment was made by the Indira Gandhi government, superseding Justice Hans Raj Khanna.",
+            "answer": "Mirza Hameedullah Beg was appointed as the Chief Justice of India in January 1977 by the Indira Gandhi government. This appointment was notable because it was against the legal tradition, as Beg was junior to H. R. Khanna, who was bypassed for the position. This move by the Indira Gandhi government was part of a series of controversial judicial appointments during that period.",
             "search_results": [
-                "https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg: Mirza Hameedullah Beg (M. H. Beg) (22 February 1913 \t6 19 November 1988) was the 15th Chief Justice of India, serving from January 1977 to February 1978.",
-                "https://www.sci.gov.in/judge/justice-m-hameedullah-beg/: Justice Mirza Hameedullah Beg, M.A. (Cantab), Barrister-at-Law; Born at Lucknow on 22nd February, 1913; appointed as Chief Justice of India on 29.01.1977. Retired on 21.02.1978.",
-                "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_India: The prime minister of India is the chief executive of the Government of India. Indira Gandhi was the Prime Minister until March 1977.",
-                "https://en.wikipedia.org/wiki/Chief_Justice_of_India: The Constitution of India grants power to the President of India to appoint the Chief Justice of India, as recommended by the outgoing Chief Justice in consultation with other judges. In January 1977, Mirza Hameedullah Beg was appointed Chief Justice of India by the Indira Gandhi government, superseding Justice Hans Raj Khanna.",
-                "https://en.wikipedia.org/wiki/Chief_Justice_of_India#Appointment: As the incumbent Chief Justice approaches retirement, the Ministry of Law and Justice seeks a recommendation from the incumbent Chief Justice. Consultations with other judges might also take place. The recommendation is then presented to the Prime Minister, who advises the President in the matter of appointment. The President of India formally appoints the Chief Justice of India under Article 124(2) of the Constitution."
+                "https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg"
             ]
         },
         "grade": "INCORRECT"
@@ -110,16 +99,16 @@
         "problem": "What is the name of the former Prime Minister of Iceland who worked as a cabin crew member until 1971?",
         "answer": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir",
         "response": {
-            "answer": "The former Prime Minister of Iceland who worked as a cabin crew member until 1971 is J\u00f3hanna Sigur\u00f0ard\u00f3ttir. She worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971 and later served as the Prime Minister of Iceland from 2009 to 2013.",
+            "answer": "The former Prime Minister of Iceland who worked as a cabin crew member until 1971 is J\u00f3hanna Sigur\u00f0ard\u00f3ttir. She worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971 before entering politics. She served as the Prime Minister of Iceland from 2009 to 2013 and was the country's first female prime minister as well as the world's first openly gay head of government.\n\nDetailed information extracted from Britannica: J\u00f3hanna Sigur\u00f0ard\u00f3ttir (born October 4, 1942, Reykjav\u00edk, Iceland) was an Icelandic politician who served as prime minister of Iceland from 2009 to 2013. She was the country\u2019s first female prime minister and the world\u2019s first openly gay head of government. Sigur\u00f0ard\u00f3ttir worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971, and she was an active labour union member, twice serving as chairman of the board of the Icelandic Cabin Crew Association (1966, 1969). She took an office job in Reykjav\u00edk in 1971 and later entered politics, being elected to the Althing in 1978. She became prime minister in 2009 and led Iceland through recovery after the 2008 financial crisis.",
             "search_results": [
-                "https://en.wikipedia.org/wiki/J%C3%B3hanna_Sigur%C3%B0ard%C3%B3ttir: Title: J\u00f3hanna Sigur\u00f0ard\u00f3ttir - Wikipedia Description: J\u00f3hanna became prime minister on 1 February 2009, in a minority cabinet formed after the previous coalition was dissolved following the 2008 Icelandic financial crisis.",
-                "https://www.britannica.com/biography/Johanna-Sigurdardottir: Title: Johanna Sigurdardottir | Biography, Facts, & Partner | Britannica Description: Icelandic politician who served as prime minister of Iceland from 2009 to 2013. Sigur\u00f0ard\u00f3ttir worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971. Long Description: Johanna Sigurdardottir, Icelandic politician who served as prime minister of Iceland from 2009 to 2013. She was the country\u2019s first female prime minister, and she was also the world\u2019s first openly gay head of government (Per-Kristian Foss served briefly as acting prime minister of Norway in 2002).",
-                "https://kids.britannica.com/students/article/J%C3%B3hanna-Sigur%C3%B0ard%C3%B3ttir/627180: Title: J\u00f3hanna Sigur\u00f0ard\u00f3ttir - Students | Britannica Kids | Homework Help Description: The first female prime minister of Iceland was J\u00f3hanna Sigur\u00f0ard\u00f3ttir, who served in that post from 2009 to 2013. She worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971.",
-                "https://simpleflying.com/famous-former-flight-attendants-a-brief-guide/: Title: 10 Famous Former Flight Attendants: A Brief Guide Description: Most former members of cabin crew who later became famous are known for their work outside the aviation industry. J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as the Prime Minister of Iceland from 2009 until 2013 and was the country's first female PM.",
-                "https://medium.com/illumination/fly-me-to-the-crown-ac6464cb2242: Title: Fly Me to the Crown. The Advent of Royal Flight Attendants Description: This former flight attendant for Icelandic Airlines (1962\u20131971) served as Prime Minister of Iceland from 2009 until 2013.",
-                "https://www.awheelinthesky.com/flight-attendants-who-made-history/: Title: 4 Flight Attendants Who Flew Through The Glass Ceiling Description: Flight attendant, Iceland prime minister, first female prime minister of Iceland. Worked for Icelandic Airlines from 1960 to 1971.",
-                "https://www.councilwomenworldleaders.org/johanna-sigurdardttir: Title: J\u00f3hanna Sigur\u00f0ard\u00f3ttir \u2014 Council of Women World Leaders Description: J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as Prime Minister of Iceland from 2009-2013. She was the first female Prime Minister of Iceland and was the world's first openly gay head of government.",
-                "https://allthingsiceland.com/trailblazing-women-icelandic-history/: Title: 5 Trailblazing Women in Iceland's History - All Things Iceland Description: Worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971. Iceland\u00b4s first female Prime Minister; In 2010, same"
+                "https://en.wikipedia.org/wiki/J%C3%B3hanna_Sigur%C3%B0ard%C3%B3ttir",
+                "https://www.britannica.com/biography/Johanna-Sigurdardottir",
+                "https://kids.britannica.com/students/article/J%C3%B3hanna-Sigur%C3%B0ard%C3%B3ttir/627180",
+                "https://simpleflying.com/famous-former-flight-attendants-a-brief-guide/",
+                "https://medium.com/illumination/fly-me-to-the-crown-ac6464cb2242",
+                "https://www.awheelinthesky.com/flight-attendants-who-made-history/",
+                "https://www.councilwomenworldleaders.org/johanna-sigurdardttir",
+                "https://allthingsiceland.com/trailblazing-women-icelandic-history/"
             ]
         },
         "grade": "CORRECT"
@@ -128,12 +117,11 @@
         "problem": "To whom did Mehbooba Mufti Sayed contest the 2019 Lok Sabha elections and lose?",
         "answer": "Hasnain Masoodi",
         "response": {
-            "answer": "Mehbooba Mufti Sayed contested the 2019 Lok Sabha elections from the Anantnag seat and lost to Mian Altaf Ahmad, a Gujjar leader and National Conference candidate.",
+            "answer": "Mehbooba Mufti Sayed contested the 2019 Lok Sabha elections from the Anantnag constituency. She lost to Hasnain Masoodi, the candidate from the National Conference party. Hasnain Masoodi defeated Mehbooba Mufti and Congress' Ghulam Ahmed Mir with a vote margin of 5.35%. Anantnag is considered a stronghold of Mehbooba Mufti's party, the Jammu and Kashmir People's Democratic Party (PDP), and Mehbooba Mufti has won Lok Sabha elections from there in 2004 and 2014. Her father, the late Mufti Mohammed Sayeed, had also won from this constituency in 1998.",
             "search_results": [
-                "https://en.wikipedia.org/wiki/Mehbooba_Mufti: She contested 2019 Lok Sabha elections from Anantnag seat but lost it to Mian Altaf Ahmad, a Gujjar leader and National Conference candidate.",
-                "https://m.economictimes.com/news/elections/lok-sabha/india/in-jk-former-cms-omar-abdullah-and-mehbooba-mufti-concede-defeat/articleshow/110704857.cms: Mehbooba Mufti lost to Gujjar leader and National Conference candidate Mian Altaf Ahmad by a huge margin in the Anantnag-Rajouri seat in the 2019 Lok Sabha elections."
+                "PDP's Mehbooba Mufti concedes defeat in Anantnag-Rajouri, loses by 2,81,794 votes | Latest News India - Hindustan Times: Mehbooba Mufti, two-time MP and former Chief Minister of Jammu and Kashmir, conceded defeat in the Anantnag-Rajouri constituency against Mian Altaf Ahmad. Mehbooba Mufti (HT File) As the National Conference's Mian Altaf started leading she issued a statement conceding the election. She fell short by 2,81,794 votes in the polls. READ MORE: Jammu and Kashmir leaders awaits Lok Sabha elections verdict with bated breath Candidates Mohamad Saleem Paray from the Democratic Progressive Azad Party (DPAP), founded by former Congress leader Ghulam Nabi Azad, and Zafar Iqbal Khan Manhas from the Jammu and Kashmir Apni Party (JKAP) were also trailing. The 2024 general election was Jammu and Kashmir\u2019s first national poll after it was made a union territory following the scrapping of Article 370 on August 5, 2019, and the delimitation exercise completed in May 2022. The Delimitation Commission had merged Poonch and Rajouri districts of the Jammu region with the Anantnag Lok Sabha seat, which went to polls in the sixth phase on May 25 and recorded a voter turnout of 54 per cent. READ MORE: Mehbooba skips INDIA bloc meeting in New Delhi The Bharatiya Janata Party (BJP) stayed away from fielding its candidate from the Anantnag constituency along with Baramulla and Srinagar in the Kashmir Valley. JKNC vice-president and former Chief Minister Omar Abdullah has accused JKAP, DPAP, People\u2019s Conference, and PDP of being BJP\u2019s \u201cproxies,\u201d according to a Hindustan Times report. On April 16, 2024, Union Home Minister Amit Shah, while addressing a rally in Jammu region\u2019s Roop Nagar, had asked Kashmiris to vote for whoever they wanted but not the NC, PDP, or Congress. Despite being part of the INDIA bloc, both PDP and JKNC fielded their candidates from the Anantnag-Rajouri Lok Sabha seat. Similarly, Mufti\u2019s party also contested in Baramulla and Srinagar while extending support to Congress in Udhampur and Jammu Lok Sabha seats. READ: 2024 Election Results LIVE Updates PDP president Mehbooba considers the alliance to be a move on an \u201cideological basis\u201d and to \u201csafeguard the Constitution,\u201d according to a PTI report on May 21. In 2019, the Anantnag Lok Sabha seat was won by National Conference candidate Hasnain Masoodi, who defeated Mehbooba Mufti and Congress\u2019 Ghulam Ahmed Mir with a vote margin of 5.35%. Anantnag is considered PDP\u2019s stronghold, and Mehbooba Mufti has won two Lok Sabha elections from here held in 2004 and 2014. Her father, the late Mufti Mohammed Sayeed, had also won it in 1998. Earlier this year, the Pahari community of Poonch and Rajouri, which forms more than half of the electorate (4 lakh of the total 7.35 lakh) on the Jammu side, was granted scheduled tribe status, which has been opposed by the Gujjar community and may likely have a bearing on the results with JKNC\u2019s Mian Altaf Ahmad being a veteran leader of the Gujjar community."
             ]
         },
-        "grade": "INCORRECT"
+        "grade": "CORRECT"
     }
 ]

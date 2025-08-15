@@ -64,18 +64,18 @@ class ResearchAgent(ChatAgent):
         - expand_query: Expand the query to be more comprehensive.
         - select_query_and_search: Select a query from the frontier (and optionally enhance with advanced search operators) and search the web for information.
         - generate_new_queries: Generate new queries based on the search results if the search results are not sufficient to answer the user's initial query.
-        - extract_web_content: Extract the main content from a web page given its URL. Use this when search snippets don't provide enough detail to answer the query.
-        - complete_task: Complete the deep research when search results are sufficient to answer the user's initial query.
+        - extract_web_content: Extract the main content from a web page given its URL. ALWAYS use this tool to get detailed content from the most promising URLs before completing the task.
+        - complete_task: Complete the deep research when you have comprehensive information. MUST be called only after using extract_web_content to get detailed information.
 
         The query processing toolkit also maintains a frontier of queries to be explored and an explored set of queries. The frontier contains the queries that have not been explored yet. The explored set contains the queries that have been explored and should not be explored again. You should keep track of the frontier and the explored set while conducting the research.
 
-        Research Strategy:
+        MANDATORY Research Strategy:
         1. Start with select_query_and_search to get an overview from search results
-        2. If the search result snippets don't contain enough detail to answer the query, use extract_web_content on the most promising URLs to get full page content
-        3. Only complete_task when you have sufficient information to provide a comprehensive answer
-        4. If you cannot find the answer after extracting content from relevant pages, generate new queries to explore different aspects
+        5. If the query doesn't contain the answer, generate new queries to explore different aspects
+        4. ALWAYS call extract_web_content before calling complete_task to make sure you have the most detailed information. At lease 1 call to extract_web_content is required.
+        2. Include the url and quote in your final answer to provide detailed, comprehensive information
 
-        The final output should be the answer to the user's initial query, and the search results that lead to the answer.
+        The final output should be the answer to the user's initial query, and the website urls and quotes. 
 
         Final Output Format:
         ```

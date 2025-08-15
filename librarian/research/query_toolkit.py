@@ -110,6 +110,7 @@ class QueryProcessingToolkit(BaseToolkit):
         self.search_counter = 0  # For counting the number of searches
         self.web_content_toolkit = WebContentToolkit()  # Available for agent to use
         self.content_extraction_counter = 0  # For counting content extractions
+        self.extracted_contents = {}  # Store extracted content by URL
 
     def get_frontier_str(self) -> str:
         """Display the current frontier as a string."""
@@ -277,13 +278,8 @@ class QueryProcessingToolkit(BaseToolkit):
         
         if extracted["status"].startswith("✅"):
             original_length = len(extracted["content"])
-            # Limit content to 3000 characters for context management
-            extracted["content"] = extracted["content"][:3000]
-            truncated_length = len(extracted["content"])
-            
-            if original_length > 3000:
-                logger.info(f"[extract_web_content] Content truncated from {original_length} to {truncated_length} characters")
-                extracted["status"] += f" (truncated from {original_length} chars)"
+            # Store full content for complete_task to use
+            self.extracted_contents[url] = extracted["content"]
             
             logger.info(f"[extract_web_content] Successfully extracted {extracted['word_count']} words from {url}")
             self.trace_graph.record_process(url, f"Extracted {extracted['word_count']} words", "extract_web_content")
@@ -297,18 +293,21 @@ class QueryProcessingToolkit(BaseToolkit):
     ) -> dict[str, str | list[str]] | str:
         """Complete the deep research when search results are sufficient to answer the user's initial query.
 
-        The agent should return the final answer and the search results to terminate the deep research.
-
-        The search_results are formatted as a dictionary of strings, where the key is the URL and the value is the string of the title, description, and long description of the result.
+        IMPORTANT: This method should only be called after extract_web_content has been used to get 
+        detailed information from the most promising URLs. 
 
         Args:
-            search_results (dict[str, str]): The search results from web search.
+            search_results (dict[str, str]): The search results from web search and extract_web_content. 
             final_answer (str): The final answer to the user's initial query.
+        
+        Example:
+            https://en.wikipedia.org/wiki/Isaac_Newton: https://en.wikipedia.org/wiki/Isaac_Newton
+
 
         Returns:
-            dict[str, str | list[str]]: The final answer and the search results.
+            dict[str, str | list[str]]: The final answer and the search results. key is url, value is the quote supporting the answer. MUST be original quotes from the web page, not paraphrased.
         """
-
+        
         for url in search_results.keys():
             self.trace_graph.record_process(url, final_answer, "complete_task")
 
