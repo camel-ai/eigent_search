@@ -5,9 +5,9 @@
         "response": {
             "answer": "The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno.",
             "search_results": [
-                "Title: IEEE Frank Rosenblatt Award - Wikipedia\nDescription: 2010: Michio Sugeno; 2009: John J. Hopfield; 2008: Teuvo Kohonen; 2007 ... List of IEEE Frank Rosenblatt Award recipients \nLong Description: N/A",
-                "Title: IEEE Frank Rosenblatt Award Recipients\nDescription: IEEE FRANK ROSENBLATT AWARD. RECIPIENTS. 1 of 3. 2026 \t6REW G. BARTO ... 2010 \t6 MICHIO SUGENO. Faculty of Culture and Information. Science, Doshisha\nLong Description: N/A",
-                "Title: Michio Sugeno | IEEE Xplore Author Details\nDescription: He is the first recipient of IEEE CIS Pioneer Award in Fuzzy Systems with Zadeh, in 2000. He was the recipient of the 2010 IEEE Frank Rosenblatt Award, and also\nLong Description: N/A"
+                "https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award: 2010: Michio Sugeno; 2009: John J. Hopfield; 2008: Teuvo Kohonen; 2007 ... List of IEEE Frank Rosenblatt Award recipients.",
+                "https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf: IEEE FRANK ROSENBLATT AWARD. RECIPIENTS. 1 of 3. 2026 \t6 ANDREW G. BARTO ... 2010 \t6 MICHIO SUGENO. Faculty of Culture and Information. Science, Doshisha ...",
+                "https://ieeexplore.ieee.org/author/37271220500: He is the first recipient of IEEE CIS Pioneer Award in Fuzzy Systems with Zadeh, in 2000. He was the recipient of the 2010 IEEE Frank Rosenblatt Award, and also ..."
             ]
         },
         "grade": "INCORRECT"
@@ -16,9 +16,13 @@
         "problem": "Who was awarded the Oceanography Society's Jerlov Award in 2018?",
         "answer": "Annick Bricaud",
         "response": {
-            "answer": "Dr. Annick Bricaud was awarded the Oceanography Society's Jerlov Award in 2018 for her contributions to the advancement of knowledge about the nature and consequences of light in the ocean. She is internationally recognized for her groundbreaking work in ocean optics, including studies on seawater optical properties, bio-optical relationships, and satellite ocean color algorithms.",
+            "answer": "The Oceanography Society's Jerlov Award in 2018 was awarded to Dr. Annick Bricaud.",
             "search_results": [
-                "https://2018.oceanopticsconference.org/jerlov-award/ : The Oceanography Society is pleased to announce that Dr. Annick Bricaud has been selected as the 2018 recipient of The Nils Gunnar Jerlov Award recognizing her contributions to the advancement of our knowledge of the nature and consequences of light in the ocean. Dr. Bricaud is recognized internationally for her groundbreaking contributions to ocean optics, which cover experimental and theoretical studies on seawater optical properties, fieldwork-based bio-optical relationships, and algorithms for deriving biogeochemical products from satellite ocean color. She is a senior research scientist at the Laboratoire d\u2019Oc\u00e9anographie de Villefranche (LOV), CNRS \u2013 Sorbonne Universit\u00e9, Villefranche-sur-Mer, France, which she joined in 1976. Her 75 papers received the outstanding number of 11,400 citations, and many opened new avenues of research. Annick mentored numerous students, in France and worldwide, and has a long record of contribution to community service. She is among the first female researchers in optical oceanography."
+                "https://2018.oceanopticsconference.org/jerlov-award/ - The Oceanography Society is pleased to announce that Dr. Annick Bricaud has been selected as the 2018 recipient of The Nils Gunnar Jerlov Award.",
+                "https://www.photonics.com/Articles/2018_Jerlov_Award_Recognizes_Optical_Oceanographer/a64036 - Annick Bricaud has been selected by the Oceanography Society as the 2018 recipient of the Jerlov Award.",
+                "https://en.wikipedia.org/wiki/The_Oceanography_Society - Lists 2018 Jerlov Award recipient as Annick Bricaud.",
+                "https://2022.oceanopticsconference.org/jerlov-award/ - Confirms 2018 Jerlov Award recipient Annick Bricaud.",
+                "http://www.greenedgeproject.info/news.php - Announces Dr. Annick Bricaud as 2018 Jerlov Award recipient."
             ]
         },
         "grade": "CORRECT"
@@ -27,22 +31,27 @@
         "problem": "What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
         "answer": "Radcliffe College",
         "response": {
-            "answer": "The women's liberal arts college in Cambridge, Massachusetts is called Radcliffe College.",
+            "answer": "The name of the women's liberal arts college in Cambridge, Massachusetts is Wellesley College. Radcliffe College was also a women's liberal arts college in Cambridge, but it was fully incorporated into Harvard University in 1999.",
             "search_results": [
-                "Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, that was founded in 1879. In 1999, it was fully incorporated into Harvard College. The college was named for the early Harvard benefactor Anne Mowlson (n\u00e9e Radcliffe) and was one of the Seven Sisters colleges. For the first 70 years of its existence, Radcliffe conferred undergraduate and graduate degrees. Beginning in 1963, it awarded joint Harvard-Radcliffe diplomas to undergraduates. In 1977, Radcliffe signed a formal \"non-merger merger\" agreement with Harvard, and completed a full integration with Harvard in 1999. Within Harvard University, Radcliffe's former administrative campus, Radcliffe Yard, is home to the Radcliffe Institute for Advanced Study."
+                "https://en.wikipedia.org/wiki/Radcliffe_College: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, that was founded in 1879. In 1999, it was fully incorporated into Harvard.",
+                "https://lesley.edu/: Lesley University is a private, coeducational university in Cambridge, Massachusetts, not specifically a women's liberal arts college.",
+                "https://www.wellesley.edu/: Wellesley College is one of the most academically challenging institutions of higher education in the country, and is widely acknowledged as a top women's liberal arts college.",
+                "https://www.harvard.edu/: Harvard University is a prestigious university in Cambridge, Massachusetts, but it is not a women's liberal arts college.",
+                "https://simple.wikipedia.org/wiki/Radcliffe_College: Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, the female college attached to Harvard University."
             ]
         },
-        "grade": "CORRECT"
+        "grade": "INCORRECT"
     },
     {
         "problem": "In whose honor was the Leipzig 1877 tournament organized?",
         "answer": "Adolf Anderssen",
         "response": {
-            "answer": "The Leipzig 1877 tournament was organized in honor of Adolf Anderssen, commemorating his contributions and achievements in chess.",
+            "answer": "The Leipzig 1877 tournament was organized in honor of Adolf Anderssen.",
             "search_results": [
-                "https://en.wikipedia.org/wiki/Adolf_Anderssen: Adolf Anderssen - Wikipedia. The Leipzig 1877 tournament was organised in his honour and named the...",
-                "https://kids.kiddle.co/Adolf_Anderssen: Adolf Anderssen Facts for Kids. The Leipzig 1877 tournament was held to honor Anderssen. It was ... This tournament honored Anderssen's 50th anniversary of learning chess.",
-                "https://en.chessbase.com/post/an-adolf-anderssen-anniversary: An Adolf Anderssen anniversary | ChessBase. The German Chess Federation was founded during the \"Anderssen Celebration\" in Leipzig, 1877."
+                "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3: Title: Repository evaluations - pvduy/simpleqa | Datasets at Oxen.ai\nDescription: Mar 18, 2025 ... In whose honor was the Leipzig 1877 tournament organized? Adolf Anderssen. [\"The Leipzig 1877 chess tournament was organized in honor o, ...",
+                "https://en.wikipedia.org/wiki/Adolf_Anderssen: Title: Adolf Anderssen - Wikipedia\nDescription: Karl Ernst Adolf Anderssen (6 July 1818 \t6 March 1879) was a German chess master. He won the great international tournaments of 1851 and 1862,\u0000...",
+                "https://en.chessbase.com/post/an-adolf-anderssen-anniversary: Title: An Adolf Anderssen anniversary | ChessBase\nDescription: Mar 13, 2019 ... ... event that the German Chess Federation was founded on the evening of July 18th, 1877 during the \"Anderssen Celebration\" in Leipzig. The\u0000...",
+                "https://kids.kiddle.co/Adolf_Anderssen: Title: Adolf Anderssen Facts for Kids\nDescription: Jun 5, 2025 ... The Leipzig 1877 tournament was held to honor Anderssen. It was ... This tournament honored Anderssen's 50th anniversary of learning chess.\nLong Description: Learn Adolf Anderssen facts for kids"
             ]
         },
         "grade": "CORRECT"
@@ -51,9 +60,11 @@
         "problem": "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
         "answer": "Poet Henrich Heine.",
         "response": {
-            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture, which was made for her villa Achilleion at Corfu, depicted Achilles.",
+            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture, made for her villa Achilleion at Corfu, depicted Achilles.",
             "search_results": [
-                "According to Karl K\u00fcchler, Empress Elizabeth of Austria's (Sisi's) favorite sculpture at her villa Achilleion at Corfu depicted Achilles."
+                "https://news.ycombinator.com/item?id=42001816",
+                "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3",
+                "https://news.ycombinator.com/item?id=41997727"
             ]
         },
         "grade": "INCORRECT"
@@ -62,23 +73,20 @@
         "problem": "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's death ordered to pay her son?",
         "answer": "120,000",
         "response": {
-            "answer": "The surgeon held responsible for Stella Obasanjo's death was ordered to pay \n\u000120,000 (one hundred twenty thousand euros) in compensation to her son.",
+            "answer": "The surgeon held responsible for Stella Obasanjo's death was ordered to pay her son $176,000, which is approximately \u00163,000. Converted to euros, this amount is roughly around 130,000 to 140,000 euros, depending on the exchange rate at the time.",
             "search_results": [
-                "Stella Obasanjo (14 November 1945 \t6 23 October 2005) was the First Lady of Nigeria from 1999 until her death. She died while undergoing elective liposuction abroad. The surgeon, identified only as \"AM\" in court, was sentenced to one year of imprisonment in September 2009 on a charge of \"causing homicide through negligence\", disqualified from medicine for a period of three years and ordered to pay \u000120,000 (approximately US$176,000) in compensation to Stella Obasanjo's son.",
-                "THE Spanish surgeon who carried out a tummy tuck operation on Mrs Stella Obasanjo, wife of former President Olusegun Obasanjo, in 2005, was sentenced to one year imprisonment for manslaughter by a court in Malaga, Spain. He was also fined 120,000 euros which he has to pay to Olumuyiwa Obasanjo, son of the late Stella.",
-                "A Spanish doctor has been sent to jail for a year over the death of the former Nigerian first lady. Stella Obasanjo died after having liposuction. The doctor was ordered to pay 120,000 euros in compensation to her son.",
-                "The surgeon will have to pay 120,000 euros (177,000 dollars) in damages to Stella Obasanjo's son and insurance company."
+                "https://www.nairaland.com/326945/doctor-jailed-obasanjo-death/1"
             ]
         },
-        "grade": "INCORRECT"
+        "grade": "CORRECT"
     },
     {
         "problem": "What were the month and year when Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\"?",
         "answer": "January 2008",
         "response": {
-            "answer": "Barack Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ,\" in an interview published in March 2008.",
+            "answer": "Barack Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\" in an interview published in March 2008.",
             "search_results": [
-                "Title: Obama: \"I Believe In The Redemptive Death And Resurrection Of ...\\nDescription: Mar 28, 2008 ... On his faith: \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ. I believe ...\\nLong Description: Obama: \"I Believe In The Redemptive Death And Resurrection Of Christ\"\\n\\nExtracted Content (481 words):\\nIn a recent interview with Christianity Today, presidential candidate Barack Obama shared his religious beliefs, and answered questions on questions central to evangelical interests, such as abortion. \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ. I believe that that faith gives me a path to be cleansed of sin and have eternal life. But most importantly, I believe in the example that Jesus set by feeding the hungry and healing the sick and always prioritizing the least of these over the powerful. I didn't 'fall out in church' as they say, but there was a very strong awakening in me of the importance of these issues in my life. I didn't want to walk alone on this journey. Accepting Jesus Christ in my life has been a powerful guide for my conduct and my values and my ideals.\" \"Ultimately, women are in the best position to make a decision at the end of the day about these issues. With significant constraints. For example, I think we can legitimately say -- the state can legitimately say -- that we are prohibiting late-term abortions as long as there's an exception for the mother's health. Those provisions that I voted against typically didn't have those exceptions, which raises profound questions where you might have a mother at great risk. Those are issues that I don't think the government can unilaterally make a decision about. I think they need to be made in consultation with doctors, they have to be prayed upon, or people have to be consulting their conscience on it. I think we have to keep that decision-making with the person themselves.\" Read the full interview here . 20 Years Of Free Journalism Your Support Fuels Our Mission Your Support Fuels Our Mission For two decades, HuffPost has been fearless, unflinching, and relentless in pursuit of the truth. Support our mission to keep us around for the next 20 \u2014 we can't do this without you. We remain committed to providing you with the unflinching, fact-based journalism everyone deserves. Thank you again for your support along the way. We\u2019re truly grateful for readers like you! Your initial support helped get us here and bolstered our newsroom, which kept us strong during uncertain times. Now as we continue, we need your help more than ever. We hope you will join us once again . We remain committed to providing you with the unflinching, fact-based journalism everyone deserves. Thank you again for your support along the way. We\u2019re truly grateful for readers like you! Your initial support helped get us here and bolstered our newsroom, which kept us strong during uncertain times. Now as we continue, we need your help more than ever. We hope you will join us once again . Support HuffPost Already contributed? Log in to hide these messages."
+                "Obama: \"I Believe In The Redemptive Death And Resurrection Of Christ\" | HuffPost Latest News, Mar 28, 2008: In a recent interview with Christianity Today, presidential candidate Barack Obama shared his religious beliefs, and answered questions on questions central to evangelical interests, such as abortion. \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ.\""
             ]
         },
         "grade": "INCORRECT"
@@ -87,29 +95,31 @@
         "problem": "Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?",
         "answer": "Fakhruddin Ali Ahmed",
         "response": {
-            "answer": "The Chief Justice of India, Mirza Hameedullah Beg, was appointed in 1977 by the President of India, Fakhruddin Ali Ahmed. This appointment was made on 29 January 1977 and was notable for superseding the seniority of other judges, particularly Justice H R Khanna.",
+            "answer": "Mirza Hameedullah Beg was appointed the Chief Justice of India in January 1977 by the President of India, following the recommendation and advice process involving the incumbent Chief Justice, other judges, and the Prime Minister of India at the time, Indira Gandhi. The appointment was made by the Indira Gandhi government, superseding Justice Hans Raj Khanna.",
             "search_results": [
-                "Mirza Hameedullah Beg (M. H. Beg) (22 February 1913 \t6 November 1988) was the 15th Chief Justice of India, serving from January 1977 to February 1978. He was appointed as Chief Justice of India on 29.01.1977. The appointment was made by the President of India at the time, who was Fakhruddin Ali Ahmed. This appointment was notable because it superseded the seniority of other judges, particularly Justice H R Khanna.",
-                "Justice Mirza Hameedullah Beg was appointed as Chief Justice of India on 29.01.1977. The President of India, Fakhruddin Ali Ahmed, appointed him. He retired on 21.02.1978.",
-                "The appointment of Mirza Hameedullah Beg as Chief Justice of India was made by the Government of Indira Gandhi, with the President of India, Fakhruddin Ali Ahmed, formalizing the appointment on 29 January 1977. The appointment was controversial because it superseded the seniority of Justice H R Khanna, who was known for his defense of habeas corpus rights during the Emergency period."
+                "https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg: Mirza Hameedullah Beg (M. H. Beg) (22 February 1913 \t6 19 November 1988) was the 15th Chief Justice of India, serving from January 1977 to February 1978.",
+                "https://www.sci.gov.in/judge/justice-m-hameedullah-beg/: Justice Mirza Hameedullah Beg, M.A. (Cantab), Barrister-at-Law; Born at Lucknow on 22nd February, 1913; appointed as Chief Justice of India on 29.01.1977. Retired on 21.02.1978.",
+                "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_India: The prime minister of India is the chief executive of the Government of India. Indira Gandhi was the Prime Minister until March 1977.",
+                "https://en.wikipedia.org/wiki/Chief_Justice_of_India: The Constitution of India grants power to the President of India to appoint the Chief Justice of India, as recommended by the outgoing Chief Justice in consultation with other judges. In January 1977, Mirza Hameedullah Beg was appointed Chief Justice of India by the Indira Gandhi government, superseding Justice Hans Raj Khanna.",
+                "https://en.wikipedia.org/wiki/Chief_Justice_of_India#Appointment: As the incumbent Chief Justice approaches retirement, the Ministry of Law and Justice seeks a recommendation from the incumbent Chief Justice. Consultations with other judges might also take place. The recommendation is then presented to the Prime Minister, who advises the President in the matter of appointment. The President of India formally appoints the Chief Justice of India under Article 124(2) of the Constitution."
             ]
         },
-        "grade": "CORRECT"
+        "grade": "INCORRECT"
     },
     {
         "problem": "What is the name of the former Prime Minister of Iceland who worked as a cabin crew member until 1971?",
         "answer": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir",
         "response": {
-            "answer": "The former Prime Minister of Iceland who worked as a cabin crew member until 1971 is J\u00f3hanna Sigur\u00f0ard\u00f3ttir.",
+            "answer": "The former Prime Minister of Iceland who worked as a cabin crew member until 1971 is J\u00f3hanna Sigur\u00f0ard\u00f3ttir. She worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971 and later served as the Prime Minister of Iceland from 2009 to 2013.",
             "search_results": [
-                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir was the Prime Minister of Iceland from 2009 to 2013. She worked as a flight attendant with Icelandic Airlines from 1962 to 1971 before entering politics. (https://en.wikipedia.org/wiki/J%C3%B3hanna_Sigur%C3%B0ard%C3%B3ttir)",
-                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir, former Prime Minister of Iceland (2009-2013), worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971. (https://www.britannica.com/biography/Johanna-Sigurdardottir)",
-                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir was the first female Prime Minister of Iceland and worked as a flight attendant from 1962 to 1971. (https://kids.britannica.com/students/article/J%C3%B3hanna-Sigur%C3%B0ard%C3%B3ttir/627180)",
-                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as the Prime Minister of Iceland from 2009 until 2013 and was the country's first female PM. She was previously a flight attendant. (https://simpleflying.com/famous-former-flight-attendants-a-brief-guide/)",
-                "This former flight attendant for Icelandic Airlines (1962\t6971) served as Prime Minister of Iceland from 2009 until 2013. (https://medium.com/illumination/fly-me-to-the-crown-ac6464cb2242)",
-                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir was a flight attendant for Icelandic Airlines from 1960 to 1971 and later became Iceland's first female prime minister. (https://www.awheelinthesky.com/flight-attendants-who-made-history/)",
-                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as Prime Minister of Iceland from 2009-2013 and was the first female Prime Minister of Iceland. (https://www.councilwomenworldleaders.org/johanna-sigurdardttir)",
-                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971 and was Iceland's first female Prime Minister. (https://allthingsiceland.com/trailblazing-women-icelandic-history/)"
+                "https://en.wikipedia.org/wiki/J%C3%B3hanna_Sigur%C3%B0ard%C3%B3ttir: Title: J\u00f3hanna Sigur\u00f0ard\u00f3ttir - Wikipedia Description: J\u00f3hanna became prime minister on 1 February 2009, in a minority cabinet formed after the previous coalition was dissolved following the 2008 Icelandic financial crisis.",
+                "https://www.britannica.com/biography/Johanna-Sigurdardottir: Title: Johanna Sigurdardottir | Biography, Facts, & Partner | Britannica Description: Icelandic politician who served as prime minister of Iceland from 2009 to 2013. Sigur\u00f0ard\u00f3ttir worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971. Long Description: Johanna Sigurdardottir, Icelandic politician who served as prime minister of Iceland from 2009 to 2013. She was the country\u2019s first female prime minister, and she was also the world\u2019s first openly gay head of government (Per-Kristian Foss served briefly as acting prime minister of Norway in 2002).",
+                "https://kids.britannica.com/students/article/J%C3%B3hanna-Sigur%C3%B0ard%C3%B3ttir/627180: Title: J\u00f3hanna Sigur\u00f0ard\u00f3ttir - Students | Britannica Kids | Homework Help Description: The first female prime minister of Iceland was J\u00f3hanna Sigur\u00f0ard\u00f3ttir, who served in that post from 2009 to 2013. She worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971.",
+                "https://simpleflying.com/famous-former-flight-attendants-a-brief-guide/: Title: 10 Famous Former Flight Attendants: A Brief Guide Description: Most former members of cabin crew who later became famous are known for their work outside the aviation industry. J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as the Prime Minister of Iceland from 2009 until 2013 and was the country's first female PM.",
+                "https://medium.com/illumination/fly-me-to-the-crown-ac6464cb2242: Title: Fly Me to the Crown. The Advent of Royal Flight Attendants Description: This former flight attendant for Icelandic Airlines (1962\u20131971) served as Prime Minister of Iceland from 2009 until 2013.",
+                "https://www.awheelinthesky.com/flight-attendants-who-made-history/: Title: 4 Flight Attendants Who Flew Through The Glass Ceiling Description: Flight attendant, Iceland prime minister, first female prime minister of Iceland. Worked for Icelandic Airlines from 1960 to 1971.",
+                "https://www.councilwomenworldleaders.org/johanna-sigurdardttir: Title: J\u00f3hanna Sigur\u00f0ard\u00f3ttir \u2014 Council of Women World Leaders Description: J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as Prime Minister of Iceland from 2009-2013. She was the first female Prime Minister of Iceland and was the world's first openly gay head of government.",
+                "https://allthingsiceland.com/trailblazing-women-icelandic-history/: Title: 5 Trailblazing Women in Iceland's History - All Things Iceland Description: Worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971. Iceland\u00b4s first female Prime Minister; In 2010, same"
             ]
         },
         "grade": "CORRECT"
@@ -118,12 +128,12 @@
         "problem": "To whom did Mehbooba Mufti Sayed contest the 2019 Lok Sabha elections and lose?",
         "answer": "Hasnain Masoodi",
         "response": {
-            "answer": "Mehbooba Mufti contested the 2019 Lok Sabha elections from the Anantnag constituency and lost to Hasnain Masoodi of the Jammu & Kashmir National Conference (NC).",
+            "answer": "Mehbooba Mufti Sayed contested the 2019 Lok Sabha elections from the Anantnag seat and lost to Mian Altaf Ahmad, a Gujjar leader and National Conference candidate.",
             "search_results": [
-                "Mehbooba Mufti contested the 2019 Lok Sabha elections from the Anantnag seat but lost it to Hasnain Masoodi of the Jammu & Kashmir National Conference (NC).",
-                "In the 2019 Lok Sabha elections, Hasnain Masoodi of Jammu & Kashmir National Conference won the Anantnag seat, defeating Mehbooba Mufti of JKPDP."
+                "https://en.wikipedia.org/wiki/Mehbooba_Mufti: She contested 2019 Lok Sabha elections from Anantnag seat but lost it to Mian Altaf Ahmad, a Gujjar leader and National Conference candidate.",
+                "https://m.economictimes.com/news/elections/lok-sabha/india/in-jk-former-cms-omar-abdullah-and-mehbooba-mufti-concede-defeat/articleshow/110704857.cms: Mehbooba Mufti lost to Gujjar leader and National Conference candidate Mian Altaf Ahmad by a huge margin in the Anantnag-Rajouri seat in the 2019 Lok Sabha elections."
             ]
         },
-        "grade": "CORRECT"
+        "grade": "INCORRECT"
     }
 ]
