@@ -1,0 +1,1150 @@
+[
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-13T07:21:21.416070",
+    "duration_ms": 395,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg"
+    },
+    "output": {
+      "title": "Mirza Hameedullah Beg - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "806",
+      "content_preview": "15th Chief Justice of India Mirza Hameedullah Beg (M. H. Beg) (22 February 1913 \u2013 19 November 1988 [ 1 ] ) was the 15th Chief Justice of India , serving from January 1977 to February 1978. Early life ..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-13T07:21:38.677799",
+    "duration_ms": 83,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Mehbooba_Mufti"
+    },
+    "output": {
+      "title": "Mehbooba Mufti - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "1606",
+      "content_preview": "Chief minister of Jammu and Kashmir from 2016 to 2018 Mehbooba Bur Mufti Sayed (Urdu: \u0645\u062d\u0628\u0648\u0628\u06c1 \u0645\u0641\u062a\u06cc \u0633\u06cc\u062f; born 22 May 1959) in Bijbihara Anantnag district is an Indian politician and leader of the Jammu ..."
+    }
+  },
+  {
+    "call_id": 3,
+    "timestamp": "2025-08-13T07:21:52.877409",
+    "duration_ms": 10012,
+    "input": {
+      "url": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    "output": {
+      "title": "",
+      "status": "\u274c Error: 'str' object has no attribute 'text'",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 4,
+    "timestamp": "2025-08-13T07:22:04.756108",
+    "duration_ms": 157,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/2010_UEFA_Champions_League_final"
+    },
+    "output": {
+      "title": "2010 UEFA Champions League final - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "4058",
+      "content_preview": "Association football match Football match The 2010 UEFA Champions League final was an association football match played at the Santiago Bernab\u00e9u Stadium , home of Real Madrid , [ 4 ] on 22 May 2010, t..."
+    }
+  },
+  {
+    "call_id": 5,
+    "timestamp": "2025-08-13T07:22:12.054154",
+    "duration_ms": 10013,
+    "input": {
+      "url": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    "output": {
+      "title": "",
+      "status": "\u274c Error: 'str' object has no attribute 'text'",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 6,
+    "timestamp": "2025-08-13T07:22:35.067273",
+    "duration_ms": 10009,
+    "input": {
+      "url": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    "output": {
+      "title": "",
+      "status": "\u274c Error: 'str' object has no attribute 'text'",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 7,
+    "timestamp": "2025-08-13T07:22:47.634962",
+    "duration_ms": 10006,
+    "input": {
+      "url": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    "output": {
+      "title": "",
+      "status": "\u274c Error: 'str' object has no attribute 'text'",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 8,
+    "timestamp": "2025-08-13T07:23:12.185169",
+    "duration_ms": 121,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Museum_of_Bad_Art"
+    },
+    "output": {
+      "title": "Museum of Bad Art - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "6998",
+      "content_preview": "Art museum in Boston, Massachusetts The Museum of Bad Art ( MOBA ) is a privately owned museum whose stated aim is \"to celebrate the labor of artists whose work would be displayed and appreciated in n..."
+    }
+  },
+  {
+    "call_id": 9,
+    "timestamp": "2025-08-13T07:23:33.948045",
+    "duration_ms": 1060,
+    "input": {
+      "url": "https://sidekickboxing.co.uk/the-life-of-andrew-king-cobra-tate/"
+    },
+    "output": {
+      "title": "The Life Of Andrew Tate (Published By Top G Himself) - Sidekick Boxing",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "3077",
+      "content_preview": "If you have ever seen videos online of a man driving around in supercars, getting out of private jets and claiming to be the closest person to a real-life James Bond, you probably have come across And..."
+    }
+  },
+  {
+    "call_id": 10,
+    "timestamp": "2025-08-13T07:23:49.014997",
+    "duration_ms": 379,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Jack_Layton"
+    },
+    "output": {
+      "title": "Jack Layton - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "14671",
+      "content_preview": "Canadian politician (1950\u20132011) Jack Layton Layton in 2011 In office May 2, 2011\u00a0\u2013 August 22, 2011 Preceded by Michael Ignatieff Succeeded by Nycole Turmel In office January 25, 2003\u00a0\u2013 August 22, 2011..."
+    }
+  },
+  {
+    "call_id": 11,
+    "timestamp": "2025-08-13T07:24:07.407803",
+    "duration_ms": 1166,
+    "input": {
+      "url": "https://www.dawn.com/news/1489714"
+    },
+    "output": {
+      "title": "Pak-China business council to be formed: Khusro - Business - DAWN.COM",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "223",
+      "content_preview": "ISLAMABAD: Minister for Planning, Development and Reform Makhdum Khusro Bakhtyar on Friday said that the government was considering to establish a Pak-China business council to promote private sector ..."
+    }
+  },
+  {
+    "call_id": 13,
+    "timestamp": "2025-08-13T07:25:12.360733",
+    "duration_ms": 832,
+    "input": {
+      "url": "https://www.olympics.com/en/olympic-games/beijing-2022/results/figure-skating/ice-dance"
+    },
+    "output": {
+      "title": "Beijing 2022 Ice Dance Results - Olympic Figure skating",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 14,
+    "timestamp": "2025-08-13T07:25:15.707724",
+    "duration_ms": 429,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance"
+    },
+    "output": {
+      "title": "Figure skating at the 2022 Winter Olympics - Ice dance - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "396",
+      "content_preview": "From Wikipedia, the free encyclopedia The ice dance competition in figure skating at the 2022 Winter Olympics was held on 12 February (rhythm dance) and 14 February (free dance), at the Capital Indoor..."
+    }
+  },
+  {
+    "call_id": 15,
+    "timestamp": "2025-08-13T07:25:18.430533",
+    "duration_ms": 78,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance#Results"
+    },
+    "output": {
+      "title": "Figure skating at the 2022 Winter Olympics - Ice dance - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "396",
+      "content_preview": "From Wikipedia, the free encyclopedia The ice dance competition in figure skating at the 2022 Winter Olympics was held on 12 February (rhythm dance) and 14 February (free dance), at the Capital Indoor..."
+    }
+  },
+  {
+    "call_id": 16,
+    "timestamp": "2025-08-13T07:25:25.880957",
+    "duration_ms": 181,
+    "input": {
+      "url": "https://www.olympics.com/en/olympic-games/beijing-2022/results/figure-skating/ice-dance"
+    },
+    "output": {
+      "title": "Beijing 2022 Ice Dance Results - Olympic Figure skating",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 17,
+    "timestamp": "2025-08-13T07:25:28.322998",
+    "duration_ms": 89,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance#Results"
+    },
+    "output": {
+      "title": "Figure skating at the 2022 Winter Olympics - Ice dance - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "396",
+      "content_preview": "From Wikipedia, the free encyclopedia The ice dance competition in figure skating at the 2022 Winter Olympics was held on 12 February (rhythm dance) and 14 February (free dance), at the Capital Indoor..."
+    }
+  },
+  {
+    "call_id": 18,
+    "timestamp": "2025-08-13T07:25:30.700105",
+    "duration_ms": 132,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance#Results"
+    },
+    "output": {
+      "title": "Figure skating at the 2022 Winter Olympics - Ice dance - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "396",
+      "content_preview": "From Wikipedia, the free encyclopedia The ice dance competition in figure skating at the 2022 Winter Olympics was held on 12 February (rhythm dance) and 14 February (free dance), at the Capital Indoor..."
+    }
+  },
+  {
+    "call_id": 19,
+    "timestamp": "2025-08-13T07:26:17.557332",
+    "duration_ms": 1909,
+    "input": {
+      "url": "https://improbable.com/ig/winners/"
+    },
+    "output": {
+      "title": "Past Ig Winners",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "22473",
+      "content_preview": "The 2020 Ig Nobel Prizes were awarded at the 30th First Annual Ig Nobel Prize ceremony , on Thursday, September 17, 2020. The ceremony was webcast . ACOUSTICS PRIZE [AUSTRIA, SWEDEN, JAPAN, USA, SWITZ..."
+    }
+  },
+  {
+    "call_id": 20,
+    "timestamp": "2025-08-13T07:26:42.750968",
+    "duration_ms": 1337,
+    "input": {
+      "url": "https://www.classicthemes.com/oldTimeRadioThemes/radioThemeList.html"
+    },
+    "output": {
+      "title": "Old-Time Radio Theme List - sorted by Series",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "26786",
+      "content_preview": "Old-Time Radio - Music Theme List (sorted by SERIES) This list was last updated on June 8th, 2022 This is a working list of Radio themes and Musical Signatures from\nU.S. Old-Time Radio Networks and vi..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-13T07:35:48.946772",
+    "duration_ms": 346,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Adolf_Anderssen"
+    },
+    "output": {
+      "title": "Adolf Anderssen - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "4754",
+      "content_preview": "German chess master (1818\u20131879) This article is about the German chess player. For the Swedish swimmer, see Adolf Andersson . Karl Ernst Adolf Anderssen (6 July 1818 \u2013 13 March 1879) [ 1 ] was a Germa..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-13T07:36:06.798320",
+    "duration_ms": 1728,
+    "input": {
+      "url": "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3"
+    },
+    "output": {
+      "title": "Repository evaluations - pvduy/simpleqa | Datasets at Oxen.ai",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "14",
+      "content_preview": "Queued: Mar 18, 2025, 8:43 PM UTC Completed: Mar 18, 2025, 8:43 PM UTC"
+    }
+  },
+  {
+    "call_id": 5,
+    "timestamp": "2025-08-13T07:36:41.387264",
+    "duration_ms": 1161,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Wikipedia:In_the_news/Candidates/September_2009"
+    },
+    "output": {
+      "title": "Wikipedia:In the news/Candidates/September 2009 - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "53435",
+      "content_preview": "This page is an archive and its contents should be preserved in their current form; any comments regarding this page should be directed to Wikipedia talk:In the news . Thanks. Archived discussion for ..."
+    }
+  },
+  {
+    "call_id": 6,
+    "timestamp": "2025-08-13T07:37:31.046608",
+    "duration_ms": 3039,
+    "input": {
+      "url": "https://geniuses.club/genius/barack-obama"
+    },
+    "output": {
+      "title": "Barack Obama - Geniuses",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "15227",
+      "content_preview": "Change will not come if we wait for some other person, or if we wait for some other time. We are the ones we've been waiting for. We are the change that we seek. Barack Hussein Obama II is an American..."
+    }
+  },
+  {
+    "call_id": 8,
+    "timestamp": "2025-08-13T07:38:02.650840",
+    "duration_ms": 2066,
+    "input": {
+      "url": "https://www.sci.gov.in/judge/justice-m-hameedullah-beg/"
+    },
+    "output": {
+      "title": "Justice M. Hameedullah Beg | Supreme Court of India | India",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "356",
+      "content_preview": "The Hon\u2019ble Mr. Justice Mirza Hameedullah Beg, M.A. (Cantab), Barrister-at-Law; Born at Lucknow on 22nd February, 1913; son of the Hon\u2019ble Mirza Samiullah Beg, former Chief Justice of Hyderabad State;..."
+    }
+  },
+  {
+    "call_id": 9,
+    "timestamp": "2025-08-13T07:38:25.885381",
+    "duration_ms": 267,
+    "input": {
+      "url": "https://www.indiatoday.in/india/story/chief-justice-of-india-justice-sanjiv-khanna-uncle-hr-khanna-denied-post-indira-gandhi-adm-jabalpur-case-emergency-2631506-2024-11-11"
+    },
+    "output": {
+      "title": "Indira Gandhi denied Justice HR Khanna CJI's job 50 years ago. His nephew is CJI now - India Today",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "1032",
+      "content_preview": "\"I have prepared the judgment which is going to cost me the Chief Justiceship of India,\" Justice Hans Raj Khanna told his sister in 1976. Sitting on the banks of river Ganga in Haridwar, the Supreme C..."
+    }
+  },
+  {
+    "call_id": 10,
+    "timestamp": "2025-08-13T07:39:55.293415",
+    "duration_ms": 1215,
+    "input": {
+      "url": "https://www.financialexpress.com/india-news/anantnag-jammu-kashmir-lok-sabha-election-result-2024-live-mehbooba-mufti-mian-altaf-ahmad-pdp-nc-winner-loser-live-news/3510159/"
+    },
+    "output": {
+      "title": "Anantnag Lok Sabha Election Result 2024 Highlights: NC leader Altaf Ahmad defeats Mehbooba Mufti by over two lakh votes - India News | The Financial Express",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "73",
+      "content_preview": "Anantnag Lok Sabha Election Result 2024 Highlights: National Conference candidate Mian Altaf Ahmad wins, Peoples Democratic Party (PDP) chief Mehbooba Mufti lost in the Anantnag-Rajouri seat. Comprisi..."
+    }
+  },
+  {
+    "call_id": 11,
+    "timestamp": "2025-08-13T07:40:16.744077",
+    "duration_ms": 10005,
+    "input": {
+      "url": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    "output": {
+      "title": "",
+      "status": "\u274c Error: 'str' object has no attribute 'text'",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 12,
+    "timestamp": "2025-08-13T07:40:28.884624",
+    "duration_ms": 272,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/2010_UEFA_Champions_League_final"
+    },
+    "output": {
+      "title": "2010 UEFA Champions League final - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "4058",
+      "content_preview": "Association football match Football match The 2010 UEFA Champions League final was an association football match played at the Santiago Bernab\u00e9u Stadium , home of Real Madrid , [ 4 ] on 22 May 2010, t..."
+    }
+  },
+  {
+    "call_id": 13,
+    "timestamp": "2025-08-13T07:40:34.319206",
+    "duration_ms": 10008,
+    "input": {
+      "url": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    "output": {
+      "title": "",
+      "status": "\u274c Error: 'str' object has no attribute 'text'",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 14,
+    "timestamp": "2025-08-13T07:40:47.385736",
+    "duration_ms": 547,
+    "input": {
+      "url": "https://football.fandom.com/wiki/2010_UEFA_Champions_League_Final"
+    },
+    "output": {
+      "title": "2010 UEFA Champions League Final | Football Wiki | Fandom",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "2380",
+      "content_preview": "The 2010 UEFA Champions League Final was a football match played at the Santiago Bernab\u00e9u Stadium , home of Real Madrid , on Saturday, 22 May 2010, to determine the winners of the 2009\u201310 UEFA Champio..."
+    }
+  },
+  {
+    "call_id": 15,
+    "timestamp": "2025-08-13T07:42:42.149313",
+    "duration_ms": 601,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Deepwater_Horizon_oil_spill"
+    },
+    "output": {
+      "title": "Deepwater Horizon oil spill - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "25974",
+      "content_preview": "2010 oil spill in the Gulf of Mexico Deepwater Horizon oil spill As seen from space by the Terra satellite on 24 May 2010 Location Macondo Prospect ( Mississippi Canyon Block 252), in the North-centra..."
+    }
+  },
+  {
+    "call_id": 16,
+    "timestamp": "2025-08-13T07:43:03.530654",
+    "duration_ms": 142,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Museum_of_Bad_Art"
+    },
+    "output": {
+      "title": "Museum of Bad Art - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "6998",
+      "content_preview": "Art museum in Boston, Massachusetts The Museum of Bad Art ( MOBA ) is a privately owned museum whose stated aim is \"to celebrate the labor of artists whose work would be displayed and appreciated in n..."
+    }
+  },
+  {
+    "call_id": 17,
+    "timestamp": "2025-08-13T07:43:34.684041",
+    "duration_ms": 970,
+    "input": {
+      "url": "https://all.rugby/match/16767/rugby-europe-championship-2022/spain-romania"
+    },
+    "output": {
+      "title": "Match report Spain 38 - 21 Romania, 27/02/2022 - Rugby Europe Championship - All.Rugby",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "274",
+      "content_preview": "Date : Sunday, February 27, 2022 Kick Off : 12:45 Venue : Estadio Nacional Universidad Complutense Tournament : Rugby Europe Championship Round : pool stage All times shown are french time, refresh to..."
+    }
+  },
+  {
+    "call_id": 18,
+    "timestamp": "2025-08-13T07:43:59.411259",
+    "duration_ms": 299,
+    "input": {
+      "url": "https://all.rugby/match/16767/rugby-europe-championship-2022/spain-romania"
+    },
+    "output": {
+      "title": "Match report Spain 38 - 21 Romania, 27/02/2022 - Rugby Europe Championship - All.Rugby",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "274",
+      "content_preview": "Date : Sunday, February 27, 2022 Kick Off : 12:45 Venue : Estadio Nacional Universidad Complutense Tournament : Rugby Europe Championship Round : pool stage All times shown are french time, refresh to..."
+    }
+  },
+  {
+    "call_id": 19,
+    "timestamp": "2025-08-13T07:44:01.990964",
+    "duration_ms": 2935,
+    "input": {
+      "url": "https://www.rugbyeurope.eu/news/romania-spain-georgia-and-portugal-qualify-for-rugby-world-cup-27"
+    },
+    "output": {
+      "title": "Romania, Spain, Georgia and Portugal qualify for Rugby World Cup 27",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "871",
+      "content_preview": "On Saturday in Pool A at the Avchala Rugby Stadium in Tbilisi, Georgia defeated Netherlands 40-7. The home side got off to a flying start and were 14-0 up after 12 minutes thanks to tries from centre ..."
+    }
+  },
+  {
+    "call_id": 20,
+    "timestamp": "2025-08-13T07:44:57.776095",
+    "duration_ms": 247,
+    "input": {
+      "url": "https://tvmegasite.net/prime/news/older/oldnews27.shtml"
+    },
+    "output": {
+      "title": "Bot Verification",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "7",
+      "content_preview": "Verifying that you are not a robot..."
+    }
+  },
+  {
+    "call_id": 21,
+    "timestamp": "2025-08-13T07:45:29.710421",
+    "duration_ms": 1037,
+    "input": {
+      "url": "https://sidekickboxing.co.uk/the-life-of-andrew-king-cobra-tate/"
+    },
+    "output": {
+      "title": "The Life Of Andrew Tate (Published By Top G Himself) - Sidekick Boxing",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "3077",
+      "content_preview": "If you have ever seen videos online of a man driving around in supercars, getting out of private jets and claiming to be the closest person to a real-life James Bond, you probably have come across And..."
+    }
+  },
+  {
+    "call_id": 22,
+    "timestamp": "2025-08-13T07:46:37.984716",
+    "duration_ms": 609,
+    "input": {
+      "url": "https://arxiv.org/html/2505.23646v1"
+    },
+    "output": {
+      "title": "Are Reasoning Models More Prone to Hallucination?",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "1201",
+      "content_preview": "GRADER_TEMPLATE = \"\"\" Your job is to look at a question , a gold target , and a predicted answer , and then assign a grade of either [\" CORRECT \", \" INCORRECT \", \" NOT_ATTEMPTED \"]. First , I will giv..."
+    }
+  },
+  {
+    "call_id": 23,
+    "timestamp": "2025-08-13T07:47:03.680661",
+    "duration_ms": 604,
+    "input": {
+      "url": "https://www.cbr.com/house-of-the-dragon-best-daemon-quotes/"
+    },
+    "output": {
+      "title": "Daemon Targaryen's Best House Of The Dragon Quotes",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "1827",
+      "content_preview": "HBO's House of The Dragon was one of the most hotly anticipated television shows ever, and it delivered on all counts. The Game of Thrones spin-off took audiences back in time, depicting the previous ..."
+    }
+  },
+  {
+    "call_id": 24,
+    "timestamp": "2025-08-13T07:47:43.199085",
+    "duration_ms": 1465,
+    "input": {
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Aitken/"
+    },
+    "output": {
+      "title": "Alec Aitken (1895 - 1967) - Biography - MacTutor History of Mathematics",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "1433",
+      "content_preview": "Quick Info Born 1 April 1895 Dunedin, New Zealand Died 3 November 1967 Edinburgh, Scotland Summary Alec Aitken was a New Zealand mathematician who served at Gallipoli and in France.  He had a prodigio..."
+    }
+  },
+  {
+    "call_id": 26,
+    "timestamp": "2025-08-13T07:48:50.627672",
+    "duration_ms": 6022,
+    "input": {
+      "url": "https://orangecapinipl.in/ipl/ipl-2015-final/"
+    },
+    "output": {
+      "title": "IPL 2015 Final Match Highlights",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "1093",
+      "content_preview": "How Mumbai Indians Won IPL 2015 Final Match? ( IPL 2015 Highlights) After being bottom of the table for the first two weeks of the competition, the Mumbai Indians pulled off one of the most incredible..."
+    }
+  },
+  {
+    "call_id": 28,
+    "timestamp": "2025-08-13T07:50:33.853923",
+    "duration_ms": 2767,
+    "input": {
+      "url": "https://www.gutenberg.org/ebooks/54338.html.images"
+    },
+    "output": {
+      "title": "The Project Gutenberg eBook of Q-Ships and Their Story, by E. Keble (Edward Keble) Chatterton",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "81733",
+      "content_preview": "The Project Gutenberg eBook, Q-Ships and Their Story, by E. Keble (Edward\r\nKeble) Chatterton Q-SHIPS AND THEIR STORY BOOKS ON THE SEA BY E. KEBLE CHATTERTON HISTORICAL SAILING SHIPS AND THEIR STORY SH..."
+    }
+  },
+  {
+    "call_id": 28,
+    "timestamp": "2025-08-13T07:50:19.687515",
+    "duration_ms": 52865,
+    "input": {
+      "url": "https://archive.org/download/qshipstheirstory00chatter/qshipstheirstory00chatter.pdf"
+    },
+    "output": {
+      "title": "[no-title]",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "159",
+      "content_preview": "%PDF-1.5\n%\u00b5\u00b6\n\n1 0 obj\n<<\n  /Type /Page\n  /Contents 2 0 R\n  /Parent 1799 0 R\n  /Resources <<\n    /XObject <<\n      /img1 3 0 R\n      /Im001 4 0 R\n    >>\n    /ProcSet [ /PDF /Text /ImageB /ImageC /Image..."
+    }
+  },
+  {
+    "call_id": 29,
+    "timestamp": "2025-08-13T07:53:43.574894",
+    "duration_ms": 2286,
+    "input": {
+      "url": "https://www.antimusic.com/staff/Submitted/"
+    },
+    "output": {
+      "title": "antiMusic.com - Official Announcements",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "114808",
+      "content_preview": "Official Announcements These stories are the official announcements from artists, labels and / or publicists. They may be edited for content or length. Latest articles Rascal Flatts Launching Life Is ..."
+    }
+  },
+  {
+    "call_id": 30,
+    "timestamp": "2025-08-13T07:56:10.245830",
+    "duration_ms": 363,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Pakistan_Business_Council"
+    },
+    "output": {
+      "title": "Pakistan Business Council - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "546",
+      "content_preview": "From Wikipedia, the free encyclopedia Non-partisan advocacy organization Pakistan Business Council (PBC) Formation 2005 ; 20\u00a0years ago ( 2005 ) Website PBC website The Pakistan Business Council (PBC) ..."
+    }
+  },
+  {
+    "call_id": 31,
+    "timestamp": "2025-08-13T07:56:56.507108",
+    "duration_ms": 100,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance"
+    },
+    "output": {
+      "title": "Figure skating at the 2022 Winter Olympics - Ice dance - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "396",
+      "content_preview": "From Wikipedia, the free encyclopedia The ice dance competition in figure skating at the 2022 Winter Olympics was held on 12 February (rhythm dance) and 14 February (free dance), at the Capital Indoor..."
+    }
+  },
+  {
+    "call_id": 32,
+    "timestamp": "2025-08-13T07:57:01.026235",
+    "duration_ms": 82,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance"
+    },
+    "output": {
+      "title": "Figure skating at the 2022 Winter Olympics - Ice dance - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "396",
+      "content_preview": "From Wikipedia, the free encyclopedia The ice dance competition in figure skating at the 2022 Winter Olympics was held on 12 February (rhythm dance) and 14 February (free dance), at the Capital Indoor..."
+    }
+  },
+  {
+    "call_id": 33,
+    "timestamp": "2025-08-13T07:57:20.458387",
+    "duration_ms": 524,
+    "input": {
+      "url": "https://www.olympics.com/en/olympic-games/beijing-2022/results/figure-skating/ice-dance"
+    },
+    "output": {
+      "title": "Beijing 2022 Ice Dance Results - Olympic Figure skating",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 34,
+    "timestamp": "2025-08-13T07:57:23.993731",
+    "duration_ms": 2138,
+    "input": {
+      "url": "https://results.isu.org/results/season2122/owg2022/"
+    },
+    "output": {
+      "title": "XXIV Olympic Winter Games 2022",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "0",
+      "content_preview": ""
+    }
+  },
+  {
+    "call_id": 35,
+    "timestamp": "2025-08-13T07:57:28.473989",
+    "duration_ms": 412,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics"
+    },
+    "output": {
+      "title": "Figure skating at the 2022 Winter Olympics - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "3236",
+      "content_preview": "Figure Skating at the XXIV Olympic Winter Games Figure skating pictogram Venue Capital Indoor Stadium Dates 4\u201320 February 2022 No. of events 5 (1 men, 1 women, 3 mixed) Competitors 148 (74 men, 74 wom..."
+    }
+  },
+  {
+    "call_id": 36,
+    "timestamp": "2025-08-13T07:57:31.945122",
+    "duration_ms": 101,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance#Results"
+    },
+    "output": {
+      "title": "Figure skating at the 2022 Winter Olympics - Ice dance - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "396",
+      "content_preview": "From Wikipedia, the free encyclopedia The ice dance competition in figure skating at the 2022 Winter Olympics was held on 12 February (rhythm dance) and 14 February (free dance), at the Capital Indoor..."
+    }
+  },
+  {
+    "call_id": 37,
+    "timestamp": "2025-08-13T07:58:27.663766",
+    "duration_ms": 660,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 38,
+    "timestamp": "2025-08-13T07:58:30.137386",
+    "duration_ms": 176,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 39,
+    "timestamp": "2025-08-13T07:58:32.370178",
+    "duration_ms": 229,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 40,
+    "timestamp": "2025-08-13T07:58:34.599843",
+    "duration_ms": 158,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 41,
+    "timestamp": "2025-08-13T07:58:37.261448",
+    "duration_ms": 1837,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 42,
+    "timestamp": "2025-08-13T07:58:41.386421",
+    "duration_ms": 308,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 43,
+    "timestamp": "2025-08-13T07:58:43.471623",
+    "duration_ms": 458,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 45,
+    "timestamp": "2025-08-13T07:58:51.906396",
+    "duration_ms": 942,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 46,
+    "timestamp": "2025-08-13T07:58:54.785305",
+    "duration_ms": 411,
+    "input": {
+      "url": "https://www.wikiwand.com/en/articles/Kibbutz_volunteer"
+    },
+    "output": {
+      "title": "Kibbutz volunteer - Wikiwand",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "508",
+      "content_preview": "The volunteering phenomenon in the kibbutzim began in the mid-1960s when the young generation of Baby Boomers from western nations became curious about kibbutz life and eager to experience it first-ha..."
+    }
+  },
+  {
+    "call_id": 47,
+    "timestamp": "2025-08-13T07:58:57.049357",
+    "duration_ms": 466,
+    "input": {
+      "url": "https://duranduran.fandom.com/wiki/Simon_Le_Bon"
+    },
+    "output": {
+      "title": "Simon Le Bon | Duran Duran Wiki | Fandom",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "2984",
+      "content_preview": "Simon Le Bon Background information Birth name Simon John Charles Le Bon Born 27 October 1958 Bushey, Hertfordshire, England. (age 66) Occupation Singer, performer Genres New Wave, Rock, Alternative R..."
+    }
+  },
+  {
+    "call_id": 48,
+    "timestamp": "2025-08-13T07:59:10.399979",
+    "duration_ms": 1858,
+    "input": {
+      "url": "https://improbable.com/ig/winners/"
+    },
+    "output": {
+      "title": "Past Ig Winners",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "22473",
+      "content_preview": "The 2020 Ig Nobel Prizes were awarded at the 30th First Annual Ig Nobel Prize ceremony , on Thursday, September 17, 2020. The ceremony was webcast . ACOUSTICS PRIZE [AUSTRIA, SWEDEN, JAPAN, USA, SWITZ..."
+    }
+  },
+  {
+    "call_id": 49,
+    "timestamp": "2025-08-13T07:59:30.106534",
+    "duration_ms": 437,
+    "input": {
+      "url": "https://theyoungandtherestless.fandom.com/wiki/David_Chow"
+    },
+    "output": {
+      "title": "David Chow | The Young and the Restless Wiki | Fandom",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "1074",
+      "content_preview": "David John Chow (born Angelo Serafini ) was a fictional character on The Young and the Restless , portrayed by Vincent Irizarry. Biography [ ] David Chow was a savvy political operative who arrived in..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:01:18.965613",
+    "duration_ms": 354,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award"
+    },
+    "output": {
+      "title": "IEEE Frank Rosenblatt Award - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "179",
+      "content_preview": "From Wikipedia, the free encyclopedia IEEE Frank Rosenblatt Award Awarded for Outstanding contribution(s) to the advancement of the design, practice, techniques, or theory in biologically and linguist..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:01:19.322712",
+    "duration_ms": 685,
+    "input": {
+      "url": "https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf"
+    },
+    "output": {
+      "title": "[no-title]",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "29",
+      "content_preview": "%PDF-1.6\r%\ufffd\ufffd\ufffd\ufffd\r\n243 0 obj\r<>\rendobj\r                \r\n261 0 obj\r<>/Filter/FlateDecode/ID[<758E8BE9E54533438521594CB74E9408><736CD6BDC2AF1143A9ADCEA977079E87>]/Index[243 29]/Info 242 0 R/Length 88/Prev..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:01:37.885857",
+    "duration_ms": 1475,
+    "input": {
+      "url": "https://2018.oceanopticsconference.org/jerlov-award/"
+    },
+    "output": {
+      "title": "Jerlov Award | Ocean Optics Conference",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "152",
+      "content_preview": "2018 Jerlov Award:\u00a0Dr. Annick Bricaud The Oceanography Society is pleased to announce that Dr. Annick Bricaud has been selected as the 2018 recipient of The Nils Gunnar Jerlov Award recognizing her co..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:01:39.363534",
+    "duration_ms": 343,
+    "input": {
+      "url": "https://tos.org/jerlov-medal"
+    },
+    "output": {
+      "title": "Jerlov Medal | The Oceanography Society",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "274",
+      "content_preview": "Professor Nils Gunnar Jerlov (1910\u20131990) graduated in 1939 with a Ph.D. in physics from the University of Lund. He was very active in many fields of scientific research including nuclear physics, envi..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:02:03.346670",
+    "duration_ms": 273,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Radcliffe_College"
+    },
+    "output": {
+      "title": "Radcliffe College - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "9385",
+      "content_preview": "Women's college in Cambridge, Massachusetts (1878\u20131999) Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts , that was founded in 1879. In 1999, it was fully incorporated ..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:02:03.622675",
+    "duration_ms": 574,
+    "input": {
+      "url": "https://www.independent.com/obits/2023/06/15/nancy-claybrook-carlson/"
+    },
+    "output": {
+      "title": "Nancy Claybrook Carlson - The Santa Barbara Independent",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "788",
+      "content_preview": "Nancy Claybrook Carlson, born Nancy Leigh Claybrook to Franklin Dew and Priscilla Leigh Claybrook of Baltimore, Maryland, passed away on May 26 at the age of 95.  Nancy was born on April 8, 1928, the ..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:02:18.872366",
+    "duration_ms": 264,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Adolf_Anderssen"
+    },
+    "output": {
+      "title": "Adolf Anderssen - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "4754",
+      "content_preview": "German chess master (1818\u20131879) This article is about the German chess player. For the Swedish swimmer, see Adolf Andersson . Karl Ernst Adolf Anderssen (6 July 1818 \u2013 13 March 1879) [ 1 ] was a Germa..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:02:19.139440",
+    "duration_ms": 1875,
+    "input": {
+      "url": "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3"
+    },
+    "output": {
+      "title": "Repository evaluations - pvduy/simpleqa | Datasets at Oxen.ai",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "14",
+      "content_preview": "Queued: Mar 18, 2025, 8:43 PM UTC Completed: Mar 18, 2025, 8:43 PM UTC"
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:02:38.076845",
+    "duration_ms": 161,
+    "input": {
+      "url": "https://news.ycombinator.com/item?id=42001816"
+    },
+    "output": {
+      "title": "First few questions for those who don't care to download. Most just seem to be a... | Hacker News",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "99",
+      "content_preview": "First few questions for those who don't care to download. Most just seem to be about niche facts: Who received the IEEE Frank Rosenblatt Award in 2010?\n    Who was awarded the Oceanography Society's J..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:02:38.240554",
+    "duration_ms": 2428,
+    "input": {
+      "url": "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3"
+    },
+    "output": {
+      "title": "Repository evaluations - pvduy/simpleqa | Datasets at Oxen.ai",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "14",
+      "content_preview": "Queued: Mar 18, 2025, 8:43 PM UTC Completed: Mar 18, 2025, 8:43 PM UTC"
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:02:51.969872",
+    "duration_ms": 86,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Stella_Obasanjo"
+    },
+    "output": {
+      "title": "Stella Obasanjo - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "651",
+      "content_preview": "First Lady of Nigeria (1999\u20132005) Stella Obasanjo (14 November 1945 \u2013 23 October 2005) was the First Lady of Nigeria from 1999 until her death. She was the wife of former President Olusegun Obasanjo ,..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:03:21.589245",
+    "duration_ms": 399,
+    "input": {
+      "url": "https://www.huffpost.com/entry/obama-i-believe-in-the-re_n_83208"
+    },
+    "output": {
+      "title": "Obama: \"I Believe In The Redemptive Death And Resurrection Of Christ\" | HuffPost Latest News",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "481",
+      "content_preview": "In a recent interview with Christianity Today, presidential candidate Barack Obama shared his religious beliefs, and answered questions on questions central to evangelical interests, such as abortion...."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:03:21.991840",
+    "duration_ms": 935,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Barack_Obama"
+    },
+    "output": {
+      "title": "Barack Obama - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "34680",
+      "content_preview": "President of the United States from 2009 to 2017 Barack Obama Official portrait, 2012 In office January 20, 2009\u00a0\u2013 January 20, 2017 Vice President Joe Biden Preceded by George W. Bush Succeeded by Don..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:03:57.381965",
+    "duration_ms": 122,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg"
+    },
+    "output": {
+      "title": "Mirza Hameedullah Beg - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "806",
+      "content_preview": "15th Chief Justice of India Mirza Hameedullah Beg (M. H. Beg) (22 February 1913 \u2013 19 November 1988 [ 1 ] ) was the 15th Chief Justice of India , serving from January 1977 to February 1978. Early life ..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:03:57.506401",
+    "duration_ms": 4623,
+    "input": {
+      "url": "https://www.sci.gov.in/judge/justice-m-hameedullah-beg/"
+    },
+    "output": {
+      "title": "Justice M. Hameedullah Beg | Supreme Court of India | India",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "356",
+      "content_preview": "The Hon\u2019ble Mr. Justice Mirza Hameedullah Beg, M.A. (Cantab), Barrister-at-Law; Born at Lucknow on 22nd February, 1913; son of the Hon\u2019ble Mirza Samiullah Beg, former Chief Justice of Hyderabad State;..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:04:27.861174",
+    "duration_ms": 140,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/J%C3%B3hanna_Sigur%C3%B0ard%C3%B3ttir"
+    },
+    "output": {
+      "title": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "3202",
+      "content_preview": "Prime Minister of Iceland from 2009 to 2013 J\u00f3hanna Sigur\u00f0ard\u00f3ttir [ 1 ] ( Icelandic pronunciation: [\u02c8jou\u02d0hana \u02c8s\u026a\u02d0\u0263\u028fr\u00f0ar\u02cctouht\u026ar\u0325] ; born 4 October 1942) is an Icelandic politician, who served as pri..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:04:28.003959",
+    "duration_ms": 387,
+    "input": {
+      "url": "https://www.britannica.com/biography/Johanna-Sigurdardottir"
+    },
+    "output": {
+      "title": "Johanna Sigurdardottir | Biography, Facts, & Partner | Britannica",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "568",
+      "content_preview": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir (born October 4, 1942, Reykjav\u00edk, Iceland) was an Icelandic politician who served as prime minister of Iceland from 2009 to 2013. She was the country\u2019s first female prime minist..."
+    }
+  },
+  {
+    "call_id": 1,
+    "timestamp": "2025-08-15T07:04:55.156882",
+    "duration_ms": 287,
+    "input": {
+      "url": "https://en.wikipedia.org/wiki/Mehbooba_Mufti"
+    },
+    "output": {
+      "title": "Mehbooba Mufti - Wikipedia",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "1606",
+      "content_preview": "Chief minister of Jammu and Kashmir from 2016 to 2018 Mehbooba Bur Mufti Sayed (Urdu: \u0645\u062d\u0628\u0648\u0628\u06c1 \u0645\u0641\u062a\u06cc \u0633\u06cc\u062f; born 22 May 1959) in Bijbihara Anantnag district is an Indian politician and leader of the Jammu ..."
+    }
+  },
+  {
+    "call_id": 2,
+    "timestamp": "2025-08-15T07:04:55.446034",
+    "duration_ms": 3552,
+    "input": {
+      "url": "https://timesofindia.indiatimes.com/elections/lok-sabha-constituencies/jammu-kashmir/anantnag"
+    },
+    "output": {
+      "title": "Anantnag Constituency Lok Sabha Election Result: Candidates Profiles, Map, Total Votes, Past Results | The Times of India",
+      "status": "\u2705 Content extracted successfully",
+      "word_count": "96",
+      "content_preview": "Anantnag is one of the five Lok Sabha constituencies of Jammu and Kashmir. By securing 32.17% of the votes polled, Hasnain Masoodi of Jammu & Kashmir National Conference emerged victorious. He won aga..."
+    }
+  }
+]

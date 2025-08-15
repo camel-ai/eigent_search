@@ -1,0 +1,129 @@
+[
+    {
+        "problem": "Who received the IEEE Frank Rosenblatt Award in 2010?",
+        "answer": "Michio Sugeno",
+        "response": {
+            "answer": "The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno.",
+            "search_results": [
+                "Title: IEEE Frank Rosenblatt Award - Wikipedia\nDescription: 2010: Michio Sugeno; 2009: John J. Hopfield; 2008: Teuvo Kohonen; 2007 ... List of IEEE Frank Rosenblatt Award recipients \nLong Description: N/A",
+                "Title: IEEE Frank Rosenblatt Award Recipients\nDescription: IEEE FRANK ROSENBLATT AWARD. RECIPIENTS. 1 of 3. 2026 \t6REW G. BARTO ... 2010 \t6 MICHIO SUGENO. Faculty of Culture and Information. Science, Doshisha\nLong Description: N/A",
+                "Title: Michio Sugeno | IEEE Xplore Author Details\nDescription: He is the first recipient of IEEE CIS Pioneer Award in Fuzzy Systems with Zadeh, in 2000. He was the recipient of the 2010 IEEE Frank Rosenblatt Award, and also\nLong Description: N/A"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "Who was awarded the Oceanography Society's Jerlov Award in 2018?",
+        "answer": "Annick Bricaud",
+        "response": {
+            "answer": "Dr. Annick Bricaud was awarded the Oceanography Society's Jerlov Award in 2018 for her contributions to the advancement of knowledge about the nature and consequences of light in the ocean. She is internationally recognized for her groundbreaking work in ocean optics, including studies on seawater optical properties, bio-optical relationships, and satellite ocean color algorithms.",
+            "search_results": [
+                "https://2018.oceanopticsconference.org/jerlov-award/ : The Oceanography Society is pleased to announce that Dr. Annick Bricaud has been selected as the 2018 recipient of The Nils Gunnar Jerlov Award recognizing her contributions to the advancement of our knowledge of the nature and consequences of light in the ocean. Dr. Bricaud is recognized internationally for her groundbreaking contributions to ocean optics, which cover experimental and theoretical studies on seawater optical properties, fieldwork-based bio-optical relationships, and algorithms for deriving biogeochemical products from satellite ocean color. She is a senior research scientist at the Laboratoire d\u2019Oc\u00e9anographie de Villefranche (LOV), CNRS \u2013 Sorbonne Universit\u00e9, Villefranche-sur-Mer, France, which she joined in 1976. Her 75 papers received the outstanding number of 11,400 citations, and many opened new avenues of research. Annick mentored numerous students, in France and worldwide, and has a long record of contribution to community service. She is among the first female researchers in optical oceanography."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
+        "answer": "Radcliffe College",
+        "response": {
+            "answer": "The women's liberal arts college in Cambridge, Massachusetts is called Radcliffe College.",
+            "search_results": [
+                "Radcliffe College was a women's liberal arts college in Cambridge, Massachusetts, that was founded in 1879. In 1999, it was fully incorporated into Harvard College. The college was named for the early Harvard benefactor Anne Mowlson (n\u00e9e Radcliffe) and was one of the Seven Sisters colleges. For the first 70 years of its existence, Radcliffe conferred undergraduate and graduate degrees. Beginning in 1963, it awarded joint Harvard-Radcliffe diplomas to undergraduates. In 1977, Radcliffe signed a formal \"non-merger merger\" agreement with Harvard, and completed a full integration with Harvard in 1999. Within Harvard University, Radcliffe's former administrative campus, Radcliffe Yard, is home to the Radcliffe Institute for Advanced Study."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In whose honor was the Leipzig 1877 tournament organized?",
+        "answer": "Adolf Anderssen",
+        "response": {
+            "answer": "The Leipzig 1877 tournament was organized in honor of Adolf Anderssen, commemorating his contributions and achievements in chess.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Adolf_Anderssen: Adolf Anderssen - Wikipedia. The Leipzig 1877 tournament was organised in his honour and named the...",
+                "https://kids.kiddle.co/Adolf_Anderssen: Adolf Anderssen Facts for Kids. The Leipzig 1877 tournament was held to honor Anderssen. It was ... This tournament honored Anderssen's 50th anniversary of learning chess.",
+                "https://en.chessbase.com/post/an-adolf-anderssen-anniversary: An Adolf Anderssen anniversary | ChessBase. The German Chess Federation was founded during the \"Anderssen Celebration\" in Leipzig, 1877."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
+        "answer": "Poet Henrich Heine.",
+        "response": {
+            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture, which was made for her villa Achilleion at Corfu, depicted Achilles.",
+            "search_results": [
+                "According to Karl K\u00fcchler, Empress Elizabeth of Austria's (Sisi's) favorite sculpture at her villa Achilleion at Corfu depicted Achilles."
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's death ordered to pay her son?",
+        "answer": "120,000",
+        "response": {
+            "answer": "The surgeon held responsible for Stella Obasanjo's death was ordered to pay \n\u000120,000 (one hundred twenty thousand euros) in compensation to her son.",
+            "search_results": [
+                "Stella Obasanjo (14 November 1945 \t6 23 October 2005) was the First Lady of Nigeria from 1999 until her death. She died while undergoing elective liposuction abroad. The surgeon, identified only as \"AM\" in court, was sentenced to one year of imprisonment in September 2009 on a charge of \"causing homicide through negligence\", disqualified from medicine for a period of three years and ordered to pay \u000120,000 (approximately US$176,000) in compensation to Stella Obasanjo's son.",
+                "THE Spanish surgeon who carried out a tummy tuck operation on Mrs Stella Obasanjo, wife of former President Olusegun Obasanjo, in 2005, was sentenced to one year imprisonment for manslaughter by a court in Malaga, Spain. He was also fined 120,000 euros which he has to pay to Olumuyiwa Obasanjo, son of the late Stella.",
+                "A Spanish doctor has been sent to jail for a year over the death of the former Nigerian first lady. Stella Obasanjo died after having liposuction. The doctor was ordered to pay 120,000 euros in compensation to her son.",
+                "The surgeon will have to pay 120,000 euros (177,000 dollars) in damages to Stella Obasanjo's son and insurance company."
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "What were the month and year when Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\"?",
+        "answer": "January 2008",
+        "response": {
+            "answer": "Barack Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ,\" in an interview published in March 2008.",
+            "search_results": [
+                "Title: Obama: \"I Believe In The Redemptive Death And Resurrection Of ...\\nDescription: Mar 28, 2008 ... On his faith: \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ. I believe ...\\nLong Description: Obama: \"I Believe In The Redemptive Death And Resurrection Of Christ\"\\n\\nExtracted Content (481 words):\\nIn a recent interview with Christianity Today, presidential candidate Barack Obama shared his religious beliefs, and answered questions on questions central to evangelical interests, such as abortion. \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ. I believe that that faith gives me a path to be cleansed of sin and have eternal life. But most importantly, I believe in the example that Jesus set by feeding the hungry and healing the sick and always prioritizing the least of these over the powerful. I didn't 'fall out in church' as they say, but there was a very strong awakening in me of the importance of these issues in my life. I didn't want to walk alone on this journey. Accepting Jesus Christ in my life has been a powerful guide for my conduct and my values and my ideals.\" \"Ultimately, women are in the best position to make a decision at the end of the day about these issues. With significant constraints. For example, I think we can legitimately say -- the state can legitimately say -- that we are prohibiting late-term abortions as long as there's an exception for the mother's health. Those provisions that I voted against typically didn't have those exceptions, which raises profound questions where you might have a mother at great risk. Those are issues that I don't think the government can unilaterally make a decision about. I think they need to be made in consultation with doctors, they have to be prayed upon, or people have to be consulting their conscience on it. I think we have to keep that decision-making with the person themselves.\" Read the full interview here . 20 Years Of Free Journalism Your Support Fuels Our Mission Your Support Fuels Our Mission For two decades, HuffPost has been fearless, unflinching, and relentless in pursuit of the truth. Support our mission to keep us around for the next 20 \u2014 we can't do this without you. We remain committed to providing you with the unflinching, fact-based journalism everyone deserves. Thank you again for your support along the way. We\u2019re truly grateful for readers like you! Your initial support helped get us here and bolstered our newsroom, which kept us strong during uncertain times. Now as we continue, we need your help more than ever. We hope you will join us once again . We remain committed to providing you with the unflinching, fact-based journalism everyone deserves. Thank you again for your support along the way. We\u2019re truly grateful for readers like you! Your initial support helped get us here and bolstered our newsroom, which kept us strong during uncertain times. Now as we continue, we need your help more than ever. We hope you will join us once again . Support HuffPost Already contributed? Log in to hide these messages."
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?",
+        "answer": "Fakhruddin Ali Ahmed",
+        "response": {
+            "answer": "The Chief Justice of India, Mirza Hameedullah Beg, was appointed in 1977 by the President of India, Fakhruddin Ali Ahmed. This appointment was made on 29 January 1977 and was notable for superseding the seniority of other judges, particularly Justice H R Khanna.",
+            "search_results": [
+                "Mirza Hameedullah Beg (M. H. Beg) (22 February 1913 \t6 November 1988) was the 15th Chief Justice of India, serving from January 1977 to February 1978. He was appointed as Chief Justice of India on 29.01.1977. The appointment was made by the President of India at the time, who was Fakhruddin Ali Ahmed. This appointment was notable because it superseded the seniority of other judges, particularly Justice H R Khanna.",
+                "Justice Mirza Hameedullah Beg was appointed as Chief Justice of India on 29.01.1977. The President of India, Fakhruddin Ali Ahmed, appointed him. He retired on 21.02.1978.",
+                "The appointment of Mirza Hameedullah Beg as Chief Justice of India was made by the Government of Indira Gandhi, with the President of India, Fakhruddin Ali Ahmed, formalizing the appointment on 29 January 1977. The appointment was controversial because it superseded the seniority of Justice H R Khanna, who was known for his defense of habeas corpus rights during the Emergency period."
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the name of the former Prime Minister of Iceland who worked as a cabin crew member until 1971?",
+        "answer": "J\u00f3hanna Sigur\u00f0ard\u00f3ttir",
+        "response": {
+            "answer": "The former Prime Minister of Iceland who worked as a cabin crew member until 1971 is J\u00f3hanna Sigur\u00f0ard\u00f3ttir.",
+            "search_results": [
+                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir was the Prime Minister of Iceland from 2009 to 2013. She worked as a flight attendant with Icelandic Airlines from 1962 to 1971 before entering politics. (https://en.wikipedia.org/wiki/J%C3%B3hanna_Sigur%C3%B0ard%C3%B3ttir)",
+                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir, former Prime Minister of Iceland (2009-2013), worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971. (https://www.britannica.com/biography/Johanna-Sigurdardottir)",
+                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir was the first female Prime Minister of Iceland and worked as a flight attendant from 1962 to 1971. (https://kids.britannica.com/students/article/J%C3%B3hanna-Sigur%C3%B0ard%C3%B3ttir/627180)",
+                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as the Prime Minister of Iceland from 2009 until 2013 and was the country's first female PM. She was previously a flight attendant. (https://simpleflying.com/famous-former-flight-attendants-a-brief-guide/)",
+                "This former flight attendant for Icelandic Airlines (1962\t6971) served as Prime Minister of Iceland from 2009 until 2013. (https://medium.com/illumination/fly-me-to-the-crown-ac6464cb2242)",
+                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir was a flight attendant for Icelandic Airlines from 1960 to 1971 and later became Iceland's first female prime minister. (https://www.awheelinthesky.com/flight-attendants-who-made-history/)",
+                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir served as Prime Minister of Iceland from 2009-2013 and was the first female Prime Minister of Iceland. (https://www.councilwomenworldleaders.org/johanna-sigurdardttir)",
+                "J\u00f3hanna Sigur\u00f0ard\u00f3ttir worked as a flight attendant for Loftlei\u00f0ir Icelandic Airlines from 1962 to 1971 and was Iceland's first female Prime Minister. (https://allthingsiceland.com/trailblazing-women-icelandic-history/)"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "To whom did Mehbooba Mufti Sayed contest the 2019 Lok Sabha elections and lose?",
+        "answer": "Hasnain Masoodi",
+        "response": {
+            "answer": "Mehbooba Mufti contested the 2019 Lok Sabha elections from the Anantnag constituency and lost to Hasnain Masoodi of the Jammu & Kashmir National Conference (NC).",
+            "search_results": [
+                "Mehbooba Mufti contested the 2019 Lok Sabha elections from the Anantnag seat but lost it to Hasnain Masoodi of the Jammu & Kashmir National Conference (NC).",
+                "In the 2019 Lok Sabha elections, Hasnain Masoodi of Jammu & Kashmir National Conference won the Anantnag seat, defeating Mehbooba Mufti of JKPDP."
+            ]
+        },
+        "grade": "CORRECT"
+    }
+]
