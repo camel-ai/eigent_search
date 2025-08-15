@@ -62,17 +62,18 @@ class ResearchAgent(ChatAgent):
         You will be provided with a query processing toolkit that contains the following tools:
         - rewrite_query: Rewrite the query to be more specific and focused.
         - expand_query: Expand the query to be more comprehensive.
-        - select_query_and_search: Select a query from the frontier (and optionally enhance with advanced search operators) and search the web for information. This tool now automatically extracts full content from the top search results for more comprehensive information.
+        - select_query_and_search: Select a query from the frontier (and optionally enhance with advanced search operators) and search the web for information.
         - generate_new_queries: Generate new queries based on the search results if the search results are not sufficient to answer the user's initial query.
+        - extract_web_content: Extract the main content from a web page given its URL. Use this when search snippets don't provide enough detail to answer the query.
         - complete_task: Complete the deep research when search results are sufficient to answer the user's initial query.
 
         The query processing toolkit also maintains a frontier of queries to be explored and an explored set of queries. The frontier contains the queries that have not been explored yet. The explored set contains the queries that have been explored and should not be explored again. You should keep track of the frontier and the explored set while conducting the research.
 
         Research Strategy:
-        1. Start with select_query_and_search to get an overview from search results. The tool will automatically extract detailed content from the top results.
-        2. Review the search results which now include extracted content from the most relevant pages
+        1. Start with select_query_and_search to get an overview from search results
+        2. If the search result snippets don't contain enough detail to answer the query, use extract_web_content on the most promising URLs to get full page content
         3. Only complete_task when you have sufficient information to provide a comprehensive answer
-        4. If you cannot find the answer after reviewing the search results with extracted content, generate new queries to explore different aspects
+        4. If you cannot find the answer after extracting content from relevant pages, generate new queries to explore different aspects
 
         The final output should be the answer to the user's initial query, and the search results that lead to the answer.
 
@@ -107,7 +108,7 @@ class ResearchAgent(ChatAgent):
             return asyncio.run(self.astep(input_query, browsing=browsing))
         else:
             # Use sync version for non-browsing
-            self.current_query_toolkit = QueryProcessingToolkit(input_query, auto_extract_content=True, smart_extraction=True)
+            self.current_query_toolkit = QueryProcessingToolkit(input_query)
             self.add_tools(self.current_query_toolkit.get_tools())
             search_response = super().step(
                 f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
@@ -116,7 +117,7 @@ class ResearchAgent(ChatAgent):
             return search_response
 
     async def astep(self, input_query: str, browsing: bool = False) -> ChatAgentResponse:
-        self.current_query_toolkit = QueryProcessingToolkit(input_query, auto_extract_content=True, smart_extraction=True)
+        self.current_query_toolkit = QueryProcessingToolkit(input_query)
         self.add_tools(self.current_query_toolkit.get_tools())
         if browsing:
             self.add_tools(get_custom_browsing_toolkit().get_tools())

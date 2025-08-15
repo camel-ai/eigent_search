@@ -100,7 +100,7 @@ class QueryProcessingToolkit(BaseToolkit):
     This toolkit provides methods for query rewriting, expansion, selection, and generation. Each method follows a pattern where it takes the original input and the intended output as parameters, then returns the intended output. This allows LLMs to understand the expected behavior through the docstring and call the function appropriately.
     """
 
-    def __init__(self, initial_query: str, auto_extract_content: bool = True, max_content_extractions: int = 2, smart_extraction: bool = False) -> None:
+    def __init__(self, initial_query: str) -> None:
         super().__init__()
         self.initial_query = initial_query
         self.frontier = {initial_query}  # set of queries to be explored
@@ -108,66 +108,12 @@ class QueryProcessingToolkit(BaseToolkit):
         self.trace_graph = QueryProcessingGraph(initial_query)
         self.search_tool = SearchToolkit().search_google
         self.search_counter = 0  # For counting the number of searches
-        self.auto_extract_content = auto_extract_content
-        self.max_content_extractions = max_content_extractions
-        self.smart_extraction = smart_extraction  # Only extract if snippets are insufficient
-        self.web_content_toolkit = WebContentToolkit() if auto_extract_content else None
+        self.web_content_toolkit = WebContentToolkit()  # Available for agent to use
         self.content_extraction_counter = 0  # For counting content extractions
 
     def get_frontier_str(self) -> str:
         """Display the current frontier as a string."""
         return "📋 current frontier:\n  - " + "\n  - ".join(list(self.frontier))
-    
-    def _snippets_are_sufficient(self, query: str, results: list) -> bool:
-        """Check if search snippets contain enough info to answer the query.
-        
-        This method checks if the descriptions and long descriptions contain
-        specific answers (names, dates, numbers) that likely answer the query.
-        """
-        if not self.smart_extraction:
-            return False  # Always extract if smart extraction is disabled
-            
-        # Combine all snippets
-        combined_text = ""
-        for result in results[:3]:  # Check top 3 results
-            combined_text += f"{result.get('title', '')} {result.get('description', '')} {result.get('long_description', '')}"
-        
-        combined_text_lower = combined_text.lower()
-        query_lower = query.lower()
-        
-        # Check for specific answer patterns
-        has_specific_answer = False
-        
-        # Check for dates (years)
-        if any(year_str in query_lower for year_str in ['20', '19', '18']):  # Looking for years
-            import re
-            year_pattern = r'\b(19\d{2}|20\d{2})\b'
-            if re.search(year_pattern, combined_text):
-                has_specific_answer = True
-                
-        # Check for specific names in answer position
-        if 'who' in query_lower or 'whom' in query_lower:
-            # Check if snippets contain capitalized names after key terms
-            import re
-            name_pattern = r'(?:recipient|winner|awarded to|given to|received by)[:\s]+([A-Z][a-z]+ [A-Z][a-z]+)'
-            if re.search(name_pattern, combined_text):
-                has_specific_answer = True
-                
-        # Check for numbers
-        if any(q_word in query_lower for q_word in ['how many', 'how much', 'number of']):
-            import re
-            if re.search(r'\d+', combined_text):
-                has_specific_answer = True
-        
-        # Check if the answer appears to be directly stated
-        answer_indicators = ['is', 'was', 'are', 'were', ':', 'recipient', 'winner', 'awarded']
-        for indicator in answer_indicators:
-            if indicator in combined_text_lower:
-                has_specific_answer = True
-                break
-                
-        logger.info(f"[smart_extraction] Snippets {'sufficient' if has_specific_answer else 'insufficient'} for query: {query[:50]}...")
-        return has_specific_answer
 
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
@@ -260,43 +206,12 @@ class QueryProcessingToolkit(BaseToolkit):
                 self.trace_graph.record_process(query_str, results[0]["error"], action)
                 return {"None": results[0]["error"]}
             
-            # Auto-extract content from top results if enabled
-            if self.auto_extract_content and self.web_content_toolkit:
-                # Check if we need to extract based on snippet quality
-                should_extract = True
-                if self.smart_extraction:
-                    should_extract = not self._snippets_are_sufficient(query_str, results)
-                
-                if should_extract:
-                    urls_to_extract = [result["url"] for result in results[:self.max_content_extractions]]
-                    logger.info(f"[auto_extract] Extracting content from top {len(urls_to_extract)} URLs")
-                    
-                    for result in results[:self.max_content_extractions]:
-                        try:
-                            extracted = self.web_content_toolkit.extract_web_content(result["url"])
-                            self.content_extraction_counter += 1
-                            
-                            if extracted["status"].startswith("✅"):
-                                # Add extracted content to the result
-                                result["extracted_content"] = extracted["content"][:3000]  # Limit to 3000 chars
-                                result["extracted_title"] = extracted["title"]
-                                result["word_count"] = extracted["word_count"]
-                                logger.info(f"[auto_extract] Successfully extracted {extracted['word_count']} words from {result['url']}")
-                            else:
-                                logger.warning(f"[auto_extract] Failed to extract from {result['url']}: {extracted['status']}")
-                        except Exception as e:
-                            logger.error(f"[auto_extract] Error extracting from {result['url']}: {str(e)}")
-                else:
-                    logger.info(f"[smart_extraction] Skipping content extraction - snippets are sufficient")
-            
             # linearize valid search results to dictionary of strings
             results: dict[str, str] = {
                 result["url"]: (
                     f"Title: {result['title']}\n"
                     f"Description: {result['description']}\n"
                     f"Long Description: {result['long_description']}"
-                    + (f"\n\nExtracted Content ({result.get('word_count', '0')} words):\n{result.get('extracted_content', '')}" 
-                       if result.get('extracted_content') else "")
                 )
                 for result in results
             }
@@ -341,6 +256,42 @@ class QueryProcessingToolkit(BaseToolkit):
                 self.trace_graph.record_process(url, new_query, "generate_new_queries")
         return {"frontier": list(self.frontier)}
 
+    def extract_web_content(self, url: str) -> dict[str, str]:
+        """Extract the main content from a web page URL.
+        
+        Use this tool when search result snippets don't contain enough detail to answer the query.
+        This will fetch and extract the full content from the webpage.
+
+        Args:
+            url (str): The URL of the web page to extract content from.
+
+        Returns:
+            dict[str, str]: A dictionary containing:
+                - "title": The page title
+                - "content": The extracted main content (limited to 3000 characters)
+                - "status": Success or error status
+                - "word_count": Number of words in extracted content
+        """
+        extracted = self.web_content_toolkit.extract_web_content(url)
+        self.content_extraction_counter += 1
+        
+        if extracted["status"].startswith("✅"):
+            original_length = len(extracted["content"])
+            # Limit content to 3000 characters for context management
+            extracted["content"] = extracted["content"][:3000]
+            truncated_length = len(extracted["content"])
+            
+            if original_length > 3000:
+                logger.info(f"[extract_web_content] Content truncated from {original_length} to {truncated_length} characters")
+                extracted["status"] += f" (truncated from {original_length} chars)"
+            
+            logger.info(f"[extract_web_content] Successfully extracted {extracted['word_count']} words from {url}")
+            self.trace_graph.record_process(url, f"Extracted {extracted['word_count']} words", "extract_web_content")
+        else:
+            logger.warning(f"[extract_web_content] Failed to extract from {url}: {extracted['status']}")
+            
+        return extracted
+
     def complete_task(
         self, search_results: dict[str, str] | None, final_answer: str
     ) -> dict[str, str | list[str]] | str:
@@ -370,6 +321,7 @@ class QueryProcessingToolkit(BaseToolkit):
             FunctionTool(self.expand_query),
             FunctionTool(self.select_query_and_search),
             FunctionTool(self.generate_new_queries),
+            FunctionTool(self.extract_web_content),
             FunctionTool(self.complete_task),
             FunctionTool(ThinkingToolkit().think),
             FunctionTool(ThinkingToolkit().reflect),
