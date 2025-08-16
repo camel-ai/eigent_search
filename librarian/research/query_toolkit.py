@@ -172,14 +172,13 @@ class QueryProcessingToolkit(BaseToolkit):
         self, query: str, enhanced_query: str
     ) -> dict[str, str]:
         """
-        Select the best query from the current frontier and perform a web search, optionally
-        enhancing the query with advanced operators to maximize precision and minimize cost.
+        Select the best query from the current frontier and perform a web search.
 
         Selection criteria: 
         - the agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search.
-        - the input query MUST be selected from current frontier queries.
+        - the input query MUST be selected from current frontier.
 
-        Enhancement (optional):
+        Enhancement (OPTIONAL):
         - Add operators to improve precision: quotes for exact phrases, AND/OR/NOT, site:, filetype:, and time filters.
         - Fallback to the original query if the enhanced query yields errors or no results.
 
