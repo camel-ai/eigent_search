@@ -169,7 +169,7 @@ class QueryProcessingToolkit(BaseToolkit):
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
     def select_query_and_search(
-        self, query: str, enhanced_query: str
+        self, query: str, enhanced_query: Optional[str] = None
     ) -> dict[str, str]:
         """
         Select the best query from the current frontier and perform a web search.
@@ -186,7 +186,7 @@ class QueryProcessingToolkit(BaseToolkit):
 
         Args:
             query (str): The input query from the current frontier that is selected for web search.
-            enhanced_query (str): The enhanced query with optional advanced search operators added to the selected query that will be used for searching the web. If the enhanced query leads to an error in search, search results of the original query will be returned.
+            enhanced_query (str): The enhanced query with OPTIONAL advanced search operators added to the selected query that will be used for searching the web. If the enhanced query leads to an error in search, search results of the original query will be returned.
 
         Returns:
             dict[str, str]: A dictionary containing the processed web search results.
