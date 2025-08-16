@@ -24,8 +24,6 @@ Branch to explore new toolkit design
 - decouple select and search
 - add reflection
 
-Accuracy 0.72
-
 
 
 
