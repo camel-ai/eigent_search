@@ -170,20 +170,17 @@ class QueryProcessingToolkit(BaseToolkit):
     @validate_output_query_not_explored
     def select_query_and_search(
         self, query: str, enhanced_query: str
-    ) -> dict[str, dict[str, str]]:
+    ) -> dict[str, str]:
         """
         Select the best query from the current frontier and perform a web search, optionally
         enhancing the query with advanced operators to maximize precision and minimize cost.
 
         Selection criteria: 
-        • the input query MUST be selected from current frontier queries.
-        • specificity: narrower scopes > broad topics (e.g., named entities, exact phrases)
-        • clarity: low ambiguity, well-formed grammar, concrete intent
-        • search_potential: likelihood to surface authoritative sources (prior hits, known sites)
+        - the agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search.
+        - the input query MUST be selected from current frontier queries.
 
         Enhancement (optional):
         - Add operators to improve precision: quotes for exact phrases, AND/OR/NOT, site:, filetype:, and time filters.
-        - Respect query-specific filters: `time_window`, `site_filters`, `filetype_filters`.
         - Fallback to the original query if the enhanced query yields errors or no results.
 
         Args:
@@ -191,7 +188,12 @@ class QueryProcessingToolkit(BaseToolkit):
             enhanced_query (str): The enhanced query with optional advanced search operators added to the selected query that will be used for searching the web. If the enhanced query leads to an error in search, search results of the original query will be returned.
 
         Returns:
-            dict[str, dict[str, str]]: The search results from the web search. The key is the URL and the value is the string of the title, description, and long description of the result. If the search fails, the key is "None" and the value is the error message.
+            dict[str, str]: A dictionary containing the processed web search results.
+            - Key: The URL of the search result.
+            - Value: A single formatted string with the result details:
+                Title: <title>
+                Description: <description>
+                Long Description: <long_description>
         """
         # Record enhancement and add to frontier if needed
         if enhanced_query != query:
@@ -236,14 +238,14 @@ class QueryProcessingToolkit(BaseToolkit):
         # Try enhanced query first
         enhanced_results = search_and_record(enhanced_query)
         if "None" not in enhanced_results:
-            return {"search_results": enhanced_results}
+            return enhanced_results
         else:
             if query != enhanced_query:
                 # Fall back to original query
                 self.trace_graph.record_process(enhanced_query, query, "query_fallback")
-                return {"search_results": search_and_record(query)}
+                return search_and_record(query)
             else:
-                return {"search_results": enhanced_results}
+                return enhanced_results
 
     @validate_output_query_not_explored
     def generate_new_queries(
