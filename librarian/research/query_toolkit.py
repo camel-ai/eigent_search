@@ -169,7 +169,7 @@ class QueryProcessingToolkit(BaseToolkit):
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
     def select_query_and_search(
-        self, query: str, enhanced_query: Optional[str] = None
+        self, query: str, enhanced_query: str
     ) -> dict[str, str]:
         """
         Select the best query from the current frontier and perform a web search.
