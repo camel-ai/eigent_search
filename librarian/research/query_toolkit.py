@@ -250,11 +250,11 @@ class QueryProcessingToolkit(BaseToolkit):
     def generate_new_queries(
         self, search_results: Optional[dict[str, str]], new_queries: list[str]
     ) -> dict[str, list[str]] | str:
-        """Generate new queries when the search results are not sufficient to answer the user's initial query.
+        """Generate new queries when existing search results are insufficient to answer the initial query.
 
-        The agent should reflect on the search results and generate new queries to continue the deep research.
-
-        The search_results are formatted as a dictionary of strings, where the key is the URL and the value is the string of the title, description, and long description of the result.
+        Reflect on search results to identify gaps, missing aspects, or new leads relevant to the initial query.
+        Propose specific, targeted, and non-redundant queries that can close knowledge gaps or broaden evidence.
+        Add the new queries to the frontier.
 
         Args:
             search_results (dict[str, str]): The search results from the web search.
@@ -273,12 +273,17 @@ class QueryProcessingToolkit(BaseToolkit):
     def complete_task(
         self, search_results: Optional[dict[str, str]], final_answer: str
     ) -> dict[str, str | list[str]] | str:
-        """Complete the deep research when search results are sufficient to answer the user's initial query.
+        """Complete the deep research when existing search results are sufficient to answer the initial query.
 
         The agent should return the final answer and the search results to terminate the deep research.
 
-        The search_results are formatted as a dictionary of strings, where the key is the URL and the value is the string of the title, description, and long description of the result.
-
+        The search_results are formatted as a dictionary containing the processed web search results.
+            - Key: The URL of the search result.
+            - Value: A single formatted string with the result details:
+                Title: <title>
+                Description: <description>
+                Long Description: <long_description>
+                
         Args:
             search_results (dict[str, str]): The search results from web search.
             final_answer (str): The final answer to the user's initial query.
@@ -310,13 +315,13 @@ class QueryProcessingToolkit(BaseToolkit):
         The reflection process:
         1. Evaluate whether the collected evidence and search results are sufficient
            to confidently and comprehensively answer the initial query.
-            • If sufficient: terminate the research by calling `complete_task` with
+            - If sufficient: terminate the research by calling `complete_task` with
               the final answer and supporting search results.
         2. If insufficient:
-            • Option A – Generate new queries: If recent search results reveal
+            - Option A: Generate new queries: If recent search results reveal
               new leads, missing aspects, or unexplored angles, call
               `generate_new_queries` to add targeted queries to the frontier.
-            • Option B – Switch to another frontier query: If other queries in the
+            - Option B: Switch to another frontier query: If other queries in the
               frontier have higher potential to close knowledge gaps, select one
               and call `select_query_and_search`.
 
