@@ -179,6 +179,8 @@ class QueryProcessingToolkit(BaseToolkit):
         - the input query MUST be selected from current frontier.
 
         Enhancement (OPTIONAL):
+        - Prefer using the original query.
+        - Only enhance the query if additional operators (quotes, AND/OR/NOT, site:, filetype:, time filters) can clearly improve precision.
         - Add operators to improve precision: quotes for exact phrases, AND/OR/NOT, site:, filetype:, and time filters.
         - Fallback to the original query if the enhanced query yields errors or no results.
 
@@ -283,7 +285,7 @@ class QueryProcessingToolkit(BaseToolkit):
                 Title: <title>
                 Description: <description>
                 Long Description: <long_description>
-                
+
         Args:
             search_results (dict[str, str]): The search results from web search.
             final_answer (str): The final answer to the user's initial query.
