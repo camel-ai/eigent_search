@@ -68,7 +68,7 @@ class ResearchAgent(ChatAgent):
             - Use when: The current query is too complex or multifaceted, and needs to be simplified or split into multiple parts.
         3. select_query_and_search(query, enhanced_query)
             - Purpose: Select the most promising query from the frontier and perform a web search.
-            - Use when: Ready to retrieve new information for the most valuable frontier query.
+            - Use when: There is at least one query in the frontier and it is ready to retrieve new information for the most valuable frontier query.
         4. generate_new_queries(search_results, new_queries)
             - Purpose: Create new queries based on gaps, leads, or new angles discovered in the latest search results.
             - Use when: Search results are insufficient or reveal promising new directions. 

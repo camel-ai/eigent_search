@@ -138,11 +138,10 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
             )
 
-        # save results every 50 examples or at the end
-        if (i + 1) % 50 == 0 or i == num_questions - 1:
-            with open(output_file, "w") as f:
-                json.dump(results, f, indent=4)
-            tqdm.write(f"Results saved to {output_file}")
+        # save results every 1 examples or at the end
+        with open(output_file, "w") as f:
+            json.dump(results, f, indent=4)
+        tqdm.write(f"Results saved to {output_file}")
 
         agent.reset()
 
