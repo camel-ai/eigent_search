@@ -50,7 +50,7 @@ def send_message_to_user(message: str):
 def search_agent_factory(
     model: BaseModelBackend,
     task_id: str,
-):
+) -> tuple[ChatAgent, HybridBrowserToolkit]:
     r"""Factory for creating a search agent, based on user-provided code
     structure.
     """
@@ -68,9 +68,8 @@ def search_agent_factory(
         "browser_back",
         "browser_forward",
         "browser_click",
-        "browser_type",
-        "browser_enter",
-        "browser_switch_tab",
+        # "browser_type",
+        # "browser_enter",
         "browser_visit_page",
         "browser_get_som_screenshot",
     ]
@@ -216,7 +215,7 @@ Your capabilities include:
         toolkits_to_register_agent=[web_toolkit_custom],
         tools=tools,
         prune_tool_calls_from_memory=True,
-    )
+    ), web_toolkit_custom
 
 
 class EigentSearchAgent:
@@ -235,7 +234,22 @@ class EigentSearchAgent:
     
     def reset(self):
         """Reset the agent by creating a new instance."""
-        self.agent = search_agent_factory(self.model, self.task_id)
+        if self.agent is not None:
+            self.agent.reset()
+            print("closing browser")
+            try:
+                # Try to get the current event loop
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # If loop is running, create a task
+                    loop.create_task(self.web_toolkit.browser_close())
+                else:
+                    # If no loop is running, use asyncio.run
+                    asyncio.run(self.web_toolkit.browser_close())
+            except RuntimeError:
+                # No event loop, create one
+                asyncio.run(self.web_toolkit.browser_close())
+        self.agent, self.web_toolkit = search_agent_factory(self.model, self.task_id)
     
     def step(self, task_prompt: str) -> ResearchResponse:
         """Synchronous step method for compatibility.
