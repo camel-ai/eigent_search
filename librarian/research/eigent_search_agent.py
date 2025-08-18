@@ -12,6 +12,35 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 """Search Agent implementation based on eigent.py without Exa tool."""
+
+import asyncio
+import datetime
+import platform
+import uuid
+import os
+from typing import Dict, Any
+
+from camel.agents import ChatAgent
+from camel.messages import BaseMessage
+from camel.models import BaseModelBackend
+from camel.toolkits import (
+    SearchToolkit,
+    HybridBrowserToolkit, 
+    TerminalToolkit,
+)
+from camel.toolkits.note_taking_toolkit import NoteTakingToolkit
+from camel.utils import api_keys_required
+from camel.toolkits.message_integration import ToolkitMessageIntegration
+from camel.responses import ChatAgentResponse
+
+from librarian.research.researcher import ResearchResponse
+
+WORKING_DIRECTORY = os.getcwd()
+
+def send_message_to_user(message: str):
+    """Simple message handler for toolkit integration."""
+    print(f"[Agent Message]: {message}")
+
 @api_keys_required(
     [
         (None, 'GOOGLE_API_KEY'),
@@ -60,25 +89,24 @@ def search_agent_factory(
     # Initialize toolkits
     terminal_toolkit = TerminalToolkit(safe_mode=True, clone_current_env=False)
     note_toolkit = NoteTakingToolkit(working_directory=WORKING_DIRECTORY)
-    search_toolkit = SearchToolkit().search_google
-    terminal_toolkit_basic = TerminalToolkit()
+    search_toolkit = SearchToolkit()
+    # terminal_toolkit_basic = TerminalToolkit()
 
     # Add messaging to toolkits
-    web_toolkit_custom = message_integration.register_toolkits(
-        web_toolkit_custom
-    )
-    terminal_toolkit = message_integration.register_toolkits(terminal_toolkit)
-    note_toolkit = message_integration.register_toolkits(note_toolkit)
-    search_toolkit = message_integration.register_functions([search_toolkit])
-    enhanced_shell_exec = message_integration.register_functions(
-        [terminal_toolkit_basic.shell_exec]
-    )
+    # web_toolkit_custom = message_integration.register_toolkits(
+    #     web_toolkit_custom
+    # )
+    # terminal_toolkit = message_integration.register_toolkits(terminal_toolkit)
+    # note_toolkit = message_integration.register_toolkits(note_toolkit)
+    # enhanced_shell_exec = message_integration.register_functions(
+    #     [terminal_toolkit_basic.shell_exec]
+    # )
 
     tools = [
         *web_toolkit_custom.get_tools(),
-        *enhanced_shell_exec,
+        # *enhanced_shell_exec,
         *note_toolkit.get_tools(),
-        *search_toolkit,
+        search_toolkit.search_google,  # Don't wrap search_google with message integration
         *terminal_toolkit.get_tools(),
     ]
 
@@ -190,3 +218,33 @@ Your capabilities include:
         prune_tool_calls_from_memory=True,
     )
 
+
+class EigentSearchAgent:
+    """Wrapper class for the Eigent Search Agent with async support."""
+    
+    def __init__(self, model: BaseModelBackend):
+        """Initialize the Eigent Search Agent.
+        
+        Args:
+            model: The model backend to use for the agent.
+        """
+        self.model = model
+        self.task_id = str(uuid.uuid4())[:8]
+        self.agent = None
+        self.reset()
+    
+    def reset(self):
+        """Reset the agent by creating a new instance."""
+        self.agent = search_agent_factory(self.model, self.task_id)
+    
+    def step(self, task_prompt: str) -> ResearchResponse:
+        """Synchronous step method for compatibility.
+        
+        Args:
+            task_prompt: The task prompt to send to the agent.
+            
+        Returns:
+            The agent's response.
+        """
+        return asyncio.run(self.agent.astep(task_prompt, response_format=ResearchResponse))
+    

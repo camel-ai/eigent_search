@@ -14,6 +14,7 @@
 
 import click
 import json
+import asyncio
 from dotenv import load_dotenv
 from tqdm.auto import tqdm
 from datasets import load_dataset
@@ -31,10 +32,12 @@ from librarian.baseline import (
     SimpleResearchAgent,
 )
 from librarian.research import ResearchAgent
+from librarian import EigentSearchAgent
 
 AGENTS = {
     "research": ResearchAgent,
     "simple_research": SimpleResearchAgent,
+    "eigent_search": EigentSearchAgent,
     "direct_answer": DirectAnswerAgent,
     "chain_of_thought": ChainOfThoughtAgent,
     "knowledge_then_reasoning": KnowledgeThenReasoningAgent,
@@ -110,6 +113,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     for i, example in enumerate(
         tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
     ):
+        # Handle async agents (eigent_search)
         response = agent.step(f"{example['problem']}")
         response = eval(response.msgs[0].content)
         eval_request = evaluator.create_request(
