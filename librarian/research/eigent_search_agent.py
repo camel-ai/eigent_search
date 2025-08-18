@@ -15,8 +15,7 @@
 @api_keys_required(
     [
         (None, 'GOOGLE_API_KEY'),
-        (None, 'SEARCH_ENGINE_ID'),
-        (None, 'EXA_API_KEY'),
+        (None, 'SEARCH_ENGINE_ID')
     ]
 )
 def search_agent_factory(
@@ -78,7 +77,6 @@ def search_agent_factory(
     tools = [
         *web_toolkit_custom.get_tools(),
         *enhanced_shell_exec,
-        HumanToolkit().ask_human_via_console,
         *note_toolkit.get_tools(),
         *search_toolkit,
         *terminal_toolkit.get_tools(),
@@ -152,7 +150,6 @@ Your capabilities include:
     powerful CLI tools like `grep` for searching within files, `curl` and
     `wget` for downloading content, and `jq` for parsing JSON data from APIs.
 - Use the note-taking tools to record your findings.
-- Use the human toolkit to ask for help when you are stuck.
 </capabilities>
 
 <web_search_workflow>
@@ -179,8 +176,6 @@ Your capabilities include:
 
 - In your response, you should mention the URLs you have visited and processed.
 
-- When encountering verification challenges (like login, CAPTCHAs or
-    robot checks), you MUST request help using the human toolkit.
 </web_search_workflow>
 """
 
