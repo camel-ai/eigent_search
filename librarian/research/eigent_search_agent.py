@@ -25,7 +25,6 @@ from camel.messages import BaseMessage
 from camel.models import BaseModelBackend
 from camel.toolkits import (
     SearchToolkit,
-    HybridBrowserToolkit, 
     TerminalToolkit,
 )
 from camel.toolkits.note_taking_toolkit import NoteTakingToolkit
@@ -34,6 +33,7 @@ from camel.toolkits.message_integration import ToolkitMessageIntegration
 from camel.responses import ChatAgentResponse
 
 from librarian.research.researcher import ResearchResponse
+from librarian.research.browser_wrapper import BrowserToolkitWrapper
 
 WORKING_DIRECTORY = os.getcwd()
 
@@ -50,14 +50,14 @@ def send_message_to_user(message: str):
 def search_agent_factory(
     model: BaseModelBackend,
     task_id: str,
-) -> tuple[ChatAgent, HybridBrowserToolkit]:
+) -> tuple[ChatAgent, BrowserToolkitWrapper]:
     r"""Factory for creating a search agent, based on user-provided code
     structure.
     """
     # Initialize message integration
-    message_integration = ToolkitMessageIntegration(
-        message_handler=send_message_to_user
-    )
+    # message_integration = ToolkitMessageIntegration(
+        # message_handler=send_message_to_user
+    # )
 
     # Generate a unique identifier for this agent instance
     agent_id = str(uuid.uuid4())[:8]
@@ -73,7 +73,7 @@ def search_agent_factory(
         "browser_visit_page",
         "browser_get_som_screenshot",
     ]
-    web_toolkit_custom = HybridBrowserToolkit(
+    web_toolkit_custom = BrowserToolkitWrapper(
         mode="python",
         headless=False,
         enabled_tools=custom_tools,
@@ -230,25 +230,38 @@ class EigentSearchAgent:
         self.model = model
         self.task_id = str(uuid.uuid4())[:8]
         self.agent = None
+        self.web_toolkit = None
         self.reset()
     
     def reset(self):
-        """Reset the agent by creating a new instance."""
+        """Reset the agent by creating a new instance.
+        
+        This method:
+        1. Resets the agent state
+        2. Resets the browser wrapper (closes browser and clears history)
+        3. Creates a new agent and browser toolkit instance
+        """
         if self.agent is not None:
             self.agent.reset()
-            print("closing browser")
+            
+        if self.web_toolkit is not None:
+            print("Resetting browser wrapper...")
             try:
                 # Try to get the current event loop
                 loop = asyncio.get_event_loop()
                 if loop.is_running():
                     # If loop is running, create a task
-                    loop.create_task(self.web_toolkit.browser_close())
+                    loop.create_task(self.web_toolkit.reset())
                 else:
                     # If no loop is running, use asyncio.run
-                    asyncio.run(self.web_toolkit.browser_close())
+                    asyncio.run(self.web_toolkit.reset())
             except RuntimeError:
                 # No event loop, create one
-                asyncio.run(self.web_toolkit.browser_close())
+                asyncio.run(self.web_toolkit.reset())
+            except Exception as e:
+                print(f"Warning: Could not reset browser wrapper: {e}")
+        
+        # Create new instances
         self.agent, self.web_toolkit = search_agent_factory(self.model, self.task_id)
     
     def step(self, task_prompt: str) -> ResearchResponse:
