@@ -18,7 +18,6 @@ import datetime
 import platform
 import uuid
 import os
-from typing import Dict, Any
 
 from camel.agents import ChatAgent
 from camel.messages import BaseMessage
@@ -36,6 +35,10 @@ from librarian.research.researcher import ResearchResponse
 from librarian.research.browser_wrapper import BrowserToolkitWrapper
 
 WORKING_DIRECTORY = os.getcwd()
+
+import asyncio, threading
+_loop = asyncio.new_event_loop()
+threading.Thread(target=_loop.run_forever, daemon=True).start()
 
 def send_message_to_user(message: str):
     """Simple message handler for toolkit integration."""
@@ -237,7 +240,7 @@ class EigentSearchAgent:
         """Helper method to run async coroutine from sync context.
         
         This handles the case where there's already a running event loop
-        by using a thread pool executor.
+        by using run_coroutine_threadsafe.
         
         Args:
             coro: The coroutine to run
@@ -245,18 +248,9 @@ class EigentSearchAgent:
         Returns:
             The result of the coroutine
         """
-        try:
-            # Try to get the current event loop
-            loop = asyncio.get_running_loop()
-            
-            # If we're already in an event loop, run in thread pool
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(asyncio.run, coro)
-                return future.result()
+        future = asyncio.run_coroutine_threadsafe(coro, _loop)
+        return future.result()
                 
-        except RuntimeError:
-            # No event loop is running, safe to use asyncio.run
-            return asyncio.run(coro)
 
     
     def reset(self):
@@ -289,5 +283,5 @@ class EigentSearchAgent:
         Returns:
             The agent's response.
         """
-        return asyncio.run(self.agent.astep(task_prompt, response_format=ResearchResponse))
+        return self._run_async_in_sync(self.agent.astep(task_prompt, response_format=ResearchResponse))
     
