@@ -152,6 +152,7 @@ class BrowserToolkitWrapper:
             blocked_result = {
                 "result": f"⛔ BLOCKED: Page {url} has already been visited {current_visit_count} times. "
                          f"You are stuck in a loop visiting the same page repeatedly. "
+                         f"You MUST NOT visit this page agin."
                          f"Try a different search query or website to find new information.",
                 # "snapshot": self.page_content_cache.get(normalized_url, 
                         #    f"[No cached content available. Page was visited {current_visit_count} times previously.]"),

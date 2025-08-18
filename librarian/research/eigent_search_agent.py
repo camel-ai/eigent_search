@@ -233,6 +233,32 @@ class EigentSearchAgent:
         self.web_toolkit = None
         self.reset()
     
+    def _run_async_in_sync(self, coro):
+        """Helper method to run async coroutine from sync context.
+        
+        This handles the case where there's already a running event loop
+        by using a thread pool executor.
+        
+        Args:
+            coro: The coroutine to run
+            
+        Returns:
+            The result of the coroutine
+        """
+        try:
+            # Try to get the current event loop
+            loop = asyncio.get_running_loop()
+            
+            # If we're already in an event loop, run in thread pool
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(asyncio.run, coro)
+                return future.result()
+                
+        except RuntimeError:
+            # No event loop is running, safe to use asyncio.run
+            return asyncio.run(coro)
+
+    
     def reset(self):
         """Reset the agent by creating a new instance.
         
@@ -247,17 +273,7 @@ class EigentSearchAgent:
         if self.web_toolkit is not None:
             print("Resetting browser wrapper...")
             try:
-                # Try to get the current event loop
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    # If loop is running, create a task
-                    loop.create_task(self.web_toolkit.reset())
-                else:
-                    # If no loop is running, use asyncio.run
-                    asyncio.run(self.web_toolkit.reset())
-            except RuntimeError:
-                # No event loop, create one
-                asyncio.run(self.web_toolkit.reset())
+                self._run_async_in_sync(self.web_toolkit.reset())
             except Exception as e:
                 print(f"Warning: Could not reset browser wrapper: {e}")
         
