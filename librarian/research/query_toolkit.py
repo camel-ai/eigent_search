@@ -237,24 +237,82 @@ class QueryProcessingToolkit(BaseToolkit):
     def generate_new_queries(
         self, search_results: dict[str, str] | None, new_queries: list[str]
     ) -> dict[str, list[str]] | str:
-        """Generate new queries when the search results are not sufficient to answer the user's initial query.
+        """Generate new queries to find MORE supporting sources for comprehensive research.
 
-        The agent should reflect on the search results and generate new queries to continue the deep research.
+        The agent should reflect on search results and generate diverse queries to find 
+        additional sources that support the answer. The goal is comprehensive source 
+        discovery, not just finding one answer.
 
-        The search_results are formatted as a dictionary of strings, where the key is the URL and the value is the string of the title, description, and long description of the result.
+        IMPORTANT: Generate queries that target different types of sources:
+        - Official websites and announcements
+        - News and media coverage  
+        - Academic and research sources
+        - Government and institutional sources
+        - Archives and databases
+        - Alternative phrasings to find different sources
 
         Args:
-            search_results (dict[str, str]): The search results from the web search.
-            new_queries (list[str]): The new queries to be added to the frontier.
+            search_results (dict[str, str]): The search results from previous searches.
+            new_queries (list[str]): Additional queries to find more supporting sources.
 
         Returns:
-            dict[str, list[str]]: The current frontier after the generating process.
+            dict[str, list[str]]: The updated frontier with new source-finding queries.
         """
 
+        if search_results is None:
+            search_results = {}
+
+        # Add the provided new queries
         self.frontier.update(new_queries)
+        
+        # Generate additional comprehensive search queries automatically
+        base_query = self.initial_query
+        auto_queries = []
+        
+        # Strategy 1: Official and authoritative sources
+        if "award" in base_query.lower() or "prize" in base_query.lower():
+            auto_queries.extend([
+                f'"{base_query}" site:org OR site:edu OR official',
+                f'"{base_query}" "press release" OR announcement',
+                f'"{base_query}" "official list" OR "recipients list"'
+            ])
+        
+        # Strategy 2: News and verification sources
+        auto_queries.extend([
+            f'"{base_query}" site:bbc.com OR site:reuters.com OR site:cnn.com',
+            f'"{base_query}" news OR newspaper OR media',
+            f'"{base_query}" confirmed OR verified OR announced'
+        ])
+        
+        # Strategy 3: Alternative phrasings for different sources
+        if "who received" in base_query.lower():
+            auto_queries.extend([
+                base_query.replace("who received", "recipient of"),
+                base_query.replace("who received", "winner of"),
+                base_query.replace("who received", "awarded to")
+            ])
+        
+        if "who was awarded" in base_query.lower():
+            auto_queries.extend([
+                base_query.replace("who was awarded", "recipient of"),
+                base_query.replace("who was awarded", "winner of")
+            ])
+
+        # Add auto-generated queries to frontier (limit to prevent overwhelming)
+        for query in auto_queries[:8]:  # Limit to top 8 auto-generated
+            if query.strip() and len(query) > 10:
+                self.frontier.add(query)
+                new_queries.append(query)
+
+        # Record in trace graph
         for new_query in new_queries:
-            for url in search_results.keys():
-                self.trace_graph.record_process(url, new_query, "generate_new_queries")
+            if search_results:
+                for url in search_results.keys():
+                    self.trace_graph.record_process(url, new_query, "generate_new_queries")
+            else:
+                self.trace_graph.record_process(self.initial_query, new_query, "generate_new_queries")
+        
+        logger.info(f"[generate_new_queries] Added {len(new_queries)} queries to find more supporting sources")
         return {"frontier": list(self.frontier)}
 
     def extract_web_content(self, url: str) -> dict[str, str]:
@@ -277,7 +335,6 @@ class QueryProcessingToolkit(BaseToolkit):
         self.content_extraction_counter += 1
         
         if extracted["status"].startswith("✅"):
-            original_length = len(extracted["content"])
             # Store full content for complete_task to use
             self.extracted_contents[url] = extracted["content"]
             
@@ -291,23 +348,66 @@ class QueryProcessingToolkit(BaseToolkit):
     def complete_task(
         self, search_results: dict[str, str] | None, final_answer: str
     ) -> dict[str, str | list[str]] | str:
-        """Complete the deep research when search results are sufficient to answer the user's initial query.
+        """Complete the comprehensive research ONLY after finding MULTIPLE supporting sources.
 
-        IMPORTANT: This method should only be called after extract_web_content has been used to get 
-        detailed information from the most promising URLs. 
+        IMPORTANT: This method enforces comprehensive source discovery. You can ONLY complete 
+        the task after finding and extracting content from MULTIPLE independent sources that 
+        confirm the answer. The goal is thorough research, not quick answers.
+
+        REQUIREMENTS FOR COMPLETION:
+        - MINIMUM 3 different sources with extracted content confirming the answer
+        - Each source must contain direct quotes supporting the answer
+        - Sources should be from different types (official, news, academic, etc.)
+        - All sources must be verified through extract_web_content
 
         Args:
-            search_results (dict[str, str]): The search results from web search and extract_web_content. 
-            final_answer (str): The final answer to the user's initial query.
-        
-        Example:
-            https://en.wikipedia.org/wiki/Isaac_Newton: https://en.wikipedia.org/wiki/Isaac_Newton
-
+            search_results (dict[str, str]): URL-to-quote mappings from ALL sources found.
+                MUST contain at least 3 different sources with supporting quotes.
+            final_answer (str): The answer supported by multiple independent sources.
 
         Returns:
-            dict[str, str | list[str]]: The final answer and the search results. key is url, value is the quote supporting the answer. MUST be original quotes from the web page, not paraphrased.
+            dict[str, str | list[str]]: The answer and ALL supporting sources found.
         """
         
+        # Enforce minimum number of extracted sources
+        min_sources = 3
+        if len(self.extracted_contents) < min_sources:
+            error_msg = f"ERROR: Insufficient sources found. You must extract content from at least {min_sources} different sources before completing the task. Currently have {len(self.extracted_contents)} sources. Continue searching for more supporting sources."
+            logger.error("[complete_task] " + error_msg)
+            return {"error": error_msg}
+        
+        # Validate search results contain sufficient sources
+        if not search_results or len(search_results) < min_sources:
+            error_msg = f"ERROR: search_results must contain quotes from at least {min_sources} different sources. You have {len(search_results) if search_results else 0} sources. Find more supporting sources before completing."
+            logger.error("[complete_task] " + error_msg)
+            return {"error": error_msg}
+        
+        # Verify all provided URLs have extracted content
+        missing_extractions = []
+        for url in search_results.keys():
+            if url not in self.extracted_contents:
+                missing_extractions.append(url)
+        
+        if missing_extractions:
+            error_msg = f"ERROR: The following URLs in search_results were not extracted: {missing_extractions}. Use extract_web_content on all sources first."
+            logger.error("[complete_task] " + error_msg)
+            return {"error": error_msg}
+        
+        # Validate that quotes are substantial (not just empty or very short)
+        insufficient_quotes = []
+        for url, quote in search_results.items():
+            if not quote.strip() or len(quote.strip()) < 20:
+                insufficient_quotes.append(url)
+        
+        if insufficient_quotes:
+            error_msg = f"ERROR: The following sources have insufficient quotes: {insufficient_quotes}. Provide substantial quotes from each source that support the answer."
+            logger.error("[complete_task] " + error_msg)
+            return {"error": error_msg}
+        
+        # Success - comprehensive research completed
+        logger.info(f"[complete_task] ✅ COMPREHENSIVE RESEARCH COMPLETED with {len(self.extracted_contents)} sources extracted and {len(search_results)} sources providing supporting quotes")
+        
+        # Record successful completion in trace graph
         for url in search_results.keys():
             self.trace_graph.record_process(url, final_answer, "complete_task")
 
