@@ -12,6 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
+import time
 import click
 import json
 import asyncio
@@ -134,6 +135,8 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
         counter[eval_result.metrics["grade"]] += 1
         tqdm.write(f"[{agent_type}] {counter}")
 
+        print(counter)
+
         if agent_type == "research":
             logger.info(
                 f"[{agent_type}] Number of searches: {agent.current_query_toolkit.search_counter}"
@@ -143,7 +146,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             )
 
         # save results every 50 examples or at the end
-        if (i + 1) % 50 == 0 or i == num_questions - 1:
+        if (i + 1) % 2 == 0 or i == num_questions - 1:
             with open(output_file, "w") as f:
                 json.dump(results, f, indent=4)
             tqdm.write(f"Results saved to {output_file}")

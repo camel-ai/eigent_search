@@ -206,6 +206,7 @@ Your capabilities include:
         tools=tools,
         prune_tool_calls_from_memory=True,
         max_iteration=10,
+        message_window_size=100000,
     ), web_toolkit_custom
 
 

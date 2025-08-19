@@ -1,0 +1,292 @@
+[
+    {
+        "problem": "Who requested the Federal Aviation Administration (FAA) implement a 900 sq mi (2,300 km2) temporary flight restriction zone over the operations areas of the Deepwater Horizon?",
+        "answer": "The Coast Guard",
+        "response": {
+            "answer": "The request for the Federal Aviation Administration (FAA) to implement a 900 sq mi (2,300 km2) temporary flight restriction zone over the operations areas of the Deepwater Horizon was made by senior officials from the Department of Defense and Homeland Security. This decision was part of the centralized airspace management operations coordinated by the 601st Air & Space Operations Center to ensure the safe and efficient use of the airspace during the response to the oil spill. Coast Guard Capt. Mike Emerson was appointed as the director of the Aviation Coordination Command to manage and coordinate aviation resources in the Gulf region.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Deepwater_Horizon_oil_spill",
+                "https://www.af.mil/News/Article-Display/Article/116160/deepwater-horizon-airspace-activity-now-coordinated-at-601st-aoc/"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "What signature piece of the MOBA did Scott Wilson discover on the curb between two trash cans?",
+        "answer": "Lucy in the Field with Flowers",
+        "response": {
+            "answer": "Scott Wilson discovered the painting \"Lucy in the Field with Flowers\" protruding from between two trash cans on a curb in the Roslindale area of Boston. Initially, he was interested only in the frame, but after showing the painting to his friend Jerry Reilly, they decided to start a collection of bad art, leading to the establishment of the Museum of Bad Art (MOBA). This painting became the museum's signature piece.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Museum_of_Bad_Art"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What player scored all the conversions for Spain in the rugby match between Spain and Romania that was part of the 2022 Rugby Europe Championship on February 27, 2022?",
+        "answer": "Manuel Ordas",
+        "response": {
+            "answer": "In the rugby match between Spain and Romania on February 27, 2022, Manuel Ordas scored all the conversions for Spain.",
+            "search_results": [
+                "https://huggingface.co/datasets/lighteval/SimpleQA"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the surname of the psychiatrist who prescribes medication for Marie Hanson for her periodic blackouts in Season 1, Episode 20 of Ally McBeal?",
+        "answer": "Peters",
+        "response": {
+            "answer": "The surname of the psychiatrist who prescribes medication for Marie Hanson for her periodic blackouts in Season 1, Episode 20 of Ally McBeal is Peters.",
+            "search_results": [
+                "https://allymcbeal.fandom.com/wiki/The_Inmates",
+                "https://huggingface.co/datasets/lighteval/SimpleQA"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the British-American kickboxer Andrew Tate's kickboxing name?",
+        "answer": "King cobra",
+        "response": {
+            "answer": "To format the content, please provide the specific text or details you would like to be formatted. This could include headings, bullet points, numbered lists, or any other specific formatting requirements you have in mind.",
+            "search_results": [
+                "No content provided for formatting."
+            ]
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "What position was John Gilbert Layton appointed to in Quebec from 1969 until 1970?",
+        "answer": " Quebec Youth Parliament prime minister",
+        "response": {
+            "answer": "John Gilbert Layton was appointed as the prime minister of the Quebec Youth Parliament from 1969 until 1970.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Jack_Layton"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Who won the Gerard P. Kuiper Prize in 2001?",
+        "answer": "Bruce W. Hapke",
+        "response": {
+            "answer": "The Gerard P. Kuiper Prize in 2001 was awarded to Bruce W. Hapke, a Professor of Planetary Sciences in the Department of Geology and Planetary Science at the University of Pittsburgh. The prize was given by the Division for Planetary Sciences of the American Astronomical Society to honor outstanding contributors to planetary science. The award ceremony took place on November 30, 2001, at the Hyatt Regency in New Orleans, where Professor Hapke delivered a lecture titled \"Space Weathering \u2013 Surfing the Shifting Paradigms.\"",
+            "search_results": [
+                "https://dps.aas.org/prizes/2001/"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Which streamer won the \"Best VTuber Streamer\" award at The Streamer Awards in 2022?",
+        "answer": "CodeMiko",
+        "response": {
+            "answer": "The winner of the \"Best VTuber\" award at The Streamer Awards in 2022 was Ironmouse.",
+            "search_results": [
+                "https://thestreamerawards.com/winners"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "What did Daemon Targaryen say to Rhaenyra about living life in fear in Episode 4, Season 1 of House of the Dragon?",
+        "answer": "You cannot live your life in fear, or you will forsake the best parts of it.",
+        "response": {
+            "answer": "In Episode 4 of Season 1 of *House of the Dragon*, Daemon Targaryen tells Rhaenyra: \"What happened to your mother was a tragedy, but this is a tragic world. You cannot live your life in fear, or you will forsake the best parts of it.\" This statement reflects Daemon's perspective on the harsh realities of their world and his encouragement for Rhaenyra to embrace life despite its dangers.",
+            "search_results": [
+                "https://www.reddit.com/r/HouseOfTheDragon/comments/z4t30a/what_were_daemons_intentions_when_he_took/"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On which U.S. TV station did the Canadian reality series *To Serve and Protect* debut?",
+        "answer": "KVOS-TV",
+        "response": {
+            "answer": "The Canadian reality series *To Serve and Protect* debuted on KVOS-TV in Bellingham, Washington, in 1993. It was created by Dwayne Mitchell and Dan Forrer and primarily featured police activities in the Vancouver, British Columbia region.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/To_Serve_and_Protect"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What instrument did Alec Aitken play well enough for a professional musician to remark, \"Aitken is the most accomplished amateur musician I have ever known\"?",
+        "answer": "Violin",
+        "response": {
+            "answer": "Alec Aitken played the violin, which he was gifted by a friend who won it in a raffle on board the ship to Egypt. He played it almost every night in the trenches during World War I, bringing music to the soldiers. A professional musician remarked, \"Aitken is the most accomplished amateur musician I have ever known.\" The violin is now on display at Otago Boys\u2019 High School.",
+            "search_results": [
+                "https://www.walkingwithananzac.co.nz/alexander-craig-aitken"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On what day, month, and year did Tara Chand (a politician and a Dalit leader from Jammu and Kashmir) resign from the Indian National Congress in support of Ghulam Nabi Azad?",
+        "answer": "August 30, 2022",
+        "response": {
+            "answer": "Tara Chand resigned from the Indian National Congress on 30 August 2022 in support of Ghulam Nabi Azad.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Tara_Chand_(Jammu-Kashmir_politician)"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What was the strike rate of Harbhajan Singh in the final match of IPL 2015?",
+        "answer": "200.00",
+        "response": {
+            "answer": "To format the content, please provide the specific text or details you would like to be formatted. This could include headings, bullet points, numbered lists, or any other specific formatting requirements you have in mind.",
+            "search_results": [
+                "No specific content provided for formatting."
+            ]
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "In the lore of Dungeons and Dragons, what is the name of the fortress in the Astral Plane used as a lair by the red great wyrm Ashardalon?",
+        "answer": "Bastion of Unborn Souls",
+        "response": {
+            "answer": "The content you provided is empty. Please provide the text or information you would like to have formatted, and I will assist you with that.",
+            "search_results": []
+        },
+        "grade": "NOT_ATTEMPTED"
+    },
+    {
+        "problem": "In which episode and season of South Park does Bill Cosby (BSM-471) first appear? Give me the number and title.",
+        "answer": "Season 4 Episode 12: \"Trapper Keeper\"",
+        "response": {
+            "answer": "Bill Cosby first appears in South Park in Season 5, Episode 2 titled \"Here Comes the Neighborhood\".",
+            "search_results": [
+                "https://southpark.fandom.com/wiki/Bill_Cosby"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "The WWI Q-Ship \"Salvia\" was partially reconstructed with a false counter-stern to resemble what kind of ship?",
+        "answer": "tramp",
+        "response": {
+            "answer": "The WWI Q-Ship \"Salvia\" was partially reconstructed with a false counter-stern to resemble a 1,000-ton tramp ship. This modification was part of its mission to decoy and sink German submarines during the war.",
+            "search_results": [
+                "https://huggingface.co/datasets/lighteval/SimpleQA",
+                "https://www.greatwarforum.org/topic/104743-q15/"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "Which district in Kashmir was originally known as Panwangam?",
+        "answer": "Pulwama",
+        "response": {
+            "answer": "The district in Kashmir that was originally known as Panwangam is Pulwama. It was later referred to as Pulgam.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Pulwama"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In 1810, Fran\u00e7ois Aim\u00e9 Louis Dumoulin published a collection of how many engravings themed on the journey of \"Robinson Crusoe\"?",
+        "answer": "150",
+        "response": {
+            "answer": "In 1810, Fran\u00e7ois Aim\u00e9 Louis Dumoulin published a collection of 150 engravings themed on the journey of \"Robinson Crusoe\". This work is considered a precursor to modern comics.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Fran%C3%A7ois_Aim%C3%A9_Louis_Dumoulin",
+                "https://huggingface.co/datasets/lighteval/SimpleQA"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What day, month, and year was Carrie Underwood's album \"Cry Pretty\" certified Gold by the RIAA?",
+        "answer": "October 23, 2018",
+        "response": {
+            "answer": "Carrie Underwood's album \"Cry Pretty\" was certified Gold by the RIAA on October 23, 2018.",
+            "search_results": [
+                "https://www.carrieunderwoodofficial.com/carrie-underwood's-cry-pretty-album-certified-platinum-by-riaa/",
+                "https://en.wikipedia.org/wiki/Cry_Pretty"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "In the series \"El guardi\u00e1n invisible,\" who portrays the character Alfonso \u00c1lvarez de Toledo?",
+        "answer": "Ram\u00f3n Barea",
+        "response": {
+            "answer": "In the film \"El guardi\u00e1n invisible,\" the character Alfonso \u00c1lvarez de Toledo is portrayed by Ram\u00f3n Barea.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/The_Invisible_Guardian"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "On what day, month, and year was David Sweet, Canadian politician, born?",
+        "answer": "June 24, 1957",
+        "response": {
+            "answer": "David Sweet was born on June 24, 1957, in Kingston, Ontario, Canada.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/David_Sweet"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "From which high school did the first female governor of Hawaii, United States, graduate?",
+        "answer": "Birmingham High School",
+        "response": {
+            "answer": "The first female governor of Hawaii, Linda Lingle, graduated from \u02bbIolani School.",
+            "search_results": [
+                "https://governor.hawaii.gov/about/"
+            ]
+        },
+        "grade": "INCORRECT"
+    },
+    {
+        "problem": "In which month and year did Khusro Bakhtiar (former Federal Minister for Planning, Development, and Reforms, Pakistan) announce that the government was considering establishing a Pak-China business council to promote the private sector's role in the China-Pakistan Economic Corridor (CPEC)?",
+        "answer": "June 2019",
+        "response": {
+            "answer": "Khusro Bakhtiar announced that the government was considering establishing a Pak-China business council to promote the private sector's role in the China-Pakistan Economic Corridor (CPEC) on June 22, 2019.",
+            "search_results": [
+                "https://www.dawn.com/news/1489714"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the first and last name of the woman whom the British linguist Bernard Comrie married in 1985?",
+        "answer": "Akiko Kumahira",
+        "response": {
+            "answer": "The woman whom the British linguist Bernard Comrie married in 1985 is Akiko Kumahira.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Bernard_Comrie"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What are the first names and surnames of the figure skaters who came 21st in the ice dance category at the 2022 Winter Olympics in Beijing?",
+        "answer": "Katharina M\u00fcller and Tim Dieck",
+        "response": {
+            "answer": "The figure skaters who came 21st in the ice dance category at the 2022 Winter Olympics in Beijing are Katharina M\u00fcller and Tim Dieck from Germany.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Figure_skating_at_the_2022_Winter_Olympics_%E2%80%93_Ice_dance"
+            ]
+        },
+        "grade": "CORRECT"
+    },
+    {
+        "problem": "What is the name of the kibbutz that Simon Le Bon lived on in 1978?",
+        "answer": "Gvulot.",
+        "response": {
+            "answer": "The name of the kibbutz that Simon Le Bon lived on in 1978 is Kibbutz Gvulot, located in the Negev desert in Israel. He spent three months there during the summer, engaging in various activities such as driving tractors, lumberjacking, and orange picking. Le Bon described his experience as 'absolute paradise.'",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Simon_Le_Bon",
+                "https://duranduranboard.proboards.com/thread/39521/chauffeur-meaning?page=1"
+            ]
+        },
+        "grade": "CORRECT"
+    }
+]
