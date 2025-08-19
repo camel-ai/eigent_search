@@ -133,9 +133,9 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             }
         )
         counter[eval_result.metrics["grade"]] += 1
+        print(counter)
         tqdm.write(f"[{agent_type}] {counter}")
 
-        print(counter)
 
         if agent_type == "research":
             logger.info(
@@ -152,7 +152,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             tqdm.write(f"Results saved to {output_file}")
 
         agent.reset()
-        time.sleep(10)
+        time.sleep(20)
 
     tqdm.write(
         f"[{agent_type}] Accuracy (n={num_questions}): {sum(scores) / len(scores)}"
