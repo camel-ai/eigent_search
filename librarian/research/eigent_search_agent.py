@@ -74,11 +74,14 @@ def search_agent_factory(
         # "browser_type",
         # "browser_enter",
         "browser_visit_page",
+        "browser_get_tab_info",
+        "browser_close_tab",
+        "browser_switch_tab",
         "browser_get_som_screenshot",
     ]
     web_toolkit_custom = BrowserToolkitWrapper(
         mode="python",
-        headless=False,
+        headless=True,
         enabled_tools=custom_tools,
         browser_log_to_file=True,
         stealth=True,
@@ -120,16 +123,6 @@ analyze, and document information required to solve the user's task. You
 operate with precision, efficiency, and a commitment to data quality.
 </role>
 
-<team_structure>
-You collaborate with the following agents who can work in parallel:
-- **Developer Agent**: Writes and executes code, handles technical 
-implementation.
-- **Document Agent**: Creates and manages documents and presentations.
-- **Multi-Modal Agent**: Processes and generates images and audio.
-Your research is the foundation of the team's work. Provide them with 
-comprehensive and well-documented information.
-</team_structure>
-
 <operating_environment>
 - **System**: {platform.system()} ({platform.machine()})
 - **Working Directory**: `{WORKING_DIRECTORY}`. All local file operations must
@@ -141,8 +134,7 @@ comprehensive and well-documented information.
 
 <mandatory_instructions>
 - You MUST use the note-taking tools to record your findings. This is a
-    critical part of your role. Your notes are the primary source of
-    information for your teammates. To avoid information loss, you must not
+    critical part of your role. To avoid information loss, you must not
     summarize your findings. Instead, record all information in detail.
     For every piece of information you gather, you must:
     1.  **Extract ALL relevant details**: Quote all important sentences,
@@ -161,7 +153,6 @@ comprehensive and well-documented information.
     2. Found on a webpage you have visited.
 - You are strictly forbidden from inventing, guessing, or constructing URLs
     yourself. Fabricating URLs will be considered a critical error.
-
 - You MUST NOT answer from your own knowledge. All information
     MUST be sourced from the web using the available tools. If you don't know
     something, find it out using your tools.
@@ -198,11 +189,7 @@ Your capabilities include:
         operation, only use it when visual analysis is necessary.
     - **Interaction**: Use `browser_type` to fill out forms and 
         `browser_enter` to submit or confirm search.
-- Alternative Search: If you are unable to get sufficient
-    information through browser-based exploration and scraping, use
-    `search_exa`. This tool is best used for getting quick summaries or
-    finding specific answers when visiting web page is could not find the
-    information.
+- You MUST NOT visit the same URL more than once.
 
 - In your response, you should mention the URLs you have visited and processed.
 
@@ -218,6 +205,7 @@ Your capabilities include:
         toolkits_to_register_agent=[web_toolkit_custom],
         tools=tools,
         prune_tool_calls_from_memory=True,
+        max_iteration=10,
     ), web_toolkit_custom
 
 
@@ -264,6 +252,7 @@ class EigentSearchAgent:
         if self.agent is not None:
             self.agent.reset()
             
+        print(f"Resetting browser wrapper... {self.web_toolkit}")
         if self.web_toolkit is not None:
             print("Resetting browser wrapper...")
             try:
@@ -273,6 +262,8 @@ class EigentSearchAgent:
         
         # Create new instances
         self.agent, self.web_toolkit = search_agent_factory(self.model, self.task_id)
+        # if self.web_toolkit is None:
+            # self.web_toolkit = web_toolkit_new
     
     def step(self, task_prompt: str) -> ResearchResponse:
         """Synchronous step method for compatibility.

@@ -136,7 +136,7 @@ class BrowserToolkitWrapper:
         current_visit_count = len(self.visit_history[normalized_url])
         
         # If already visited twice or more, don't visit again
-        if current_visit_count >= 2:
+        if current_visit_count >= 1:
             logger.warning(f"[BrowserWrapper] Page {url} already visited {current_visit_count} times - BLOCKING actual visit")
             
             # Get current tab info if available
@@ -244,10 +244,19 @@ class BrowserToolkitWrapper:
         """
         try:
             # Try to close the browser if it's open
-            await self.browser_close()
-        except Exception:
-            # Browser might already be closed or not initialized
-            pass
+            # tabs = await self.toolkit.browser_get_tab_info()
+            # for tab in tabs['tabs']:
+                # print(f"[BrowserWrapper] Closing tab {tab['index']}")
+                # await self.toolkit.browser_close_tab(tab_id=tab['index'])
+            # self.toolkit.
+            agent = self.toolkit._playwright_agent
+            session = self.toolkit._session
+            if agent is not None:
+                await agent.close()
+            if session is not None:
+                await session.close()
+        except Exception as e:
+            logger.error(f"[BrowserWrapper] Error resetting browser: {e}")
         
         return "Browser wrapper reset: browser closed and history cleared"
     

@@ -149,6 +149,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             tqdm.write(f"Results saved to {output_file}")
 
         agent.reset()
+        time.sleep(10)
 
     tqdm.write(
         f"[{agent_type}] Accuracy (n={num_questions}): {sum(scores) / len(scores)}"
