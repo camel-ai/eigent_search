@@ -1,6 +1,8 @@
 """Wrapper for HybridBrowserToolkit that tracks visited pages and provides reminders."""
 
 import logging
+import functools
+import inspect
 from typing import Dict, Any, List, Optional, TYPE_CHECKING
 from urllib.parse import urlparse, urlunparse
 from collections import defaultdict
@@ -16,6 +18,59 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
+def track_metrics(func):
+    """Decorator to automatically track metrics for browser functions.
+    
+    This decorator:
+    1. Captures function name, arguments, and response
+    2. Records metrics automatically
+    3. Handles both sync and async functions
+    """
+    @functools.wraps(func)
+    async def async_wrapper(self, *args, **kwargs):
+        # Get function name and prepare args dict
+        func_name = func.__name__
+        
+        # Get argument names from function signature
+        sig = inspect.signature(func)
+        bound_args = sig.bind(self, *args, **kwargs)
+        bound_args.apply_defaults()
+        
+        # Remove 'self' from arguments
+        args_dict = dict(bound_args.arguments)
+        args_dict.pop('self', None)
+        
+        # Truncate long values in args
+        truncated_args = {}
+        for k, v in args_dict.items():
+            if isinstance(v, str) and len(v) > 100:
+                truncated_args[k] = v[:100] + "..."
+            else:
+                truncated_args[k] = v
+        
+        # Call the original function
+        result = await func(self, *args, **kwargs)
+        
+        # Prepare response summary
+        response_summary = "N/A"
+        if isinstance(result, dict):
+            if 'result' in result:
+                response_summary = str(result['result'])[:100]
+            elif 'blocked' in result and result['blocked']:
+                response_summary = f"BLOCKED: {result.get('reason', 'unknown')}"
+            elif 'snapshot' in result:
+                response_summary = f"Snapshot: {result['snapshot'][:50]}..."
+        elif isinstance(result, str):
+            response_summary = result[:100]
+        
+        # Record the metric
+        self._record_metric(func_name, truncated_args, response_summary)
+        
+        return result
+    
+    return async_wrapper
+
+
 class BrowserToolkitWrapper:
     """Wrapper for HybridBrowserToolkit that tracks page visits and provides reminders."""
     
@@ -25,14 +80,67 @@ class BrowserToolkitWrapper:
         Args:
             *args: Positional arguments for HybridBrowserToolkit
             **kwargs: Keyword arguments for HybridBrowserToolkit
+                domain_blacklist: Optional list of domains to block (e.g., ['huggingface.co', 'hf.co'])
         """
         logger.info("[BrowserWrapper] Initializing BrowserToolkitWrapper")
+        
+        # Extract our custom kwargs before passing to HybridBrowserToolkit
+        self.domain_blacklist = kwargs.pop('domain_blacklist', ['huggingface.co', 'hf.co'])
+        
         self.toolkit = HybridBrowserToolkit(*args, **kwargs)
         self.visit_history: Dict[str, List[datetime]] = defaultdict(list)
         self.page_content_cache: Dict[str, str] = {}
         self.max_cache_size = 10  # Maximum number of pages to cache
-        logger.info(f"[BrowserWrapper] Wrapper initialized with {len(kwargs.get('enabled_tools', []))} tools")
         
+        # Usage metrics tracking
+        self.usage_metrics: List[Dict[str, Any]] = []
+        
+        logger.info(f"[BrowserWrapper] Wrapper initialized with {len(kwargs.get('enabled_tools', []))} tools")
+        logger.info(f"[BrowserWrapper] Domain blacklist: {self.domain_blacklist}")
+        
+    def _record_metric(self, function_name: str, args: Dict[str, Any], response_summary: str):
+        """Record usage metrics for a function call.
+        
+        Args:
+            function_name: Name of the function called
+            args: Arguments passed to the function
+            response_summary: Short summary of the response
+        """
+        metric = {
+            "timestamp": datetime.now().isoformat(),
+            "function": function_name,
+            "args": args,
+            "response_summary": response_summary[:100] if isinstance(response_summary, str) else str(response_summary)[:100]
+        }
+        self.usage_metrics.append(metric)
+    
+    def get_usage_metrics(self) -> List[Dict[str, Any]]:
+        """Get all recorded usage metrics.
+        
+        Returns:
+            List of metrics dictionaries
+        """
+        return self.usage_metrics.copy()
+    
+    def clear_metrics(self):
+        """Clear all usage metrics."""
+        self.usage_metrics.clear()
+    
+    def _is_url_blacklisted(self, url: str) -> bool:
+        """Check if a URL contains any blacklisted domain.
+        
+        Args:
+            url: The URL to check
+            
+        Returns:
+            True if the URL is blacklisted, False otherwise
+        """
+        url_lower = url.lower()
+        for domain in self.domain_blacklist:
+            if domain.lower() in url_lower:
+                return True
+        return False
+    
     def _normalize_url(self, url: str) -> str:
         """Normalize URL for comparison purposes.
         
@@ -111,6 +219,7 @@ class BrowserToolkitWrapper:
                 
         return result
     
+    @track_metrics
     async def browser_visit_page(self, url: str, *args, **kwargs) -> Dict[str, Any]:
         r"""Opens a URL in a new browser tab and switches to it.
         
@@ -130,6 +239,29 @@ class BrowserToolkitWrapper:
                 - "total_tabs" (int): Total number of open tabs.
                 - "reminder" (str, optional): Warning message if page was visited before.
         """
+        # Check if URL is blacklisted
+        if self._is_url_blacklisted(url):
+            blacklisted_domains = [d for d in self.domain_blacklist if d.lower() in url.lower()]
+            logger.warning(f"[BrowserWrapper] Blocked blacklisted URL: {url} (domains: {blacklisted_domains})")
+            
+            # Get current tab info if available
+            try:
+                session = await self.toolkit._get_session()
+                tabs = await session.get_all_tabs()
+                total_tabs = len(tabs)
+            except:
+                tabs = []
+                total_tabs = 1
+            
+            return {
+                "result": f"⛔ BLOCKED: Access to blacklisted domain(s) {blacklisted_domains} is not allowed. URL: {url}",
+                "snapshot": f"[Content from {blacklisted_domains} blocked - please search for alternative sources]",
+                "tabs": tabs,
+                "total_tabs": total_tabs,
+                "blocked": True,
+                "reason": "blacklisted_domain"
+            }
+        
         normalized_url = self._normalize_url(url)
         
         # Check visit count before recording new visit
@@ -238,17 +370,13 @@ class BrowserToolkitWrapper:
         1. Closes the browser if it's open
         2. Clears all visit history
         3. Clears the page content cache
+        4. Clears usage metrics
         
         Returns:
             str: Confirmation message
         """
         try:
             # Try to close the browser if it's open
-            # tabs = await self.toolkit.browser_get_tab_info()
-            # for tab in tabs['tabs']:
-                # print(f"[BrowserWrapper] Closing tab {tab['index']}")
-                # await self.toolkit.browser_close_tab(tab_id=tab['index'])
-            # self.toolkit.
             agent = self.toolkit._playwright_agent
             session = self.toolkit._session
             if agent is not None:
@@ -258,7 +386,11 @@ class BrowserToolkitWrapper:
         except Exception as e:
             logger.error(f"[BrowserWrapper] Error resetting browser: {e}")
         
-        return "Browser wrapper reset: browser closed and history cleared"
+        # Clear all tracking data
+        self.clear_history()
+        self.clear_metrics()
+        
+        return "Browser wrapper reset: browser closed, history and metrics cleared"
     
     # Delegate all other methods to the wrapped toolkit
     def __getattr__(self, name):
@@ -272,6 +404,7 @@ class BrowserToolkitWrapper:
         """
         return getattr(self.toolkit, name)
     
+    @track_metrics
     async def browser_open(self, *args, **kwargs) -> Dict[str, Any]:
         r"""Starts a new browser session. This must be the first browser
         action.
@@ -290,6 +423,7 @@ class BrowserToolkitWrapper:
         """
         return await self.toolkit.browser_open(*args, **kwargs)
     
+    @track_metrics
     async def browser_close(self, *args, **kwargs) -> str:
         r"""Closes the browser session, releasing all resources.
 
@@ -303,6 +437,7 @@ class BrowserToolkitWrapper:
         # self.clear_history()
         return result
     
+    @track_metrics
     async def browser_get_page_snapshot(self, *args, **kwargs) -> str:
         r"""Gets a textual snapshot of the page's interactive elements.
 
@@ -320,6 +455,7 @@ class BrowserToolkitWrapper:
         """
         return await self.toolkit.browser_get_page_snapshot(*args, **kwargs)
     
+    @track_metrics
     async def browser_click(self, *, ref: str) -> Dict[str, Any]:
         r"""Performs a click on an element on the page.
 
@@ -339,6 +475,7 @@ class BrowserToolkitWrapper:
         """
         return await self.toolkit.browser_click(ref=ref)
     
+    @track_metrics
     async def browser_scroll(self, *, direction: str, amount: int) -> Dict[str, Any]:
         r"""Scrolls the current page window.
 
@@ -356,6 +493,7 @@ class BrowserToolkitWrapper:
         """
         return await self.toolkit.browser_scroll(direction=direction, amount=amount)
     
+    @track_metrics
     async def browser_back(self, *args, **kwargs) -> Dict[str, Any]:
         r"""Goes back to the previous page in the browser history.
 
@@ -372,6 +510,7 @@ class BrowserToolkitWrapper:
         """
         return await self.toolkit.browser_back(*args, **kwargs)
     
+    @track_metrics
     async def browser_forward(self, *args, **kwargs) -> Dict[str, Any]:
         r"""Goes forward to the next page in the browser history.
 
@@ -388,6 +527,7 @@ class BrowserToolkitWrapper:
         """
         return await self.toolkit.browser_forward(*args, **kwargs)
     
+    @track_metrics
     async def browser_get_som_screenshot(
         self,
         read_image: bool = True,

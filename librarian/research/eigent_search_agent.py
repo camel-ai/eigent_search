@@ -18,6 +18,7 @@ import datetime
 import platform
 import uuid
 import os
+import logging
 
 from camel.agents import ChatAgent
 from camel.messages import BaseMessage
@@ -35,6 +36,7 @@ from librarian.research.researcher import ResearchResponse
 from librarian.research.browser_wrapper import BrowserToolkitWrapper
 
 WORKING_DIRECTORY = os.getcwd()
+logger = logging.getLogger(__name__)
 
 import asyncio, threading
 _loop = asyncio.new_event_loop()
@@ -43,6 +45,85 @@ threading.Thread(target=_loop.run_forever, daemon=True).start()
 def send_message_to_user(message: str):
     """Simple message handler for toolkit integration."""
     print(f"[Agent Message]: {message}")
+
+def search_google_no_huggingface(query: str, **kwargs):
+    r"""Use Google search engine to search information for the given query.
+
+    Args:
+        query (str): The query to be searched.
+        search_type (str): The type of search to perform. Either "web" for
+            web pages or "image" for image search. (default: "web")
+        number_of_result_pages (int): The number of result pages to
+            retrieve. Adjust this based on your task - use fewer results
+            for focused searches and more for comprehensive searches.
+            (default: :obj:`10`)
+        start_page (int): The result page to start from. Use this for
+            pagination - e.g., start_page=1 for results 1-10,
+            start_page=11 for results 11-20, etc. This allows agents to
+            check initial results and continue searching if needed.
+            (default: :obj:`1`)
+
+    Returns:
+        List[Dict[str, Any]]: A list of dictionaries where each dictionary
+        represents a search result.
+
+            For web search, each dictionary contains:
+            - 'result_id': A number in order.
+            - 'title': The title of the website.
+            - 'description': A brief description of the website.
+            - 'long_description': More detail of the website.
+            - 'url': The URL of the website.
+
+            For image search, each dictionary contains:
+            - 'result_id': A number in order.
+            - 'title': The title of the image.
+            - 'image_url': The URL of the image.
+            - 'display_link': The website hosting the image.
+            - 'context_url': The URL of the page containing the image.
+            - 'width': Image width in pixels (if available).
+            - 'height': Image height in pixels (if available).
+
+            Example web result:
+            {
+                'result_id': 1,
+                'title': 'OpenAI',
+                'description': 'An organization focused on ensuring that
+                artificial general intelligence benefits all of humanity.',
+                'long_description': 'OpenAI is a non-profit artificial
+                intelligence research company. Our goal is to advance
+                digital intelligence in the way that is most likely to
+                benefit humanity as a whole',
+                'url': 'https://www.openai.com'
+            }
+
+            Example image result:
+            {
+                'result_id': 1,
+                'title': 'Beautiful Sunset',
+                'image_url': 'https://example.com/image.jpg',
+                'display_link': 'example.com',
+                'context_url': 'https://example.com/page.html',
+                'width': 800,
+                'height': 600
+            }
+    """
+
+    from camel.toolkits import SearchToolkit
+    
+    search_toolkit = SearchToolkit()
+    query_with_filter = f"{query} -site:huggingface.co -site:hf.co"
+    
+    results = search_toolkit.search_google(query_with_filter, **kwargs)
+    
+    if isinstance(results, str):
+        lines = results.split('\n')
+        filtered_lines = []
+        for line in lines:
+            if 'huggingface.co' not in line.lower() and 'hf.co' not in line.lower():
+                filtered_lines.append(line)
+        return '\n'.join(filtered_lines)
+    
+    return results
 
 @api_keys_required(
     [
@@ -89,6 +170,7 @@ def search_agent_factory(
         viewport_limit=False,
         cache_dir=WORKING_DIRECTORY,
         default_start_url="https://search.brave.com/",
+        domain_blacklist=['huggingface.co', 'hf.co'],  # Add more domains here as needed
     )
 
     # Initialize toolkits
@@ -111,7 +193,7 @@ def search_agent_factory(
         *web_toolkit_custom.get_tools(),
         # *enhanced_shell_exec,
         *note_toolkit.get_tools(),
-        search_toolkit.search_google,  # Don't wrap search_google with message integration
+        search_google_no_huggingface,  # Use wrapper that blocks Hugging Face results
         *terminal_toolkit.get_tools(),
     ]
 
@@ -253,13 +335,11 @@ class EigentSearchAgent:
         if self.agent is not None:
             self.agent.reset()
             
-        print(f"Resetting browser wrapper... {self.web_toolkit}")
         if self.web_toolkit is not None:
-            print("Resetting browser wrapper...")
             try:
                 self._run_async_in_sync(self.web_toolkit.reset())
             except Exception as e:
-                print(f"Warning: Could not reset browser wrapper: {e}")
+                logger.warning(f"Could not reset browser wrapper: {e}")
         
         # Create new instances
         self.agent, self.web_toolkit = search_agent_factory(self.model, self.task_id)
