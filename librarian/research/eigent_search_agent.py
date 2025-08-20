@@ -35,7 +35,11 @@ from camel.responses import ChatAgentResponse
 from librarian.research.researcher import ResearchResponse
 from librarian.research.browser_wrapper import BrowserToolkitWrapper
 
-WORKING_DIRECTORY = os.getcwd()
+# Create timestamped temporary directory
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+WORKING_DIRECTORY = os.path.join(os.getcwd(), "tmp", f"eigent_{timestamp}")
+os.makedirs(WORKING_DIRECTORY, exist_ok=True)
+
 logger = logging.getLogger(__name__)
 
 import asyncio, threading
@@ -176,7 +180,7 @@ def search_agent_factory(
     # Initialize toolkits
     terminal_toolkit = TerminalToolkit(safe_mode=True, clone_current_env=False)
     note_toolkit = NoteTakingToolkit(working_directory=WORKING_DIRECTORY)
-    search_toolkit = SearchToolkit()
+    # search_toolkit = SearchToolkit()
     # terminal_toolkit_basic = TerminalToolkit()
 
     # Add messaging to toolkits

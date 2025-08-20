@@ -69,9 +69,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Set log level of camel.agents.chat_agent to WARNING to reduce noise
-logging.getLogger("camel.agents.chat_agent").setLevel(logging.WARNING)
-logging.getLogger("camel").setLevel(logging.WARNING)
-logging.getLogger("librarian.research.browser_wrapper").setLevel(logging.WARNING)
+# logging.getLogger("camel.agents.chat_agent").setLevel(logging.WARNING)
+# logging.getLogger("camel").setLevel(logging.WARNING)
+# logging.getLogger("librarian.research.browser_wrapper").setLevel(logging.WARNING)
 
 
 def generate_problem_hash(problem: str, answer: str) -> str:
