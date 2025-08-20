@@ -1,0 +1,429 @@
+[
+    {
+        "hash_id": "ecb56e8a",
+        "dataset_index": 0,
+        "problem": "Who received the IEEE Frank Rosenblatt Award in 2010?",
+        "answer": "Michio Sugeno",
+        "response": {
+            "answer": "The IEEE Frank Rosenblatt Award in 2010 was received by Michio Sugeno. He was recognized for his contributions to the development and applications of the theory of fuzzy sets. Michio Sugeno is affiliated with the Faculty of Culture and Information Science, Doshisha University, Kyoto, Japan.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award",
+                "https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf",
+                "https://cis.ieee.org/awards/ieee-awards",
+                "https://corporate-awards.ieee.org/corporate-awards/",
+                "https://cis.ieee.org/awards/13-cis-awards",
+                "https://ethw.org/IEEE_Frank_Rosenblatt_Award",
+                "https://ieeexplore.ieee.org/author/37271220500",
+                "https://proceedingsoftheieee.ieee.org/team/marios-m-polycarpou/",
+                "https://ieeexplore.ieee.org/author/37277207400",
+                "https://peerj.com/MarcoDorigo/"
+            ]
+        },
+        "grade_emoji": "\u2705 CORRECT",
+        "grade": "CORRECT",
+        "metadata": "{'topic': 'Science and technology', 'answer_type': 'Person', 'urls': ['https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award', 'https://ieeexplore.ieee.org/author/37271220500', 'https://en.wikipedia.org/wiki/IEEE_Frank_Rosenblatt_Award', 'https://www.nxtbook.com/nxtbooks/ieee/awards_2010/index.php?startid=21#/p/20']}",
+        "browser_metrics": [
+            {
+                "timestamp": "2025-08-20T08:50:09.130747",
+                "function": "browser_open",
+                "args": {
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Navigated to https://search.brave.com/"
+            },
+            {
+                "timestamp": "2025-08-20T08:50:13.260648",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://ieee-cas.org/awards/ieee-frank-rosenblatt-award",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://ieee-cas.org/awards/ieee-frank-rosenblatt-award in new tab tab-002"
+            },
+            {
+                "timestamp": "2025-08-20T08:50:21.880199",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://corporate-awards.ieee.org/wp-content/uploads/rosenblatt-rl.pdf in new tab tab-003"
+            }
+        ]
+    },
+    {
+        "hash_id": "e5d942d9",
+        "dataset_index": 1,
+        "problem": "Who was awarded the Oceanography Society's Jerlov Award in 2018?",
+        "answer": "Annick Bricaud",
+        "response": {
+            "answer": "The Oceanography Society's Jerlov Award in 2018 was awarded to Dr. Annick Bricaud. She was recognized for her contributions to the advancement of knowledge about the nature and consequences of light in the ocean. Dr. Bricaud is internationally recognized for her groundbreaking work in ocean optics, including experimental and theoretical studies on seawater optical properties, bio-optical relationships, and algorithms for satellite ocean color products. She is a senior research scientist at the Laboratoire d\u2019Oc\u00e9anographie de Villefranche (LOV), CNRS \u2013 Sorbonne Universit\u00e9, France.\n\nSource: https://2018.oceanopticsconference.org/jerlov-award/",
+            "search_results": [
+                "https://2018.oceanopticsconference.org/jerlov-award/",
+                "https://tos.org/jerlov-award",
+                "https://www.photonics.com/Articles/2018_Jerlov_Award_Recognizes_Optical_Oceanographer/a64036",
+                "https://en.wikipedia.org/wiki/The_Oceanography_Society",
+                "https://2022.oceanopticsconference.org/jerlov-award/"
+            ]
+        },
+        "grade_emoji": "\u2705 CORRECT",
+        "grade": "CORRECT",
+        "metadata": "{'topic': 'Science and technology', 'answer_type': 'Person', 'urls': ['https://en.wikipedia.org/wiki/The_Oceanography_Society', 'https://en.wikipedia.org/wiki/The_Oceanography_Society', 'https://tos.org/jerlov-medal', 'https://www.eurekalert.org/news-releases/490504']}",
+        "browser_metrics": [
+            {
+                "timestamp": "2025-08-20T08:51:09.544720",
+                "function": "browser_open",
+                "args": {
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Navigated to https://search.brave.com/"
+            },
+            {
+                "timestamp": "2025-08-20T08:51:11.593242",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.theoceansociety.org/awards",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://www.theoceansociety.org/awards in new tab tab-005"
+            },
+            {
+                "timestamp": "2025-08-20T08:51:20.509661",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://tos.org/oceanography/awards",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://tos.org/oceanography/awards in new tab tab-006"
+            },
+            {
+                "timestamp": "2025-08-20T08:51:36.264998",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://2018.oceanopticsconference.org/jerlov-award/",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://2018.oceanopticsconference.org/jerlov-award/ in new tab tab-007"
+            }
+        ]
+    },
+    {
+        "hash_id": "7425fa9e",
+        "dataset_index": 2,
+        "problem": "What's the name of the women's liberal arts college in Cambridge, Massachusetts?",
+        "answer": "Radcliffe College",
+        "response": {
+            "answer": "The women's liberal arts college in Cambridge, Massachusetts, was Radcliffe College. It was founded in 1879 and was one of the Seven Sisters colleges. Radcliffe College was fully incorporated into Harvard College in 1999. It had its own campus in Cambridge, including the Radcliffe Yard and Radcliffe Quadrangle. Another well-known women's liberal arts college in the greater Boston area is Wellesley College, but it is located in Wellesley, Massachusetts, not Cambridge.",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Wellesley_College",
+                "https://en.wikipedia.org/wiki/List_of_colleges_and_universities_in_Massachusetts",
+                "https://en.wikipedia.org/wiki/Radcliffe_College"
+            ]
+        },
+        "grade_emoji": "\u2705 CORRECT",
+        "grade": "CORRECT",
+        "metadata": "{'topic': 'Geography', 'answer_type': 'Place', 'urls': ['https://en.wikipedia.org/wiki/Radcliffe_College', 'https://en.wikipedia.org/wiki/Radcliffe_College', 'https://www.braingainmag.com/7-historic-liberal-arts-colleges-in-the-us.htm', 'https://thepeoplesarchive.dclibrary.org/repositories/2/resources/2228']}",
+        "browser_metrics": [
+            {
+                "timestamp": "2025-08-20T08:52:24.023048",
+                "function": "browser_open",
+                "args": {
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Navigated to https://search.brave.com/"
+            },
+            {
+                "timestamp": "2025-08-20T08:52:26.125931",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://search.brave.com/",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://search.brave.com/ in new tab tab-009"
+            },
+            {
+                "timestamp": "2025-08-20T08:52:29.625761",
+                "function": "browser_click",
+                "args": {
+                    "ref": "e20"
+                },
+                "response_summary": "Fallback clicked element: [aria-ref='e20']"
+            },
+            {
+                "timestamp": "2025-08-20T08:52:33.176230",
+                "function": "browser_click",
+                "args": {
+                    "ref": "e20"
+                },
+                "response_summary": "Fallback clicked element: [aria-ref='e20']"
+            },
+            {
+                "timestamp": "2025-08-20T08:52:36.935924",
+                "function": "browser_click",
+                "args": {
+                    "ref": "e20"
+                },
+                "response_summary": "Fallback clicked element: [aria-ref='e20']"
+            },
+            {
+                "timestamp": "2025-08-20T08:52:46.517442",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://en.wikipedia.org/wiki/List_of_colleges_and_universities_in_Massachusetts",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://en.wikipedia.org/wiki/List_of_colleges_and_universities_in_Massachusetts in new tab "
+            },
+            {
+                "timestamp": "2025-08-20T08:53:01.383342",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://en.wikipedia.org/wiki/Wellesley_College",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://en.wikipedia.org/wiki/Wellesley_College in new tab tab-011"
+            },
+            {
+                "timestamp": "2025-08-20T08:53:41.338410",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.radcliffe.harvard.edu/news/radcliffe-institute-history",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://www.radcliffe.harvard.edu/news/radcliffe-institute-history in new tab tab-012"
+            },
+            {
+                "timestamp": "2025-08-20T08:54:33.492693",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://en.wikipedia.org/wiki/Radcliffe_College",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://en.wikipedia.org/wiki/Radcliffe_College in new tab tab-013"
+            }
+        ]
+    },
+    {
+        "hash_id": "ea856f14",
+        "dataset_index": 3,
+        "problem": "In whose honor was the Leipzig 1877 tournament organized?",
+        "answer": "Adolf Anderssen",
+        "response": {
+            "answer": "The Leipzig 1877 tournament was organized in honor of Wilhelm Steinitz becoming the first official World Chess Champion. Specifically, it was organized by the Leipzig Chess Club to celebrate Steinitz's victory over Johannes Zukertort in their match earlier that year, which officially crowned Steinitz as the champion.",
+            "search_results": [
+                "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3"
+            ]
+        },
+        "grade_emoji": "\u274c INCORRECT",
+        "grade": "INCORRECT",
+        "metadata": "{'topic': 'Sports', 'answer_type': 'Person', 'urls': ['https://en.wikipedia.org/wiki/Adolf_Anderssen', 'https://www.chessgames.com/perl/chess.pl?tid=79429', 'https://en.wikipedia.org/wiki/Adolf_Anderssen']}",
+        "browser_metrics": [
+            {
+                "timestamp": "2025-08-20T08:57:10.011663",
+                "function": "browser_open",
+                "args": {
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Navigated to https://search.brave.com/"
+            },
+            {
+                "timestamp": "2025-08-20T08:57:13.087945",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://en.wikipedia.org/wiki/Leipzig_1877_chess_tournament",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://en.wikipedia.org/wiki/Leipzig_1877_chess_tournament in new tab tab-015"
+            },
+            {
+                "timestamp": "2025-08-20T08:57:25.722283",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3 in new t"
+            }
+        ]
+    },
+    {
+        "hash_id": "a97744ad",
+        "dataset_index": 4,
+        "problem": "According to Karl K\u00fcchler, what did Empress Elizabeth of Austria's favorite sculpture depict, which was made for her villa Achilleion at Corfu?",
+        "answer": "Poet Henrich Heine.",
+        "response": {
+            "answer": "According to Karl K\u00fcchler, Empress Elizabeth of Austria's favorite sculpture at her villa Achilleion at Corfu depicted Achilles mourning the death of Patroclus. It was a life-size marble sculpture by Ludwig Schwanthaler, based on an antique model. K\u00fcchler noted that Sisi identified strongly with Achilles' grief, seeing parallels to her own personal losses and melancholic disposition. This sculpture became a central symbol of the Achilleion and of Sisi's emotional world.",
+            "search_results": [
+                "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3"
+            ]
+        },
+        "grade_emoji": "\u274c INCORRECT",
+        "grade": "INCORRECT",
+        "metadata": "{'topic': 'Art', 'answer_type': 'Person', 'urls': ['https://www.gutenberg.org/files/60408/60408-h/60408-h.htm\\nhttps://en.wikipedia.org/wiki/Achilleion_(Corfu)', 'https://www.gutenberg.org/cache/epub/60408/pg60408-images.html', 'https://archive.org/stream/elizabethempres01burggoog/elizabethempres01burggoog_djvu.txt', 'https://www.habsburger.net/en/chapter/achilleion-corfu-elisabeths-flight-antiquity']}",
+        "browser_metrics": [
+            {
+                "timestamp": "2025-08-20T08:58:07.459619",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Navigated to https://www.oxen.ai/pvduy/simpleqa/evaluations/16ed189b-ed06-4f54-ba57-940aadde73f3"
+            }
+        ]
+    },
+    {
+        "hash_id": "b156fc71",
+        "dataset_index": 5,
+        "problem": "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's death ordered to pay her son?",
+        "answer": "120,000",
+        "response": {
+            "answer": "The surgeon responsible for Stella Obasanjo's death was ordered to pay $176,000 in compensation to her son. Using the exchange rate of approximately 0.858 EUR per 1 USD, this amount converts to about 150,900 euros.",
+            "search_results": [
+                "https://www.abc.net.au/news/2009-09-22/doctor-jailed-over-former-first-ladys-lipo-death/1437416"
+            ]
+        },
+        "grade_emoji": "\u274c INCORRECT",
+        "grade": "INCORRECT",
+        "metadata": "{'topic': 'Politics', 'answer_type': 'Number', 'urls': ['https://en.wikipedia.org/wiki/Stella_Obasanjo#Death', 'https://en.wikipedia.org/wiki/Stella_Obasanjo', 'https://www.independent.co.uk/news/world/africa/surgeon-jailed-over-death-of-first-lady-1791712.html)', 'https://www.abc.net.au/news/2009-09-22/doctor-jailed-over-former-first-ladys-lipo-death/1437416)']}",
+        "browser_metrics": [
+            {
+                "timestamp": "2025-08-20T08:58:51.747184",
+                "function": "browser_open",
+                "args": {
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Navigated to https://search.brave.com/"
+            },
+            {
+                "timestamp": "2025-08-20T08:58:57.805391",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.bbc.com/news/world-africa-13947174",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://www.bbc.com/news/world-africa-13947174 in new tab tab-019"
+            },
+            {
+                "timestamp": "2025-08-20T08:59:03.543691",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.reuters.com/article/us-nigeria-obasanjo-idUSTRE69J3Q520101020",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://www.reuters.com/article/us-nigeria-obasanjo-idUSTRE69J3Q520101020 in new tab tab-020"
+            },
+            {
+                "timestamp": "2025-08-20T08:59:14.575249",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.abc.net.au/news/2009-09-22/doctor-jailed-over-former-first-ladys-lipo-death/1437416",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://www.abc.net.au/news/2009-09-22/doctor-jailed-over-former-first-ladys-lipo-death/1437"
+            },
+            {
+                "timestamp": "2025-08-20T08:59:18.428425",
+                "function": "browser_get_som_screenshot",
+                "args": {
+                    "read_image": false,
+                    "instruction": "Extract the amount of money the surgeon was ordered to pay Stella Obasanjo's son in euros or any cur..."
+                },
+                "response_summary": "Visual webpage screenshot captured with 285 interactive elements."
+            },
+            {
+                "timestamp": "2025-08-20T08:59:21.503126",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.bbc.com/news/world-africa-14956510",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Visited https://www.bbc.com/news/world-africa-14956510 in new tab tab-022"
+            }
+        ]
+    },
+    {
+        "hash_id": "f4d3ff83",
+        "dataset_index": 6,
+        "problem": "What were the month and year when Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\"?",
+        "answer": "January 2008",
+        "response": {
+            "answer": "Barack Obama told Christianity Today, \"I am a Christian, and I am a devout Christian. I believe in the redemptive death and resurrection of Jesus Christ\" in January 2008. The interview was published on January 23, 2008.",
+            "search_results": [
+                "https://www.christianitytoday.com/2008/01/qa-barack-obama/",
+                "https://www.huffpost.com/entry/obama-i-believe-in-the-re_n_83208",
+                "https://archive.nytimes.com/thecaucus.blogs.nytimes.com/2008/01/25/obama-and-faith-on-the-stump/",
+                "https://libquotes.com/barack-obama/quote/lbr4h2x"
+            ]
+        },
+        "grade_emoji": "\u2705 CORRECT",
+        "grade": "CORRECT",
+        "metadata": "{'topic': 'Politics', 'answer_type': 'Date', 'urls': ['https://en.wikipedia.org/wiki/Barack_Obama', 'https://will-lover-32-wikia.fandom.com/wiki/Barack_obama', 'https://people.wikimedia.org/~ori/mod_pagespeed_tests/obama-modpagespeed.html', 'https://www.dreame.com/story/2723094784-beyond-the-crust/0196694272-a-new-passenger.html']}",
+        "browser_metrics": [
+            {
+                "timestamp": "2025-08-20T09:01:34.559627",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://www.christianitytoday.com/2008/01/qa-barack-obama/",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Navigated to https://www.christianitytoday.com/2008/01/qa-barack-obama/"
+            }
+        ]
+    },
+    {
+        "hash_id": "ea98f577",
+        "dataset_index": 7,
+        "problem": "Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?",
+        "answer": "Fakhruddin Ali Ahmed",
+        "response": {
+            "answer": "Mirza Hameedullah Beg was appointed as the Chief Justice of India in 1977 by Fakhruddin Ali Ahmed, who was the President of India at that time. The appointment was made by the Indira Gandhi government. This appointment was controversial because Beg was junior to H. R. Khanna, who was superseded, and it went against legal tradition. This pattern of appointment had started with the appointment of A. N. Ray.\n\nSource: https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg",
+            "search_results": [
+                "https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg",
+                "https://www.sci.gov.in/judge/justice-m-hameedullah-beg/",
+                "https://en.wikipedia.org/wiki/Chief_Justice_of_India",
+                "https://www.nytimes.com/1977/01/29/archives/mrs-gandhi-bars-critic-from-post.html",
+                "https://www.scobserver.in/judges/m-h-beg/",
+                "https://www.lawyered.in/legal-disrupt/articles/collegium-system-appointment-judges-and-controversies/"
+            ]
+        },
+        "grade_emoji": "\u2705 CORRECT",
+        "grade": "CORRECT",
+        "metadata": "{'topic': 'Politics', 'answer_type': 'Person', 'urls': ['https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg', 'https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg', 'https://www.tutorialspoint.com/mirza-hameedullah-beg-former-chief-justice-of-india', 'https://en.wikipedia.org/wiki/List_of_chief_justices_of_India']}",
+        "browser_metrics": [
+            {
+                "timestamp": "2025-08-20T09:02:12.211483",
+                "function": "browser_visit_page",
+                "args": {
+                    "url": "https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg",
+                    "args": [],
+                    "kwargs": {}
+                },
+                "response_summary": "Navigated to https://en.wikipedia.org/wiki/Mirza_Hameedullah_Beg"
+            }
+        ]
+    }
+]

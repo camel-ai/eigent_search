@@ -291,7 +291,7 @@ Your capabilities include:
         toolkits_to_register_agent=[web_toolkit_custom],
         tools=tools,
         prune_tool_calls_from_memory=True,
-        max_iteration=10,
+        max_iteration=30,
         message_window_size=100000,
     ), web_toolkit_custom
 
