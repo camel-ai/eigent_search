@@ -125,7 +125,7 @@ def run_agent_with_retry(agent, problem: str, agent_type: str, hash_id: str, max
 
 
 def print_evaluation_summary(results: list, counter: dict, agent_type: str, num_questions: int):
-    """Print comprehensive evaluation summary with browser metrics.
+    """Log comprehensive evaluation summary with browser metrics.
     
     Args:
         results: List of evaluation results
@@ -133,23 +133,23 @@ def print_evaluation_summary(results: list, counter: dict, agent_type: str, num_
         agent_type: Type of agent used
         num_questions: Total number of questions evaluated
     """
-    print("\n" + "="*70)
-    print("🔍 EVALUATION SUMMARY")
-    print("="*70)
+    logger.info("\n" + "="*70)
+    logger.info("🔍 EVALUATION SUMMARY")
+    logger.info("="*70)
     
     # Basic stats
     final_accuracy = counter["CORRECT"] / num_questions * 100 if num_questions > 0 else 0
-    print(f"📊 Agent Type: {agent_type}")
-    print(f"📈 Total Questions: {num_questions}")
-    print(f"✅ Correct: {counter['CORRECT']}")
-    print(f"❌ Incorrect: {counter['INCORRECT']}")
-    print(f"⚠️  Not Attempted: {counter['NOT_ATTEMPTED']}")
-    print(f"🎯 Final Accuracy: {final_accuracy:.2f}%")
+    logger.info(f"📊 Agent Type: {agent_type}")
+    logger.info(f"📈 Total Questions: {num_questions}")
+    logger.info(f"✅ Correct: {counter['CORRECT']}")
+    logger.info(f"❌ Incorrect: {counter['INCORRECT']}")
+    logger.info(f"⚠️  Not Attempted: {counter['NOT_ATTEMPTED']}")
+    logger.info(f"🎯 Final Accuracy: {final_accuracy:.2f}%")
     
     # Browser metrics analysis (if available)
     if results and any('browser_metrics' in r for r in results):
-        print("\n🌐 BROWSER USAGE ANALYSIS")
-        print("-" * 40)
+        logger.info("\n🌐 BROWSER USAGE ANALYSIS")
+        logger.info("-" * 40)
         
         total_browser_calls = 0
         function_counts = {}
@@ -167,27 +167,27 @@ def print_evaluation_summary(results: list, counter: dict, agent_type: str, num_
         
         avg_calls = total_browser_calls / successful_problems if successful_problems > 0 else 0
         
-        print(f"🔧 Total Browser Calls: {total_browser_calls}")
-        print(f"📊 Average Calls per Problem: {avg_calls:.2f}")
-        print(f"✅ Problems with Browser Activity: {successful_problems}/{num_questions}")
+        logger.info(f"🔧 Total Browser Calls: {total_browser_calls}")
+        logger.info(f"📊 Average Calls per Problem: {avg_calls:.2f}")
+        logger.info(f"✅ Problems with Browser Activity: {successful_problems}/{num_questions}")
         
         if function_counts:
-            print("\n🔧 Function Usage Breakdown:")
+            logger.info("\n🔧 Function Usage Breakdown:")
             sorted_functions = sorted(function_counts.items(), key=lambda x: x[1], reverse=True)
             for func, count in sorted_functions:
                 avg_per_problem = count / successful_problems if successful_problems > 0 else 0
-                print(f"   • {func}: {count} calls ({avg_per_problem:.1f} avg)")
+                logger.info(f"   • {func}: {count} calls ({avg_per_problem:.1f} avg)")
     
     # Performance by grade
-    print(f"\n📋 DETAILED BREAKDOWN")
-    print("-" * 40)
+    logger.info(f"\n📋 DETAILED BREAKDOWN")
+    logger.info("-" * 40)
     for result in results:
         grade_emoji = result.get('grade_emoji', result.get('grade', 'Unknown'))
         hash_id = result.get('hash_id', 'N/A')
         browser_calls = len(result.get('browser_metrics', []))
-        print(f"  {grade_emoji} | Hash: {hash_id} | Browser calls: {browser_calls}")
+        logger.info(f"  {grade_emoji} | Hash: {hash_id} | Browser calls: {browser_calls}")
     
-    print("="*70)
+    logger.info("="*70)
 
 
 @click.command()

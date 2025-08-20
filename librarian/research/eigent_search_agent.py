@@ -115,7 +115,7 @@ def search_google_no_huggingface(query: str, **kwargs):
     from camel.toolkits import SearchToolkit
     
     search_toolkit = SearchToolkit()
-    query_with_filter = f"{query} -site:huggingface.co -site:hf.co"
+    query_with_filter = f"{query} -site:huggingface.co -site:hf.co -site:oxen.ai"
     
     results = search_toolkit.search_google(query_with_filter, **kwargs)
     
@@ -123,7 +123,9 @@ def search_google_no_huggingface(query: str, **kwargs):
         lines = results.split('\n')
         filtered_lines = []
         for line in lines:
-            if 'huggingface.co' not in line.lower() and 'hf.co' not in line.lower():
+            if ('huggingface.co' not in line.lower() and 
+                'hf.co' not in line.lower() and 
+                'oxen.ai' not in line.lower()):
                 filtered_lines.append(line)
         return '\n'.join(filtered_lines)
     
@@ -174,7 +176,7 @@ def search_agent_factory(
         viewport_limit=False,
         cache_dir=WORKING_DIRECTORY,
         default_start_url="https://search.brave.com/",
-        domain_blacklist=['huggingface.co', 'hf.co'],  # Add more domains here as needed
+        domain_blacklist=['huggingface.co', 'hf.co', 'oxen.ai'],  # Add more domains here as needed
     )
 
     # Initialize toolkits
