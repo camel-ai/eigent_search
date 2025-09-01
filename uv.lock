@@ -1605,6 +1605,17 @@ wheels = [
 ]
 
 [[package]]
+name = "eigent-search"
+version = "0.0.1.dev0"
+source = { editable = "." }
+dependencies = [
+    { name = "camel-ai", extra = ["all"] },
+]
+
+[package.metadata]
+requires-dist = [{ name = "camel-ai", extras = ["all"], specifier = ">=0.2.75" }]
+
+[[package]]
 name = "emoji"
 version = "2.14.1"
 source = { registry = "https://pypi.org/simple" }
@@ -3071,17 +3082,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/de/0c/645a881f5f27952a02f24584d96f9f326748be06ded2cee25f8f8d1cd196/lazy_object_proxy-1.11.0-cp312-cp312-win_amd64.whl", hash = "sha256:ee13f67f4fcd044ef27bfccb1c93d39c100046fec1fad6e9a1fcdfd17492aeb3", size = 28380, upload-time = "2025-04-16T16:53:39.07Z" },
     { url = "https://files.pythonhosted.org/packages/e7/1e/fb441c07b6662ec1fc92b249225ba6e6e5221b05623cb0131d082f782edc/lazy_object_proxy-1.11.0-py3-none-any.whl", hash = "sha256:a56a5093d433341ff7da0e89f9b486031ccd222ec8e52ec84d0ec1cdc819674b", size = 16635, upload-time = "2025-04-16T16:53:47.198Z" },
 ]
-
-[[package]]
-name = "librarian"
-version = "0.0.1.dev0"
-source = { editable = "." }
-dependencies = [
-    { name = "camel-ai", extra = ["all"] },
-]
-
-[package.metadata]
-requires-dist = [{ name = "camel-ai", extras = ["all"], specifier = ">=0.2.75" }]
 
 [[package]]
 name = "linkify-it-py"
