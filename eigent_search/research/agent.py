@@ -41,14 +41,8 @@ try:
 except (ImportError, AttributeError):
     from camel.utils import track_agent
 
-WORKING_DIRECTORY = os.path.join(
-    os.getcwd(),
-    "tmp",
-    f"eigent_search_{datetime.datetime.now().strftime('%Y-%m-%dT%H-%M-%S')}",
-)
-os.makedirs(WORKING_DIRECTORY, exist_ok=True)
-
-SYSTEM_PROMPT = f"""
+SYSTEM_PROMPT = (  # noqa: E731
+    lambda working_directory: f"""
 <role>
 You are a Senior Research Analyst, a key member of a multi-agent team. Your 
 primary responsibility is to conduct expert-level web research to gather, 
@@ -68,7 +62,7 @@ comprehensive and well-documented information.
 
 <operating_environment>
 - **System**: {platform.system()} ({platform.machine()})
-- **Working Directory**: `{WORKING_DIRECTORY}`. All local file operations must
+- **Working Directory**: `{working_directory}`. All local file operations must
   occur here, but you can access files from any place in the file system. For
   all file system operations, you MUST use absolute paths to ensure precision
   and avoid ambiguity.
@@ -146,6 +140,7 @@ Your capabilities include:
     robot checks), you MUST request help using the human toolkit.
 </web_search_workflow>
 """
+)
 
 
 @api_keys_required(
@@ -156,12 +151,13 @@ Your capabilities include:
 )
 def deep_search_agent_factory(
     model: BaseModelBackend,
+    working_directory: str,
 ):
     r"""Factory for creating a search agent, based on user-provided code
     structure.
     """
 
-    environment = DeepSearchEnvironment(working_directory=WORKING_DIRECTORY)
+    environment = DeepSearchEnvironment(working_directory=working_directory)
     tools = environment.construct_action_space()
 
     return DeepSearchAgent(
