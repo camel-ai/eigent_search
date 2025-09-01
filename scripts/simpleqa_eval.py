@@ -12,6 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
+import os
 import time
 import click
 import json
@@ -49,20 +50,21 @@ MODEL_NAMES = {
     "gpt-oss": "gpt-oss:120b",  # Ollama model for now
 }
 
-# Create timestamp for unique log file
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+WORKING_DIRECTORY = os.path.join(
+    os.getcwd(),
+    "results",
+    f"eigent_search_{TIMESTAMP}",
+)
+os.makedirs(WORKING_DIRECTORY, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(
-            f"results/simpleqa_eval_{timestamp}.log"
-        ),  # Unique log file per run
-        logging.FileHandler(
-            "results/simpleqa_eval.log", mode="a"
-        ),  # Cumulative log file
-        logging.StreamHandler(),  # Console output
+        logging.FileHandler(WORKING_DIRECTORY / "simpleqa_eval.log"),
+        logging.StreamHandler(),
     ],
     force=True,
 )
@@ -86,14 +88,14 @@ logger = logging.getLogger(__name__)
 def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     # Log evaluation configuration
     logger.info(
-        f"\n{'='*100}\n"
+        f"\n{'=' * 100}\n"
         "Starting SimpleQA Evaluation"
         f"Agent Type: {agent_type}"
         f"Model: {model_name}"
         f"Questions: {num_questions}"
         f"Start Index: {start_idx}"
-        f"Log File: results/simpleqa_eval_{timestamp}.log"
-        f"\n{'='*100}\n"
+        f"Output directory: {WORKING_DIRECTORY}"
+        f"\n{'=' * 100}\n"
     )
 
     # setup the agent for evaluation
@@ -131,7 +133,10 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     scores = []
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
-    output_file = f"results/{agent_type}_simpleqa_from={start_idx}_to={start_idx + num_questions}_{timestamp}.json"
+    output_file = (
+        WORKING_DIRECTORY
+        / f"{agent_type}_simpleqa_from={start_idx}_to={start_idx + num_questions}_{TIMESTAMP}.json"
+    )
 
     try:
         for i, example in enumerate(
@@ -153,7 +158,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 eval_result = type(
                     "obj",
                     (object,),
-                    {"score": -1.0, "metrics": {"grade": "NOT_ATTEMPTED"}},
+                    {"score": -1.0, "metrics": {"grade": "ERROR"}},
                 )()
                 scores.append(-1.0)
             else:
@@ -166,47 +171,33 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 eval_result = evaluator.evaluate(eval_request)
                 scores.append(eval_result.score)
 
-            # Collect browser metrics if available (for eigent_search agent)
-            browser_metrics = []
-            if agent_type == "eigent_search" and hasattr(agent, "web_toolkit"):
-                browser_metrics = agent.web_toolkit.get_usage_metrics()
-
             # Add emoji to grade for visual clarity
-            grade_emoji_map = {"CORRECT": "✅", "INCORRECT": "❌", "NOT_ATTEMPTED": "⚠️"}
+            grade_emoji_map = {
+                "CORRECT": "✅",
+                "INCORRECT": "❌",
+                "NOT_ATTEMPTED": "⚠️",
+                "ERROR": "🚫",
+            }
             grade = eval_result.metrics["grade"]
             grade_with_emoji = f"{grade_emoji_map.get(grade, '❓')} {grade}"
 
-            results.append(
-                {
-                    "dataset_index": problem_id,  # Index in the original dataset
-                    "problem": example["problem"],
-                    "answer": example["answer"],
-                    "response": response,
-                    "grade_emoji": grade_with_emoji,
-                    "grade": grade,
-                    "metadata": example.get(
-                        "metadata", {}
-                    ),  # Include metadata if available
-                    "browser_metrics": browser_metrics,  # Browser usage metrics
-                }
-            )
+            result = {
+                "dataset_index": problem_id,  # Index in the original dataset
+                "problem": example["problem"],
+                "answer": example["answer"],
+                "response": response,
+                "grade_emoji": grade_with_emoji,
+                "grade": grade,
+                "metadata": example.get(
+                    "metadata", {}
+                ),  # Include metadata if available
+            }
+            results.append(result)
             counter[eval_result.metrics["grade"]] += 1
             current_accuracy = counter["CORRECT"] / (i + 1) * 100
 
-            # Log with browser metrics summary if available
-            metrics_summary = ""
-            if browser_metrics:
-                metrics_summary = f" - Browser calls: {len(browser_metrics)}"
-                function_counts = {}
-                for metric in browser_metrics:
-                    func = metric.get("function", "unknown")
-                    function_counts[func] = function_counts.get(func, 0) + 1
-                metrics_summary += (
-                    f" ({', '.join([f'{k}:{v}' for k, v in function_counts.items()])})"
-                )
-
             logger.info(
-                f"[{agent_type}] Index: {problem_id} ({i + 1}/{num_questions}) - Grade: {grade_with_emoji} - Running totals: {counter} - Accuracy: {current_accuracy:.2f}%{metrics_summary}"
+                f"[{agent_type}] Index: {problem_id} ({i + 1}/{num_questions}) - Grade: {grade_with_emoji} - Running totals: {counter} - Accuracy: {current_accuracy:.2f}%"
             )
 
             # if agent_type == "research":
