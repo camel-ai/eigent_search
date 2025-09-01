@@ -30,6 +30,17 @@ from .environment import DeepSearchEnvironment
 
 logger = get_logger(__name__)
 
+# AgentOps decorator setting
+try:
+    import os
+
+    if os.getenv("AGENTOPS_API_KEY") is not None:
+        from agentops import track_agent
+    else:
+        raise ImportError
+except (ImportError, AttributeError):
+    from camel.utils import track_agent
+
 WORKING_DIRECTORY = os.path.join(
     os.getcwd(),
     "tmp",
@@ -163,18 +174,6 @@ def deep_search_agent_factory(
         tools=tools,
         prune_tool_calls_from_memory=True,
     )
-
-
-# AgentOps decorator setting
-try:
-    import os
-
-    if os.getenv("AGENTOPS_API_KEY") is not None:
-        from agentops import track_agent
-    else:
-        raise ImportError
-except (ImportError, AttributeError):
-    from camel.utils import track_agent
 
 
 class ResearchResponse(BaseModel):
