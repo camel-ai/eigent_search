@@ -93,7 +93,7 @@ class DeepSearchEnvironment:
         ]
         web_toolkit_custom = HybridBrowserToolkit(
             mode="python",
-            headless=False,
+            headless=True,
             enabled_tools=custom_tools,
             browser_log_to_file=True,
             stealth=True,
