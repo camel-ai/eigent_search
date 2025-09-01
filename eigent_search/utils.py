@@ -46,7 +46,7 @@ def run_agent_with_retry(
         ),
     )
     def _run_with_retry(input_query: str) -> dict:
-        response = agent.step(input_query)
+        response = agent.astep(input_query)
         return eval(response.msgs[0].content)
 
     return _run_with_retry(input_query)
