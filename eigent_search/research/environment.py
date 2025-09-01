@@ -56,16 +56,10 @@ class DeepSearchEnvironment:
             self.note_toolkit
         )
 
-        # TODO: ask Wendong why this is needed
-        self.enhanced_shell_exec = self.message_integration.register_functions(
-            [self.terminal_toolkit.shell_exec]
-        )
-
     def construct_action_space(self):
         """Construct a toolkit for actions related to the deep search environment."""
         tools = [
             *self.browser_toolkit.get_tools(),
-            *self.enhanced_shell_exec,
             *self.note_toolkit.get_tools(),
             *self.search_toolkit,
             *self.terminal_toolkit.get_tools(),
