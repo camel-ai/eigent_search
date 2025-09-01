@@ -42,11 +42,14 @@ def run_agent_with_retry(
         stop=tenacity.stop_after_attempt(max_retries),
         wait=tenacity.wait_exponential(multiplier=1, min=1, max=10),
         before_sleep=lambda retry_state: logger.warning(
-            f"Attempt {retry_state.outcome.attempt_number} failed: {retry_state.outcome.exception()}. Retrying in {retry_state.outcome.value} seconds..."
+            f"Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Retrying..."
         ),
     )
     def _run_with_retry(input_query: str) -> dict:
-        response = agent.astep(input_query)
+        import asyncio
+        import nest_asyncio
+        nest_asyncio.apply()
+        response = asyncio.run(agent.astep(input_query))
         return eval(response.msgs[0].content)
 
     return _run_with_retry(input_query)
