@@ -19,15 +19,8 @@ import tenacity
 logger = get_logger(__name__)
 
 
-@tenacity.retry(
-    stop=tenacity.stop_after_attempt(5),
-    wait=tenacity.wait_exponential(multiplier=1, min=1, max=10),
-    before_sleep=lambda retry_state: logger.warning(
-        f"Attempt {retry_state.outcome.attempt_number} failed: {retry_state.outcome.exception()}. Retrying in {retry_state.outcome.value} seconds..."
-    ),
-)
 def run_agent_with_retry(
-    agent: ChatAgent, problem: str, agent_type: str, hash_id: str, max_retries: int = 5
+    agent: ChatAgent, input_query: str, max_retries: int = 5
 ) -> dict:
     """Run agent.step with exponential retry logic.
 
@@ -44,5 +37,16 @@ def run_agent_with_retry(
     Raises:
         Exception: If all retries fail
     """
-    response = agent.step(problem)
-    return eval(response.msgs[0].content)
+
+    @tenacity.retry(
+        stop=tenacity.stop_after_attempt(max_retries),
+        wait=tenacity.wait_exponential(multiplier=1, min=1, max=10),
+        before_sleep=lambda retry_state: logger.warning(
+            f"Attempt {retry_state.outcome.attempt_number} failed: {retry_state.outcome.exception()}. Retrying in {retry_state.outcome.value} seconds..."
+        ),
+    )
+    def _run_with_retry(input_query: str) -> dict:
+        response = agent.step(input_query)
+        return eval(response.msgs[0].content)
+
+    return _run_with_retry(input_query)
