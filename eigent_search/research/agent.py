@@ -204,7 +204,7 @@ class DeepSearchAgent(ChatAgent):
     async def astep(self, input_query: str) -> ChatAgentResponse:
         # self.current_query_toolkit = QueryProcessingToolkit(input_query)
         # self.add_tools(self.current_query_toolkit.get_tools())
-        search_response = super().astep(
+        search_response = await super().astep(
             input_query,
             # f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
             response_format=ResearchResponse,

@@ -61,7 +61,7 @@ class DeepSearchEnvironment:
         tools = [
             *self.browser_toolkit.get_tools(),
             *self.note_toolkit.get_tools(),
-            *self.search_toolkit,
+            *self.search_toolkit.get_tools(),
             *self.terminal_toolkit.get_tools(),
         ]
         return tools
