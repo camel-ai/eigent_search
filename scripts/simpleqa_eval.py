@@ -86,14 +86,14 @@ logger = logging.getLogger(__name__)
 def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     # Log evaluation configuration
     logger.info(
-        "================================================"
+        f"\n{'='*100}\n"
         "Starting SimpleQA Evaluation"
         f"Agent Type: {agent_type}"
         f"Model: {model_name}"
         f"Questions: {num_questions}"
         f"Start Index: {start_idx}"
         f"Log File: results/simpleqa_eval_{timestamp}.log"
-        "================================================"
+        f"\n{'='*100}\n"
     )
 
     # setup the agent for evaluation
