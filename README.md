@@ -38,6 +38,8 @@ export SEARCH_ENGINE_ID="your-search-engine-id"
 python scripts/simpleqa_eval.py -a deep_search -n 5 -s 1
 ```
 
+> Run `scripts/simpleqa_eval_wsl2.py` should you are on WSL2 platform.
+
 Please see input parameters inside the script.
 
 5. View results in the `results` directory.
