@@ -163,7 +163,7 @@ def deep_search_agent_factory(
     return DeepSearchAgent(
         system_message=BaseMessage.make_assistant_message(
             role_name="Search Agent",
-            content=SYSTEM_PROMPT,
+            content=SYSTEM_PROMPT(working_directory),
         ),
         model=model,
         toolkits_to_register_agent=[environment.browser_toolkit],
