@@ -177,3 +177,9 @@ cython_debug/
 .vscode
 
 .DS_Store
+
+# test and tmp file
+test/
+tmp/
+results/
+camel_terminal.txt

@@ -6,7 +6,9 @@ authors = []
 requires-python = ">=3.10,<3.13"
 dependencies = [
     "traceroot==0.0.4a5",
-    "camel-ai[all]>=0.2.74"
+    "camel-ai[all]>=0.2.74",
+    "click>=8.1.8",
+    "openai>=1.99.9",
 ]
 
 [build-system]

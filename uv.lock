@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.10, <3.13"
 resolution-markers = [
     "python_full_version >= '3.12' and sys_platform == 'darwin'",
@@ -3146,12 +3146,16 @@ version = "0.0.1.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "camel-ai", extra = ["all"] },
+    { name = "click" },
+    { name = "openai" },
     { name = "traceroot" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "camel-ai", extras = ["all"], specifier = ">=0.2.74" },
+    { name = "click", specifier = ">=8.1.8" },
+    { name = "openai", specifier = ">=1.99.9" },
     { name = "traceroot", specifier = "==0.0.4a5" },
 ]
 
