@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 from tqdm.auto import tqdm
 from datasets import load_dataset
 import logging
+from pathlib import Path
 
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
@@ -36,12 +37,22 @@ from eigent_search.baseline import (
 from eigent_search.research import deep_search_agent_factory
 from eigent_search.utils import run_agent_with_retry
 
+
+TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+WORKING_DIRECTORY = Path(
+    os.getcwd(),
+    "results",
+    f"eigent_search_{TIMESTAMP}",
+)
+os.makedirs(WORKING_DIRECTORY, exist_ok=True)
+
 AGENTS = {
     "simple_research": SimpleResearchAgent,
     "direct_answer": DirectAnswerAgent,
     "chain_of_thought": ChainOfThoughtAgent,
     "knowledge_then_reasoning": KnowledgeThenReasoningAgent,
-    "deep_search": deep_search_agent_factory,
+    "deep_search": lambda model: deep_search_agent_factory(model, WORKING_DIRECTORY),
 }
 
 MODEL_NAMES = {
@@ -49,15 +60,6 @@ MODEL_NAMES = {
     "gpt-4.1-mini": ModelType.GPT_4_1_MINI,
     "gpt-oss": "gpt-oss:120b",  # Ollama model for now
 }
-
-TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-WORKING_DIRECTORY = os.path.join(
-    os.getcwd(),
-    "results",
-    f"eigent_search_{TIMESTAMP}",
-)
-os.makedirs(WORKING_DIRECTORY, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -89,12 +91,12 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     # Log evaluation configuration
     logger.info(
         f"\n{'=' * 100}\n"
-        "Starting SimpleQA Evaluation"
-        f"Agent Type: {agent_type}"
-        f"Model: {model_name}"
-        f"Questions: {num_questions}"
-        f"Start Index: {start_idx}"
-        f"Output directory: {WORKING_DIRECTORY}"
+        "Starting SimpleQA Evaluation\n"
+        f"Agent Type: {agent_type}\n"
+        f"Model: {model_name}\n"
+        f"Questions: {num_questions}\n"
+        f"Start Index: {start_idx}\n"
+        f"Output directory: {WORKING_DIRECTORY}\n"
         f"\n{'=' * 100}\n"
     )
 
