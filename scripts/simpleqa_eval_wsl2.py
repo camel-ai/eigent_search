@@ -43,19 +43,21 @@ def main():
     script_args = sys.argv[1:]
 
     if not script_args:
-        print("Usage: python run_headless.py <original_script_args>")
-        print("Example: python run_headless.py -a deep_search -n 5 -s 1")
+        print("Usage: python simpleqa_eval_wsl2.py <original_script_args>")
+        print("Example: python simpleqa_eval_wsl2.py -a deep_search -n 5 -s 1")
         sys.exit(1)
 
     # Construct the command
-    cmd = [sys.executable, "scripts/simpleqa_eval.py"] + script_args
+    cmd = [sys.executable, "simpleqa_eval.py"] + script_args
 
     print(f"Running: {' '.join(cmd)}")
     print("Environment configured for headless operation...")
 
     try:
         # Run the original script with modified environment
-        result = subprocess.run(cmd, env=env, cwd=os.getcwd())
+        # Change to scripts directory to find simpleqa_eval.py
+        scripts_dir = os.path.join(os.getcwd(), "scripts")
+        result = subprocess.run(cmd, env=env, cwd=scripts_dir)
         sys.exit(result.returncode)
     except KeyboardInterrupt:
         print("\nScript interrupted by user")
