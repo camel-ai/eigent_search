@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
-from .query_toolkit import QueryProcessingToolkit
-from .researcher import ResearchAgent
 
-__all__ = ["QueryProcessingToolkit", "ResearchAgent"]
+from .agent import deep_search_agent_factory
+
+__all__ = ["deep_search_agent_factory"]

@@ -87,7 +87,7 @@ class BrowserToolkitWrapper:
         # Extract our custom kwargs before passing to HybridBrowserToolkit
         self.domain_blacklist = kwargs.pop('domain_blacklist', ['huggingface.co', 'hf.co'])
         
-        self.toolkit = HybridBrowserToolkit(*args, **kwargs)
+        self.toolkit: HybridBrowserToolkit = HybridBrowserToolkit(*args, **kwargs)
         self.visit_history: Dict[str, List[datetime]] = defaultdict(list)
         self.page_content_cache: Dict[str, str] = {}
         self.max_cache_size = 10  # Maximum number of pages to cache
@@ -249,7 +249,8 @@ class BrowserToolkitWrapper:
                 session = await self.toolkit._get_session()
                 tabs = await session.get_all_tabs()
                 total_tabs = len(tabs)
-            except:
+            except Exception as e:
+                logger.warning(f"[BrowserWrapper] Getting empty tabs: {e}")
                 tabs = []
                 total_tabs = 1
             

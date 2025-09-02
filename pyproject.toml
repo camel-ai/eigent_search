@@ -1,14 +1,11 @@
 [project]
-name = "librarian"
+name = "eigent_search"
 version = "0.0.1.dev0"
-description = "The Librarian Paradigm: An Agentic Solution for Structured Knowledge and Grounded Reasoning"
+description = "Deep search agent with query processing."
 authors = []
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "traceroot==0.0.4a5",
-    "camel-ai[all]>=0.2.74",
-    "click>=8.1.8",
-    "openai>=1.99.9",
+    "camel-ai[all]>=0.2.75"
 ]
 
 [build-system]
@@ -16,4 +13,4 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["librarian"]
+packages = ["eigent_search"]
