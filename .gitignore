@@ -177,3 +177,6 @@ cython_debug/
 .vscode
 
 .DS_Store
+
+# Results
+eigent_search_results_*
