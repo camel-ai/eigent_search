@@ -205,7 +205,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             if (i + 1) % 2 == 0 or i == num_questions - 1:
                 with open(output_file, "w") as f:
                     json.dump(results, f, indent=4)
-                tqdm.write(f"Results saved to {output_file}")
+                logger.info(f"Results saved to {output_file} ...")
 
             # # Clear browser metrics for next problem
             # if agent_type == "eigent_search" and hasattr(agent, "web_toolkit"):
