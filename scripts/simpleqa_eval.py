@@ -12,30 +12,29 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-import os
-import time
-import click
-import json
 from datetime import datetime
-from dotenv import load_dotenv
-from tqdm.auto import tqdm
-from datasets import load_dataset
+import json
 import logging
+import os
 from pathlib import Path
+import time
 
+from camel.agents import ChatAgent
+from camel.logger import get_logger, set_log_file, set_log_level
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
-from camel.agents import ChatAgent
+import click
+from datasets import load_dataset
+from dotenv import load_dotenv
+from tqdm.auto import tqdm
 
-from camel.logger import get_logger, set_log_file, set_log_level
-
-from eigent_search.evaluation import SimpleQAEvaluator
 from eigent_search.baseline import (
-    DirectAnswerAgent,
     ChainOfThoughtAgent,
+    DirectAnswerAgent,
     KnowledgeThenReasoningAgent,
     SimpleResearchAgent,
 )
+from eigent_search.evaluation import SimpleQAEvaluator
 from eigent_search.research import deep_search_agent_factory
 from eigent_search.utils import run_agent_with_retry
 
@@ -43,9 +42,7 @@ from eigent_search.utils import run_agent_with_retry
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 
 WORKING_DIRECTORY = Path(
-    os.getcwd(),
-    "results",
-    f"eigent_search_{TIMESTAMP}",
+    f"eigent_search_results_{TIMESTAMP}",
 )
 os.makedirs(WORKING_DIRECTORY, exist_ok=True)
 
@@ -189,7 +186,12 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             current_accuracy = counter["CORRECT"] / (i + 1) * 100
 
             logger.info(
-                f"[{agent_type}] Index: {problem_id} ({i + 1}/{num_questions}) - Grade: {grade_with_emoji} - Running totals: {counter} - Accuracy: {current_accuracy:.2f}%"
+                f"[{agent_type}] for Question {i + 1} (of {num_questions})\n"
+                f"Grade: {grade_with_emoji}\n"
+                f"Running totals: {counter}\n"
+                f"Accuracy: {current_accuracy:.2f}%\n"
+                f"Result: {json.dumps(result, indent=2)}\n"
+                "--------------------------------"
             )
 
             # if agent_type == "research":
