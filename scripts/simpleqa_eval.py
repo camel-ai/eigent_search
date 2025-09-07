@@ -60,6 +60,13 @@ MODEL_NAMES = {
     "gpt-oss": "gpt-oss:120b",  # Ollama model for now
 }
 
+GRADE_EMOJI_MAP = {
+    "CORRECT": "✅",
+    "INCORRECT": "❌",
+    "NOT_ATTEMPTED": "⚠️",
+    "ERROR": "🚫",
+}
+
 set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
@@ -159,22 +166,15 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 eval_result = evaluator.evaluate(eval_request)
                 scores.append(eval_result.score)
 
-            # Add emoji to grade for visual clarity
-            grade_emoji_map = {
-                "CORRECT": "✅",
-                "INCORRECT": "❌",
-                "NOT_ATTEMPTED": "⚠️",
-                "ERROR": "🚫",
-            }
+            # process the evaluation result for logging and saving
             grade = eval_result.metrics["grade"]
-            grade_with_emoji = f"{grade_emoji_map.get(grade, '❓')} {grade}"
+            grade_with_emoji = f"{GRADE_EMOJI_MAP.get(grade, '❓')} {grade}"
 
             result = {
-                "dataset_index": problem_id,  # Index in the original dataset
+                "id": problem_id,  # Index in the original dataset
                 "problem": example["problem"],
                 "ground_truth_answer": example["answer"],
                 "agent_response": response,
-                "grade_emoji": grade_with_emoji,
                 "grade": grade,
                 "metadata": example.get(
                     "metadata", {}
@@ -185,12 +185,12 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             current_accuracy = counter["CORRECT"] / (i + 1) * 100
 
             logger.info(
-                f"[{agent_type}] for Question {i + 1} (of {num_questions})\n"
+                f"\nQuestion: {i + 1} / {num_questions}\n"
+                f"Agent: {agent_type}\n"
                 f"Grade: {grade_with_emoji}\n"
                 f"Running totals: {counter}\n"
-                f"Accuracy: {current_accuracy:.2f}%\n"
+                f"Current accuracy: {current_accuracy:.2f}%\n"
                 f"Result: {json.dumps(result, indent=2)}\n"
-                "--------------------------------"
             )
 
             # if agent_type == "research":
