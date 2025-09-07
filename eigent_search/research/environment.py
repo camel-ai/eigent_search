@@ -108,11 +108,32 @@ class DeepSearchEnvironment:
 
     def construct_terminal_toolkit(self):
         """Construct a terminal toolkit for actions related to terminal operations."""
-        return TerminalToolkit(
+        terminal_toolkit = TerminalToolkit(
             safe_mode=True,
             clone_current_env=False,
             log_dir=os.path.join(self.working_directory, "terminal_logs"),
         )
+
+        # Override get_tools method to only include specific tools
+        def custom_get_tools() -> list[FunctionTool]:
+            r"""Returns a list of FunctionTool objects representing the functions
+            in the toolkit.
+
+            Returns:
+                List[FunctionTool]: A list of FunctionTool objects representing the
+                    functions in the toolkit.
+            """
+            return [
+                FunctionTool(terminal_toolkit.shell_exec),
+                FunctionTool(terminal_toolkit.shell_view),
+                FunctionTool(terminal_toolkit.shell_wait),
+                FunctionTool(terminal_toolkit.shell_write_to_process),
+                FunctionTool(terminal_toolkit.shell_kill_process),
+                # FunctionTool(terminal_toolkit.ask_user_for_help),
+            ]
+
+        terminal_toolkit.get_tools = custom_get_tools
+        return terminal_toolkit
 
     def construct_note_taking_toolkit(self):
         """Construct a note toolkit for actions related to note-taking."""
