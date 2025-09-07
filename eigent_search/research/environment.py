@@ -12,6 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
+import os
 import uuid
 
 from camel.logger import get_logger
@@ -39,7 +40,7 @@ class DeepSearchEnvironment:
         self.search_toolkit = self.construct_search_toolkit()
         self.browser_toolkit = self.construct_browser_toolkit()
         self.terminal_toolkit = self.construct_terminal_toolkit()
-        self.note_toolkit = self.construct_note_toolkit()
+        self.note_taking_toolkit = self.construct_note_taking_toolkit()
         self.message_integration = self.construct_message_integration()
 
         # Add messaging to toolkits
@@ -52,15 +53,15 @@ class DeepSearchEnvironment:
         self.terminal_toolkit = self.message_integration.register_toolkits(
             self.terminal_toolkit
         )
-        self.note_toolkit = self.message_integration.register_toolkits(
-            self.note_toolkit
+        self.note_taking_toolkit = self.message_integration.register_toolkits(
+            self.note_taking_toolkit
         )
 
     def construct_action_space(self):
         """Construct a toolkit for actions related to the deep search environment."""
         tools = [
             *self.browser_toolkit.get_tools(),
-            *self.note_toolkit.get_tools(),
+            *self.note_taking_toolkit.get_tools(),
             *self.search_toolkit.get_tools(),
             *self.terminal_toolkit.get_tools(),
         ]
@@ -99,7 +100,7 @@ class DeepSearchEnvironment:
             stealth=True,
             session_id=self.environment_id,
             viewport_limit=False,
-            log_dir=self.working_directory,
+            log_dir=os.path.join(self.working_directory, "browser_logs"),
             cache_dir=self.working_directory,
             default_start_url="https://search.brave.com/",
         )
@@ -108,12 +109,16 @@ class DeepSearchEnvironment:
     def construct_terminal_toolkit(self):
         """Construct a terminal toolkit for actions related to terminal operations."""
         return TerminalToolkit(
-            safe_mode=True, clone_current_env=False, log_dir=self.working_directory
+            safe_mode=True,
+            clone_current_env=False,
+            log_dir=os.path.join(self.working_directory, "terminal_logs"),
         )
 
-    def construct_note_toolkit(self):
+    def construct_note_taking_toolkit(self):
         """Construct a note toolkit for actions related to note-taking."""
-        return NoteTakingToolkit(working_directory=self.working_directory)
+        return NoteTakingToolkit(
+            working_directory=os.path.join(self.working_directory, "note_taking_logs")
+        )
 
     def construct_message_integration(self):
         """Construct a message integration toolkit to allow agents to send status updates to users"""

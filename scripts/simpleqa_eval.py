@@ -123,8 +123,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
     output_file = (
-        WORKING_DIRECTORY
-        / f"{agent_type}_simpleqa_from={start_idx}_to={start_idx + num_questions}_{TIMESTAMP}.json"
+        WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
     )
 
     try:
@@ -173,8 +172,8 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             result = {
                 "dataset_index": problem_id,  # Index in the original dataset
                 "problem": example["problem"],
-                "answer": example["answer"],
-                "response": response,
+                "ground_truth_answer": example["answer"],
+                "agent_response": response,
                 "grade_emoji": grade_with_emoji,
                 "grade": grade,
                 "metadata": example.get(
