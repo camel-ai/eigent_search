@@ -27,6 +27,8 @@ from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
 from camel.agents import ChatAgent
 
+from camel.logger import get_logger, set_log_file, set_log_level
+
 from eigent_search.evaluation import SimpleQAEvaluator
 from eigent_search.baseline import (
     DirectAnswerAgent,
@@ -61,21 +63,9 @@ MODEL_NAMES = {
     "gpt-oss": "gpt-oss:120b",  # Ollama model for now
 }
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(WORKING_DIRECTORY / "simpleqa_eval.log"),
-        logging.StreamHandler(),
-    ],
-    force=True,
-)
-logger = logging.getLogger(__name__)
-
-# Set log level of camel.agents.chat_agent to WARNING to reduce noise
-# logging.getLogger("camel.agents.chat_agent").setLevel(logging.WARNING)
-# logging.getLogger("camel").setLevel(logging.WARNING)
-# logging.getLogger("librarian.research.browser_wrapper").setLevel(logging.WARNING)
+set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
+set_log_level(logging.INFO)
+logger = get_logger(__name__)
 
 
 @click.command()
