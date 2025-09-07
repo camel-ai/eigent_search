@@ -99,6 +99,7 @@ class DeepSearchEnvironment:
             stealth=True,
             session_id=self.environment_id,
             viewport_limit=False,
+            log_dir = self.working_directory,
             cache_dir=self.working_directory,
             default_start_url="https://search.brave.com/",
         )
@@ -106,7 +107,7 @@ class DeepSearchEnvironment:
 
     def construct_terminal_toolkit(self):
         """Construct a terminal toolkit for actions related to terminal operations."""
-        return TerminalToolkit(safe_mode=True, clone_current_env=False)
+        return TerminalToolkit(safe_mode=True, clone_current_env=False, log_dir = self.working_directory)
 
     def construct_note_toolkit(self):
         """Construct a note toolkit for actions related to note-taking."""
