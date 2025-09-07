@@ -5,7 +5,7 @@ description = "Deep search agent with query processing."
 authors = []
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "camel-ai[all]>=0.2.75"
+    "camel-ai[all]>=v0.2.76a0"
 ]
 
 [build-system]
