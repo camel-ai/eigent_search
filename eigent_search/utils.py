@@ -48,6 +48,7 @@ def run_agent_with_retry(
     def _run_with_retry(input_query: str) -> dict:
         import asyncio
         import nest_asyncio
+
         nest_asyncio.apply()
         response = asyncio.run(agent.astep(input_query))
         return eval(response.msgs[0].content)

@@ -1,4 +1,4 @@
-# ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+# ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,10 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+# ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import uuid
 
+from camel.logger import get_logger
 from camel.toolkits import (
     FunctionTool,
     HybridBrowserToolkit,
@@ -22,7 +23,6 @@ from camel.toolkits import (
     TerminalToolkit,
     ToolkitMessageIntegration,
 )
-from camel.logger import get_logger
 
 
 logger = get_logger(__name__)
@@ -99,7 +99,7 @@ class DeepSearchEnvironment:
             stealth=True,
             session_id=self.environment_id,
             viewport_limit=False,
-            log_dir = self.working_directory,
+            log_dir=self.working_directory,
             cache_dir=self.working_directory,
             default_start_url="https://search.brave.com/",
         )
@@ -107,7 +107,9 @@ class DeepSearchEnvironment:
 
     def construct_terminal_toolkit(self):
         """Construct a terminal toolkit for actions related to terminal operations."""
-        return TerminalToolkit(safe_mode=True, clone_current_env=False, log_dir = self.working_directory)
+        return TerminalToolkit(
+            safe_mode=True, clone_current_env=False, log_dir=self.working_directory
+        )
 
     def construct_note_toolkit(self):
         """Construct a note toolkit for actions related to note-taking."""
