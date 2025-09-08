@@ -24,7 +24,9 @@ from camel.toolkits import (
     TerminalToolkit,
     ToolkitMessageIntegration,
 )
-
+from collections import defaultdict
+import functools
+import types
 
 logger = get_logger(__name__)
 
@@ -104,6 +106,33 @@ class DeepSearchEnvironment:
             cache_dir=self.working_directory,
             default_start_url="https://search.brave.com/",
         )
+
+        # control visited url to avoid visiting the
+        web_toolkit_custom._url_visited = defaultdict(int)
+        visit_limit = 10
+
+        # Define URL visit limit decorator for browser_visit_page
+        def limit_url_visits(func):
+            @functools.wraps(func)
+            async def wrapper(self, url: str, *args, **kwargs):
+                if web_toolkit_custom._url_visited[url] >= visit_limit:
+                    return {
+                        "status": "warning",
+                        "message": f"Warning: The same URL '{url}' has been visited {visit_limit} times. You should not visit the same URL repeatedly. Please visit a different URL.",
+                    }
+                web_toolkit_custom._url_visited[url] += 1
+                return await func(self, url, *args, **kwargs)
+
+            return wrapper
+
+        # Apply decorator and properly bind the method
+        decorated_func = limit_url_visits(
+            web_toolkit_custom.browser_visit_page.__func__
+        )
+        web_toolkit_custom.browser_visit_page = types.MethodType(
+            decorated_func, web_toolkit_custom
+        )
+
         return web_toolkit_custom
 
     def construct_terminal_toolkit(self):
