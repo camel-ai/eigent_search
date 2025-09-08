@@ -13,5 +13,6 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from .simpleqa import SimpleQAEvaluator
+from .musique.musique import MusiQueEvaluator
 
-__all__ = ['SimpleQAEvaluator']
+__all__ = ['SimpleQAEvaluator', 'MusiQueEvaluator']

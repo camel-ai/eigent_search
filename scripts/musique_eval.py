@@ -1,0 +1,225 @@
+# ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
+
+import os
+import time
+import json
+import click
+import logging
+from pathlib import Path
+from datetime import datetime
+from dotenv import load_dotenv
+from tqdm.auto import tqdm
+from datasets import load_dataset
+
+from camel.models import ModelFactory
+from camel.types import ModelPlatformType, ModelType
+
+
+from eigent_search.evaluation.musique.musique import MusiQueEvaluator
+from eigent_search.baseline import (
+    DirectAnswerAgent,
+    ChainOfThoughtAgent,
+    KnowledgeThenReasoningAgent,
+    SimpleResearchAgent,
+)
+from eigent_search.research import deep_search_agent_factory
+from eigent_search.utils import run_agent_with_retry
+
+
+
+TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
+WORKING_DIRECTORY = Path(
+    os.getcwd(),
+    "results",
+    f"eigent_search_{TIMESTAMP}",
+)
+os.makedirs(WORKING_DIRECTORY, exist_ok=True)
+
+AGENTS = {
+    "simple_research": SimpleResearchAgent,
+    "direct_answer": DirectAnswerAgent,
+    "chain_of_thought": ChainOfThoughtAgent,
+    "knowledge_then_reasoning": KnowledgeThenReasoningAgent,
+    "deep_search": lambda model: deep_search_agent_factory(model, WORKING_DIRECTORY),
+}
+
+MODEL_NAMES = {
+    "gpt-4o-mini": ModelType.GPT_4O_MINI,
+    "gpt-4.1-mini": ModelType.GPT_4_1_MINI,
+    "gpt-oss": "gpt-oss:120b",  # Example Ollama model
+}
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[
+        logging.FileHandler(WORKING_DIRECTORY / "musique_eval.log"),
+        logging.StreamHandler(),
+    ],
+    force=True,
+)
+logger = logging.getLogger("__name__")
+
+
+# def _read_jsonl(path: str):
+#     with open(path, "r") as f:
+#         return [json.loads(line.strip()) for line in f if line.strip()]
+
+
+# def _load_musique(split: str, ground_truth_jsonl: str | None):
+#     """Load MuSiQue data either from a local JSONL file or HuggingFace dataset."""
+#     if ground_truth_jsonl:
+#         data = _read_jsonl(ground_truth_jsonl)
+#         for e in data:
+#             e.setdefault("answer_aliases", [])
+#             e.setdefault("answerable", True)
+#             e.setdefault("question", e.get("question", ""))  # some versions do not contain the question
+#         return data
+#     # Try loading from HuggingFace
+#     ds = load_dataset("dgslibisey/MuSiQue", split=split)
+#     rows = []
+#     for ex in ds:
+#         rows.append({
+#             "id": ex.get("id") or ex.get("_id") or str(ex.get("qid", "")),
+#             "question": ex.get("question", ""),
+#             "answer": ex.get("answer", ""),
+#             "answer_aliases": ex.get("answer_aliases", []),
+#             "answerable": bool(ex.get("answerable", True)),
+#         })
+#     return rows
+
+
+@click.command()
+@click.option("--agent_type", "-a", type=click.Choice(AGENTS.keys()), default="deep_search") # origin: required=True
+@click.option("--model_name", "-m", type=click.Choice(MODEL_NAMES.keys()), default="gpt-4.1-mini")
+@click.option("--num_questions", "-n", type=int, default=5)
+@click.option("--start_idx", "-s", type=int, default=3)
+@click.option("--split", type=str, default="validation", help="HuggingFace split to load if using HF dataset")
+@click.option("--ground_truth_jsonl", type=str, default=None, help="Optional path to official MuSiQue JSONL")
+def main(agent_type: str, model_name: str, num_questions: int, start_idx: int, split: str, ground_truth_jsonl: str | None):
+    logger.info(
+        f"\n{'=' * 100}\n"
+        "Starting MusiQue Evaluation\n"
+        f"Agent Type: {agent_type}\n"
+        f"Model: {model_name}\n"
+        f"Questions: {num_questions}\n"
+        f"Start Index: {start_idx}\n"
+        f"Output directory: {WORKING_DIRECTORY}\n"
+        f"\n{'=' * 100}\n"
+    )
+    
+
+    load_dotenv()
+
+    # 1) Create model for the agent
+    if model_name == "gpt-oss":
+        model = ModelFactory.create(
+            model_platform=ModelPlatformType.OLLAMA,
+            model_type="gpt-oss:120b",
+            url="http://127.0.0.1:7861/v1",
+            model_config_dict={"temperature": 0.0},
+        )
+    else:
+        model = ModelFactory.create(
+            model_platform=ModelPlatformType.OPENAI,
+            model_type=MODEL_NAMES[model_name],
+            model_config_dict={"temperature": 0.0},
+        )
+    agent = AGENTS[agent_type](model=model)
+
+    # 2) Evaluator: per-example EM/F1
+    evaluator = MusiQueEvaluator()
+
+    # 3) Load data
+    # examples = _load_musique(split=split, ground_truth_jsonl=ground_truth_jsonl)
+    # examples = examples[start_idx : start_idx + num_questions]
+
+    dataset = load_dataset("dgslibisey/MuSiQue")
+
+    examples = list(dataset["validation"])[start_idx : start_idx + num_questions]
+
+    results = []
+    per_f1_list, per_em_list, per_acc_list = [], [], []
+    outfile = WORKING_DIRECTORY / f"{agent_type}_musique_ans_only_{start_idx}_{start_idx+num_questions}_{TIMESTAMP}.json"
+
+    try:
+        for i, ex in enumerate(tqdm(examples, desc="MuSiQue Answer-only", unit="ex", leave=True)):
+            idx = start_idx + i
+            question = ex.get("question", "")
+
+            # 4) Run agent to generate prediction
+            response = run_agent_with_retry(
+                agent=agent,
+                input_query=question or f"Answer briefly.\nQID: {ex['id']}",
+                max_retries=5,
+            )
+            pred_answer = response.get("answer", "") if isinstance(response, dict) else ""
+
+            # 5) Per-example evaluation (EM/F1 only)
+            eval_req = evaluator.create_request(
+                qid=ex["id"],
+                answer=ex["answer"],
+                answer_aliases=ex.get("answer_aliases", []),
+                answerable=ex.get("answerable", True),
+                prediction=pred_answer,
+            )
+            eval_res = evaluator.evaluate(eval_req)
+
+            em, f1, acc = eval_res.metrics["answer_em"], eval_res.metrics["answer_f1"], eval_res.metrics["answer_acc"] 
+            per_em_list.append(em)
+            per_f1_list.append(f1)
+            per_acc_list.append(acc)
+
+            results.append({
+                "dataset_index": idx,
+                "id": ex["id"],
+                "problem": question,
+                "answer": ex["answer"],
+                "aliases": ex.get("answer_aliases", []),
+                "answerable": ex.get("answerable", True),
+                "prediction": pred_answer,
+                "metrics": eval_res.metrics,  # {"answer_em": ..., "answer_f1": ...}
+                "score": eval_res.score,      # same as answer_f1
+                "raw_response": response,
+            })
+
+            # Periodically save results
+            if (i + 1) % 20 == 0 or (i + 1) == len(examples):
+                with open(outfile, "w") as f:
+                    json.dump({"results": results}, f, ensure_ascii=False, indent=2)
+                tqdm.write(f"Saved to {outfile}")
+
+            agent.reset()
+            time.sleep(1)
+
+    except Exception as e:
+        logger.exception(f"Evaluation failed: {e}")
+        raise
+
+    finally:
+        # 6) Final metrics: average EM/F1 over all evaluated examples
+        final_em = round(sum(per_em_list) / len(per_em_list), 3) if per_em_list else 0.0
+        final_f1 = round(sum(per_f1_list) / len(per_f1_list), 3) if per_f1_list else 0.0
+        final_acc = round(sum(per_acc_list) / len(per_acc_list), 3) if per_acc_list else 0.0
+        summary = {"final_answer_em": final_em, "final_answer_f1": final_f1, "final_answer_acc": final_acc}
+        logger.info(f"Final: {json.dumps(summary, ensure_ascii=False)}")
+
+        with open(outfile, "w") as f:
+            json.dump({"results": results, "final_metrics": summary}, f, ensure_ascii=False, indent=2)
+        logger.info(f"Results written to {outfile}")
+
+
+if __name__ == "__main__":
+    main()
