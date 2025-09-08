@@ -16,6 +16,7 @@ from __future__ import annotations
 import datetime
 import os
 import platform
+from collections import defaultdict
 
 from camel.agents.chat_agent import ChatAgent
 from camel.logger import get_logger
@@ -186,8 +187,19 @@ class DeepSearchAgent(ChatAgent):
         super().__init__(*args, **kwargs)
         self.current_query_toolkit = None
 
+    def _reset_url_visit_limit(self):
+        if "browser_visit_page" not in self.tool_dict:
+            return
+
+        browser_visit_page = self.tool_dict["browser_visit_page"]
+        browser_toolkit = browser_visit_page.func.__self__
+        browser_toolkit._url_visited = defaultdict(int)
+
     def reset(self):
         super().reset()
+
+        self._reset_url_visit_limit()
+
         # self.remove_tools(
         #     [
         #         tool.get_function_name()

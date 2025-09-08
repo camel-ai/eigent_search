@@ -126,11 +126,11 @@ class DeepSearchEnvironment:
             return wrapper
 
         # Apply decorator and properly bind the method
-        decorated_func = limit_url_visits(
+        decorated_visit_page = limit_url_visits(
             web_toolkit_custom.browser_visit_page.__func__
         )
         web_toolkit_custom.browser_visit_page = types.MethodType(
-            decorated_func, web_toolkit_custom
+            decorated_visit_page, web_toolkit_custom
         )
 
         return web_toolkit_custom
