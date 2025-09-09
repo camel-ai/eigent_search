@@ -164,8 +164,71 @@ class DeepSearchAgent(ChatAgent):
         super().__init__(*args, **kwargs)
         self.current_query_toolkit = None
 
+    def _close_browser_if_open(self):
+        """Helper to close browser if open."""
+        if "browser_close" not in self.tool_dict:
+            return
+
+        browser_close = self.tool_dict["browser_close"]
+        if hasattr(browser_close, "func") and hasattr(browser_close.func, "__self__"):
+            browser_toolkit = browser_close.func.__self__
+            module_name = browser_toolkit.__class__.__module__
+            logger.info(f"browser_toolkit module: {module_name}")
+
+            if "hybrid_browser_toolkit_py" in module_name:
+                logger.warning(
+                    "Detected Python browser toolkit. Consider using TypeScript version!"
+                )
+                session = getattr(browser_toolkit, "_session", None)
+                browser_obj = getattr(session, "_browser", None) if session else None
+                if browser_obj is not None:
+                    import asyncio
+
+                    try:
+                        asyncio.run(browser_close())
+                        logger.info(
+                            "Python browser was open and is now closed during reset."
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            f"Python browser was open but failed to close during reset: {e}"
+                        )
+            elif "hybrid_browser_toolkit_ts" in module_name:
+                # Check if WebSocket wrapper exists and has an active connection
+                ws_wrapper = getattr(browser_toolkit, "_ws_wrapper", None)
+                if ws_wrapper is not None:
+                    import asyncio
+
+                    try:
+                        loop = asyncio.get_event_loop()
+                        if not loop.is_closed() and not loop.is_running():
+                            try:
+                                loop.run_until_complete(
+                                    asyncio.wait_for(browser_close(), timeout=2.0)
+                                )
+                                logger.info(
+                                    "TypeScript browser was open and is now closed during reset."
+                                )
+                            except asyncio.TimeoutError:
+                                logger.warning(
+                                    "TypeScript browser was open and the close operation timed out after 2 seconds."
+                                )
+
+                    except (RuntimeError, ImportError) as e:
+                        logger.error(
+                            f"Failed to close TypeScript browser due to runtime/import error: {e}"
+                        )
+                    except Exception as e:
+                        logger.error(
+                            f"TypeScript browser encountered an error during closure: {e}"
+                        )
+
+            else:
+                logger.warning(f"Unknown browser toolkit type: {module_name}")
+
     def reset(self):
         super().reset()
+        self._close_browser_if_open()
         # self.remove_tools(
         #     [
         #         tool.get_function_name()
