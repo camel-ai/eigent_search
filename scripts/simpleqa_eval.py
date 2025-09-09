@@ -26,6 +26,7 @@ from camel.types import ModelPlatformType, ModelType
 import click
 from datasets import load_dataset
 from dotenv import load_dotenv
+from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
 
 from eigent_search.baseline import (
@@ -70,6 +71,13 @@ GRADE_EMOJI_MAP = {
 set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
+
+
+class SimpleQAResponse(BaseModel):
+    answer: str = Field(..., description="The answer to the research question.")
+    search_results: list[str] = Field(
+        ..., description="The search results that lead to the answer."
+    )
 
 
 @click.command()
@@ -141,11 +149,14 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             problem_id = start_idx + i
 
             # Run agent with retry logic
-            response = run_agent_with_retry(
+            result = run_agent_with_retry(
                 agent=agent,
                 input_query=example["problem"],
+                response_format=SimpleQAResponse,
                 max_retries=5,
             )
+            response = result["response"]
+            tool_trajectory = result["tool_trajectory"]
 
             # Handle evaluation - check if response indicates error
             if response.get("error", False):
@@ -176,6 +187,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 "ground_truth_answer": example["answer"],
                 "agent_response": response,
                 "grade": grade,
+                "tool_trajectory": tool_trajectory,
                 "metadata": example.get(
                     "metadata", {}
                 ),  # Include metadata if available

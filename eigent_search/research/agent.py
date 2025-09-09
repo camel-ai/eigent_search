@@ -16,6 +16,7 @@ from __future__ import annotations
 import datetime
 import os
 import platform
+from typing import Type
 
 from camel.agents.chat_agent import ChatAgent
 from camel.logger import get_logger
@@ -23,7 +24,7 @@ from camel.messages.base import BaseMessage
 from camel.models import BaseModelBackend
 from camel.responses import ChatAgentResponse
 from camel.utils.commons import api_keys_required
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from .environment import DeepSearchEnvironment
 
@@ -147,13 +148,6 @@ def deep_search_agent_factory(
     )
 
 
-class ResearchResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    search_results: list[str] = Field(
-        ..., description="The search results that lead to the answer."
-    )
-
-
 @track_agent(name="SearchAgent")
 class DeepSearchAgent(ChatAgent):
     r"""A :class:`ChatAgent` that conducts deep search on a given question."""
@@ -187,12 +181,14 @@ class DeepSearchAgent(ChatAgent):
         # )
         # self.current_query_toolkit = None
 
-    async def astep(self, input_query: str) -> ChatAgentResponse:
+    async def astep(
+        self, input_query: str, response_format: Type[BaseModel]
+    ) -> ChatAgentResponse:
         # self.current_query_toolkit = QueryProcessingToolkit(input_query)
         # self.add_tools(self.current_query_toolkit.get_tools())
         search_response = await super().astep(
             input_query,
             # f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
-            response_format=ResearchResponse,
+            response_format=response_format,
         )
         return search_response
