@@ -93,7 +93,7 @@ class DeepSearchEnvironment:
             "browser_get_som_screenshot",
         ]
         web_toolkit_custom = HybridBrowserToolkit(
-            mode="python",
+            mode="typescript",
             headless=True,
             enabled_tools=custom_tools,
             browser_log_to_file=True,
