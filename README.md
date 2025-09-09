@@ -35,7 +35,7 @@ export SEARCH_ENGINE_ID="your-search-engine-id"
 # run first five SimpleQA examples, starting from the first question
 # Available agent types: simple_research, direct_answer, chain_of_thought, 
 # knowledge_then_reasoning, deep_search
-python scripts/simpleqa_eval.py -a deep_search -n 5 -s 1
+python scripts/simpleqa_eval.py -a deep_search -n 5 -s 0
 ```
 
 > Run `scripts/simpleqa_eval_wsl2.py` should you are on WSL2 platform.
