@@ -101,7 +101,7 @@ class DeepSearchEnvironment:
             session_id=self.environment_id,
             viewport_limit=False,
             log_dir=os.path.join(self.working_directory, "browser_logs"),
-            cache_dir=self.working_directory,
+            cache_dir=os.path.join(self.working_directory, "browser_logs"),
             default_start_url="https://search.brave.com/",
         )
         return web_toolkit_custom
