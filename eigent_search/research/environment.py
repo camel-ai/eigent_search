@@ -100,7 +100,6 @@ class DeepSearchEnvironment:
             stealth=True,
             session_id=self.environment_id,
             viewport_limit=False,
-            log_dir=os.path.join(self.working_directory, "browser_logs"),
             cache_dir=os.path.join(self.working_directory, "browser_logs"),
             default_start_url="https://search.brave.com/",
         )
@@ -111,7 +110,6 @@ class DeepSearchEnvironment:
         terminal_toolkit = TerminalToolkit(
             safe_mode=True,
             clone_current_env=False,
-            log_dir=os.path.join(self.working_directory, "terminal_logs"),
         )
 
         # Override get_tools method to only include specific tools
@@ -197,3 +195,12 @@ class DeepSearchEnvironment:
             )
 
         return ToolkitMessageIntegration(message_handler=send_message_to_user)
+    
+    async def cleanup(self):
+        """Clean up resources"""
+        try:
+            if hasattr(self.browser_toolkit, 'browser_close'):
+                await self.browser_toolkit.browser_close()
+                logger.info("Browser closed successfully during cleanup.")
+        except Exception as e:
+            logger.warning(f"Error during browser cleanup: {e}")
