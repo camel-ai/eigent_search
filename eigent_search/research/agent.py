@@ -198,6 +198,9 @@ class DeepSearchAgent(ChatAgent):
             logger.info(f"browser_toolkit module: {module_name}")
 
             if "hybrid_browser_toolkit_py" in module_name:
+                logger.warning(
+                    "Detected Python browser toolkit. Consider using TypeScript version!"
+                )
                 session = getattr(browser_toolkit, "_session", None)
                 browser_obj = getattr(session, "_browser", None) if session else None
                 if browser_obj is not None:
@@ -213,10 +216,31 @@ class DeepSearchAgent(ChatAgent):
                             f"Python browser was open but failed to close during reset: {e}"
                         )
             elif "hybrid_browser_toolkit_ts" in module_name:
-                logger.warning("TypeScript browser toolkit is not implemented.")
-                raise NotImplementedError(
-                    "TypeScript browser toolkit is not implemented."
-                )
+                # Check if WebSocket wrapper exists and has an active connection
+                ws_wrapper = getattr(browser_toolkit, "_ws_wrapper", None)
+                if ws_wrapper is not None:
+                    import asyncio
+
+                    try:
+                        # Check if the wrapper is still active/connected
+                        if (
+                            hasattr(ws_wrapper, "_websocket")
+                            and ws_wrapper._websocket is not None
+                        ):
+                            # Use the toolkit's browser_close method which properly handles cleanup
+                            asyncio.run(browser_close())
+                            logger.info(
+                                "TypeScript browser was open and is now closed during reset."
+                            )
+                        else:
+                            logger.info(
+                                "TypeScript browser WebSocket wrapper exists but no active connection."
+                            )
+                    except Exception as e:
+                        logger.warning(
+                            f"TypeScript browser was open but failed to close during reset: {e}"
+                        )
+
             else:
                 logger.warning(f"Unknown browser toolkit type: {module_name}")
 
