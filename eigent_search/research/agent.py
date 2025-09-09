@@ -200,23 +200,27 @@ class DeepSearchAgent(ChatAgent):
                     import asyncio
 
                     try:
-                        # Check if the wrapper is still active/connected
-                        if (
-                            hasattr(ws_wrapper, "_websocket")
-                            and ws_wrapper._websocket is not None
-                        ):
-                            # Use the toolkit's browser_close method which properly handles cleanup
-                            asyncio.run(browser_close())
-                            logger.info(
-                                "TypeScript browser was open and is now closed during reset."
-                            )
-                        else:
-                            logger.info(
-                                "TypeScript browser WebSocket wrapper exists but no active connection."
-                            )
+                        loop = asyncio.get_event_loop()
+                        if not loop.is_closed() and not loop.is_running():
+                            try:
+                                loop.run_until_complete(
+                                    asyncio.wait_for(browser_close(), timeout=2.0)
+                                )
+                                logger.info(
+                                    "TypeScript browser was open and is now closed during reset."
+                                )
+                            except asyncio.TimeoutError:
+                                logger.warning(
+                                    "TypeScript browser was open and the close operation timed out after 2 seconds."
+                                )
+
+                    except (RuntimeError, ImportError) as e:
+                        logger.error(
+                            f"Failed to close TypeScript browser due to runtime/import error: {e}"
+                        )
                     except Exception as e:
-                        logger.warning(
-                            f"TypeScript browser was open but failed to close during reset: {e}"
+                        logger.error(
+                            f"TypeScript browser encountered an error during closure: {e}"
                         )
 
             else:
