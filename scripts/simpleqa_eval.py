@@ -17,7 +17,6 @@ import json
 import logging
 import os
 from pathlib import Path
-import time
 
 from camel.agents import ChatAgent
 from camel.logger import get_logger, set_log_file, set_log_level
@@ -224,7 +223,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             #     agent.web_toolkit.clear_metrics()
 
             agent.reset()
-            time.sleep(20)
+            # time.sleep(20)
 
     except Exception as e:
         logger.error(f"Evaluation failed: {str(e)}")
