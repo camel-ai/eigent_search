@@ -169,7 +169,6 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 scores.append(-1.0)
             else:
                 # Normal evaluation
-
                 eval_request = evaluator.create_request(
                     problem=example["problem"],
                     answer=example["answer"],
