@@ -197,3 +197,12 @@ class DeepSearchEnvironment:
             )
 
         return ToolkitMessageIntegration(message_handler=send_message_to_user)
+
+    async def cleanup(self):
+        """Clean up resources"""
+        try:
+            if hasattr(self.browser_toolkit, "browser_close"):
+                await self.browser_toolkit.browser_close()
+                logger.info("Browser closed successfully during cleanup.")
+        except Exception as e:
+            logger.warning(f"Error during browser cleanup: {e}")

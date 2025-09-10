@@ -171,8 +171,19 @@ class DeepSearchAgent(ChatAgent):
         )
         self.current_query_toolkit = None
 
-    def reset(self):
+    async def areset(self):
+        """Cleans up resources."""
         super().reset()
+        if hasattr(self, 'environment') and self.environment:
+            await self.environment.cleanup()
+    
+    def reset(self):
+        """Synchronous reset."""
+        import asyncio
+        import nest_asyncio
+
+        nest_asyncio.apply()
+        asyncio.run(self.areset())
         # self.remove_tools(
         #     [
         #         tool.get_function_name()
