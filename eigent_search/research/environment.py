@@ -1,4 +1,4 @@
-# ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+# ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,10 +10,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+# ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
+import os
 import uuid
 
+from camel.logger import get_logger
 from camel.toolkits import (
     FunctionTool,
     HybridBrowserToolkit,
@@ -22,7 +24,6 @@ from camel.toolkits import (
     TerminalToolkit,
     ToolkitMessageIntegration,
 )
-from camel.logger import get_logger
 
 
 logger = get_logger(__name__)
@@ -39,7 +40,7 @@ class DeepSearchEnvironment:
         self.search_toolkit = self.construct_search_toolkit()
         self.browser_toolkit = self.construct_browser_toolkit()
         self.terminal_toolkit = self.construct_terminal_toolkit()
-        self.note_toolkit = self.construct_note_toolkit()
+        self.note_taking_toolkit = self.construct_note_taking_toolkit()
         self.message_integration = self.construct_message_integration()
 
         # Add messaging to toolkits
@@ -52,15 +53,15 @@ class DeepSearchEnvironment:
         self.terminal_toolkit = self.message_integration.register_toolkits(
             self.terminal_toolkit
         )
-        self.note_toolkit = self.message_integration.register_toolkits(
-            self.note_toolkit
+        self.note_taking_toolkit = self.message_integration.register_toolkits(
+            self.note_taking_toolkit
         )
 
     def construct_action_space(self):
         """Construct a toolkit for actions related to the deep search environment."""
         tools = [
             *self.browser_toolkit.get_tools(),
-            *self.note_toolkit.get_tools(),
+            *self.note_taking_toolkit.get_tools(),
             *self.search_toolkit.get_tools(),
             *self.terminal_toolkit.get_tools(),
         ]
@@ -92,25 +93,53 @@ class DeepSearchEnvironment:
             "browser_get_som_screenshot",
         ]
         web_toolkit_custom = HybridBrowserToolkit(
-            mode="python",
+            mode="typescript",
             headless=True,
             enabled_tools=custom_tools,
             browser_log_to_file=True,
             stealth=True,
             session_id=self.environment_id,
             viewport_limit=False,
-            cache_dir=self.working_directory,
+            log_dir=os.path.join(self.working_directory, "browser_logs"),
+            cache_dir=os.path.join(self.working_directory, "browser_logs"),
             default_start_url="https://search.brave.com/",
         )
         return web_toolkit_custom
 
     def construct_terminal_toolkit(self):
         """Construct a terminal toolkit for actions related to terminal operations."""
-        return TerminalToolkit(safe_mode=True, clone_current_env=False)
+        terminal_toolkit = TerminalToolkit(
+            safe_mode=True,
+            clone_current_env=False,
+            log_dir=os.path.join(self.working_directory, "terminal_logs"),
+        )
 
-    def construct_note_toolkit(self):
+        # Override get_tools method to only include specific tools
+        def custom_get_tools() -> list[FunctionTool]:
+            r"""Returns a list of FunctionTool objects representing the functions
+            in the toolkit.
+
+            Returns:
+                List[FunctionTool]: A list of FunctionTool objects representing the
+                    functions in the toolkit.
+            """
+            return [
+                FunctionTool(terminal_toolkit.shell_exec),
+                FunctionTool(terminal_toolkit.shell_view),
+                FunctionTool(terminal_toolkit.shell_wait),
+                FunctionTool(terminal_toolkit.shell_write_to_process),
+                FunctionTool(terminal_toolkit.shell_kill_process),
+                # FunctionTool(terminal_toolkit.ask_user_for_help),
+            ]
+
+        terminal_toolkit.get_tools = custom_get_tools
+        return terminal_toolkit
+
+    def construct_note_taking_toolkit(self):
         """Construct a note toolkit for actions related to note-taking."""
-        return NoteTakingToolkit(working_directory=self.working_directory)
+        return NoteTakingToolkit(
+            working_directory=os.path.join(self.working_directory, "note_taking_logs")
+        )
 
     def construct_message_integration(self):
         """Construct a message integration toolkit to allow agents to send status updates to users"""
@@ -168,3 +197,12 @@ class DeepSearchEnvironment:
             )
 
         return ToolkitMessageIntegration(message_handler=send_message_to_user)
+
+    async def cleanup(self):
+        """Clean up resources"""
+        try:
+            if hasattr(self.browser_toolkit, "browser_close"):
+                await self.browser_toolkit.browser_close()
+                logger.info("Browser closed successfully during cleanup.")
+        except Exception as e:
+            logger.warning(f"Error during browser cleanup: {e}")

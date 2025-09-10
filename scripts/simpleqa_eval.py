@@ -12,28 +12,30 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-import os
-import time
-import click
-import json
 from datetime import datetime
-from dotenv import load_dotenv
-from tqdm.auto import tqdm
-from datasets import load_dataset
+import json
 import logging
+import os
 from pathlib import Path
+import time
 
+from camel.agents import ChatAgent
+from camel.logger import get_logger, set_log_file, set_log_level
 from camel.models import ModelFactory
 from camel.types import ModelPlatformType, ModelType
-from camel.agents import ChatAgent
+import click
+from datasets import load_dataset
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field
+from tqdm.auto import tqdm
 
-from eigent_search.evaluation import SimpleQAEvaluator
 from eigent_search.baseline import (
-    DirectAnswerAgent,
     ChainOfThoughtAgent,
+    DirectAnswerAgent,
     KnowledgeThenReasoningAgent,
     SimpleResearchAgent,
 )
+from eigent_search.evaluation import SimpleQAEvaluator
 from eigent_search.research import deep_search_agent_factory
 from eigent_search.utils import run_agent_with_retry
 
@@ -41,9 +43,7 @@ from eigent_search.utils import run_agent_with_retry
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 
 WORKING_DIRECTORY = Path(
-    os.getcwd(),
-    "results",
-    f"eigent_search_{TIMESTAMP}",
+    f"eigent_search_results_{TIMESTAMP}",
 )
 os.makedirs(WORKING_DIRECTORY, exist_ok=True)
 
@@ -61,21 +61,23 @@ MODEL_NAMES = {
     "gpt-oss": "gpt-oss:120b",  # Ollama model for now
 }
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(WORKING_DIRECTORY / "simpleqa_eval.log"),
-        logging.StreamHandler(),
-    ],
-    force=True,
-)
-logger = logging.getLogger(__name__)
+GRADE_EMOJI_MAP = {
+    "CORRECT": "✅",
+    "INCORRECT": "❌",
+    "NOT_ATTEMPTED": "⚠️",
+    "ERROR": "🚫",
+}
 
-# Set log level of camel.agents.chat_agent to WARNING to reduce noise
-# logging.getLogger("camel.agents.chat_agent").setLevel(logging.WARNING)
-# logging.getLogger("camel").setLevel(logging.WARNING)
-# logging.getLogger("librarian.research.browser_wrapper").setLevel(logging.WARNING)
+set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
+set_log_level(logging.INFO)
+logger = get_logger(__name__)
+
+
+class SimpleQAResponse(BaseModel):
+    answer: str = Field(..., description="The answer to the research question.")
+    search_results: list[str] = Field(
+        ..., description="The search results that lead to the answer."
+    )
 
 
 @click.command()
@@ -136,8 +138,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
     output_file = (
-        WORKING_DIRECTORY
-        / f"{agent_type}_simpleqa_from={start_idx}_to={start_idx + num_questions}_{TIMESTAMP}.json"
+        WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
     )
 
     try:
@@ -148,11 +149,14 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             problem_id = start_idx + i
 
             # Run agent with retry logic
-            response = run_agent_with_retry(
+            result = run_agent_with_retry(
                 agent=agent,
                 input_query=example["problem"],
+                response_format=SimpleQAResponse,
                 max_retries=5,
             )
+            response = result["response"]
+            tool_trajectory = result["tool_trajectory"]
 
             # Handle evaluation - check if response indicates error
             if response.get("error", False):
@@ -173,23 +177,17 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 eval_result = evaluator.evaluate(eval_request)
                 scores.append(eval_result.score)
 
-            # Add emoji to grade for visual clarity
-            grade_emoji_map = {
-                "CORRECT": "✅",
-                "INCORRECT": "❌",
-                "NOT_ATTEMPTED": "⚠️",
-                "ERROR": "🚫",
-            }
+            # process the evaluation result for logging and saving
             grade = eval_result.metrics["grade"]
-            grade_with_emoji = f"{grade_emoji_map.get(grade, '❓')} {grade}"
+            grade_with_emoji = f"{GRADE_EMOJI_MAP.get(grade, '❓')} {grade}"
 
             result = {
-                "dataset_index": problem_id,  # Index in the original dataset
+                "id": problem_id,  # Index in the original dataset
                 "problem": example["problem"],
-                "answer": example["answer"],
-                "response": response,
-                "grade_emoji": grade_with_emoji,
+                "ground_truth_answer": example["answer"],
+                "agent_response": response,
                 "grade": grade,
+                "tool_trajectory": tool_trajectory,
                 "metadata": example.get(
                     "metadata", {}
                 ),  # Include metadata if available
@@ -199,7 +197,12 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             current_accuracy = counter["CORRECT"] / (i + 1) * 100
 
             logger.info(
-                f"[{agent_type}] Index: {problem_id} ({i + 1}/{num_questions}) - Grade: {grade_with_emoji} - Running totals: {counter} - Accuracy: {current_accuracy:.2f}%"
+                f"\nQuestion: {i + 1} / {num_questions}\n"
+                f"Agent: {agent_type}\n"
+                f"Grade: {grade_with_emoji}\n"
+                f"Running totals: {counter}\n"
+                f"Current accuracy: {current_accuracy:.2f}%\n"
+                f"Result: {json.dumps(result, indent=2)}\n"
             )
 
             # if agent_type == "research":
@@ -214,7 +217,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             if (i + 1) % 2 == 0 or i == num_questions - 1:
                 with open(output_file, "w") as f:
                     json.dump(results, f, indent=4)
-                tqdm.write(f"Results saved to {output_file}")
+                logger.info(f"Results saved to {output_file} ...")
 
             # # Clear browser metrics for next problem
             # if agent_type == "eigent_search" and hasattr(agent, "web_toolkit"):

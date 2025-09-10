@@ -1,4 +1,4 @@
-# ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+# ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,13 +10,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-
+# ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from __future__ import annotations
 import datetime
 import os
 import platform
+from typing import Type
 
 from camel.agents.chat_agent import ChatAgent
 from camel.logger import get_logger
@@ -24,7 +24,7 @@ from camel.messages.base import BaseMessage
 from camel.models import BaseModelBackend
 from camel.responses import ChatAgentResponse
 from camel.utils.commons import api_keys_required
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from .environment import DeepSearchEnvironment
 
@@ -44,21 +44,10 @@ except (ImportError, AttributeError):
 SYSTEM_PROMPT = (  # noqa: E731
     lambda working_directory: f"""
 <role>
-You are a Senior Research Analyst, a key member of a multi-agent team. Your 
-primary responsibility is to conduct expert-level web research to gather, 
-analyze, and document information required to solve the user's task. You 
-operate with precision, efficiency, and a commitment to data quality.
+You are a Deep Search Agent specialized in conducting thorough web research. 
+Your primary responsibility is to gather, analyze, and document information 
+from the internet to answer user queries with precision and accuracy.
 </role>
-
-<team_structure>
-You collaborate with the following agents who can work in parallel:
-- **Developer Agent**: Writes and executes code, handles technical 
-implementation.
-- **Document Agent**: Creates and manages documents and presentations.
-- **Multi-Modal Agent**: Processes and generates images and audio.
-Your research is the foundation of the team's work. Provide them with 
-comprehensive and well-documented information.
-</team_structure>
 
 <operating_environment>
 - **System**: {platform.system()} ({platform.machine()})
@@ -71,8 +60,7 @@ comprehensive and well-documented information.
 
 <mandatory_instructions>
 - You MUST use the note-taking tools to record your findings. This is a
-    critical part of your role. Your notes are the primary source of
-    information for your teammates. To avoid information loss, you must not
+    critical part of your role. To avoid information loss, you must not
     summarize your findings. Instead, record all information in detail.
     For every piece of information you gather, you must:
     1.  **Extract ALL relevant details**: Quote all important sentences,
@@ -99,7 +87,7 @@ comprehensive and well-documented information.
     summary of your findings, presented in a clear, detailed, and
     easy-to-read format. Avoid using markdown tables for presenting data;
     use plain text formatting instead.
-<mandatory_instructions>
+</mandatory_instructions>
 
 <capabilities>
 Your capabilities include:
@@ -109,36 +97,26 @@ Your capabilities include:
     powerful CLI tools like `grep` for searching within files, `curl` and
     `wget` for downloading content, and `jq` for parsing JSON data from APIs.
 - Use the note-taking tools to record your findings.
-- Use the human toolkit to ask for help when you are stuck.
 </capabilities>
 
 <web_search_workflow>
-- Initial Search: You MUST start with a search engine like `search_google` or
-    `search_bing` to get a list of relevant URLs for your research, the URLs 
-    here will be used for `browser_visit_page`.
+- Initial Search: You MUST start with a search engine like `search_google` to
+    get a list of relevant URLs for your research, the URLs here will be used
+    for `browser_visit_page`.
 - Browser-Based Exploration: Use the rich browser related toolset to
     investigate websites.
     - **Navigation and Exploration**: Use `browser_visit_page` to open a URL.
-        `browser_visit_page` provides a snapshot of currently visible 
-        interactive elements, not the full page text. To see more content on 
-        long pages,  Navigate with `browser_click`, `browser_back`, and 
+        Navigate with `browser_click`, `browser_back`, and 
         `browser_forward`. Manage multiple pages with `browser_switch_tab`.
     - **Analysis**: Use `browser_get_som_screenshot` to understand the page 
         layout and identify interactive elements. Since this is a heavy 
         operation, only use it when visual analysis is necessary.
     - **Interaction**: Use `browser_type` to fill out forms and 
         `browser_enter` to submit or confirm search.
-- Alternative Search: If you are unable to get sufficient
-    information through browser-based exploration and scraping, use
-    `search_exa`. This tool is best used for getting quick summaries or
-    finding specific answers when visiting web page is could not find the
-    information.
 
 - In your response, you should mention the URLs you have visited and processed.
-
-- When encountering verification challenges (like login, CAPTCHAs or
-    robot checks), you MUST request help using the human toolkit.
 </web_search_workflow>
+
 """
 )
 
@@ -158,7 +136,6 @@ def deep_search_agent_factory(
     """
 
     environment = DeepSearchEnvironment(working_directory=working_directory)
-    tools = environment.construct_action_space()
 
     return DeepSearchAgent(
         system_message=BaseMessage.make_assistant_message(
@@ -166,16 +143,8 @@ def deep_search_agent_factory(
             content=SYSTEM_PROMPT(working_directory),
         ),
         model=model,
-        toolkits_to_register_agent=[environment.browser_toolkit],
-        tools=tools,
+        environment=environment,
         prune_tool_calls_from_memory=True,
-    )
-
-
-class ResearchResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    search_results: list[str] = Field(
-        ..., description="The search results that lead to the answer."
     )
 
 
@@ -183,12 +152,38 @@ class ResearchResponse(BaseModel):
 class DeepSearchAgent(ChatAgent):
     r"""A :class:`ChatAgent` that conducts deep search on a given question."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(
+        self,
+        system_message: str,
+        model: BaseModelBackend,
+        environment: DeepSearchEnvironment,
+        *args,
+        **kwargs,
+    ):
+        self.environment = environment
+        super().__init__(
+            system_message=system_message,
+            model=model,
+            tools=environment.construct_action_space(),
+            toolkits_to_register_agent=[environment.browser_toolkit],
+            *args,
+            **kwargs,
+        )
         self.current_query_toolkit = None
 
-    def reset(self):
+    async def areset(self):
+        """Cleans up resources."""
         super().reset()
+        if hasattr(self, 'environment') and self.environment:
+            await self.environment.cleanup()
+    
+    def reset(self):
+        """Synchronous reset."""
+        import asyncio
+        import nest_asyncio
+
+        nest_asyncio.apply()
+        asyncio.run(self.areset())
         # self.remove_tools(
         #     [
         #         tool.get_function_name()
@@ -197,12 +192,14 @@ class DeepSearchAgent(ChatAgent):
         # )
         # self.current_query_toolkit = None
 
-    async def astep(self, input_query: str) -> ChatAgentResponse:
+    async def astep(
+        self, input_query: str, response_format: Type[BaseModel]
+    ) -> ChatAgentResponse:
         # self.current_query_toolkit = QueryProcessingToolkit(input_query)
         # self.add_tools(self.current_query_toolkit.get_tools())
         search_response = await super().astep(
             input_query,
             # f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
-            response_format=ResearchResponse,
+            response_format=response_format,
         )
         return search_response

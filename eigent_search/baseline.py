@@ -15,12 +15,13 @@
 
 from textwrap import dedent
 from typing import Any
-from pydantic import BaseModel, Field
-from camel.models import BaseModelBackend
-from camel.messages import BaseMessage
-from camel.responses import ChatAgentResponse
+
 from camel.agents.chat_agent import ChatAgent
+from camel.messages import BaseMessage
+from camel.models import BaseModelBackend
+from camel.responses import ChatAgentResponse
 from camel.toolkits import FunctionTool, SearchToolkit
+from pydantic import BaseModel, Field
 
 # AgentOps decorator setting
 try:

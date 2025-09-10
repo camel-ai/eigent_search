@@ -12,15 +12,65 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
+import json
+from typing import Any, Dict, List, Type
+
 from camel.agents.chat_agent import ChatAgent
 from camel.logger import get_logger
+from camel.responses import ChatAgentResponse
+from pydantic import BaseModel
 import tenacity
 
 logger = get_logger(__name__)
 
 
+def extract_tool_trajectory(response: ChatAgentResponse) -> List[Dict[str, Any]]:
+    """Extract tool trajectory from ChatAgentResponse.
+
+    Args:
+        response: The ChatAgentResponse object
+
+    Returns:
+        List of tool call information dictionaries
+    """
+    trajectory = []
+
+    for i, message in enumerate(response.msgs):
+        # Check for tool calls in meta_dict
+        if message.meta_dict and "tool_calls" in message.meta_dict:
+            tool_calls = message.meta_dict["tool_calls"]
+            for tool_call in tool_calls:
+                trajectory.append(
+                    {
+                        "message_index": i,
+                        "function_name": tool_call.get("function", {}).get("name"),
+                        "arguments": tool_call.get("function", {}).get("arguments"),
+                        "role": message.role_name,
+                        "content": message.content,
+                    }
+                )
+
+        # Check for FunctionCallingMessage attributes
+        if hasattr(message, "func_name"):
+            trajectory.append(
+                {
+                    "message_index": i,
+                    "function_name": message.func_name,
+                    "arguments": getattr(message, "args", {}),
+                    "result": getattr(message, "result", None),
+                    "role": message.role_name,
+                    "content": message.content,
+                }
+            )
+
+    return trajectory
+
+
 def run_agent_with_retry(
-    agent: ChatAgent, input_query: str, max_retries: int = 5
+    agent: ChatAgent,
+    input_query: str,
+    response_format: Type[BaseModel],
+    max_retries: int = 5,
 ) -> dict:
     """Run agent.step with exponential retry logic.
 
@@ -45,11 +95,22 @@ def run_agent_with_retry(
             f"Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Retrying..."
         ),
     )
-    def _run_with_retry(input_query: str) -> dict:
+    def _run_with_retry(input_query: str) -> tuple[dict, List[Dict[str, Any]]]:
         import asyncio
         import nest_asyncio
+
         nest_asyncio.apply()
-        response = asyncio.run(agent.astep(input_query))
-        return eval(response.msgs[0].content)
+        response = asyncio.run(
+            agent.astep(input_query, response_format=response_format)
+        )
+
+        # Extract tool trajectory
+        trajectory = extract_tool_trajectory(response)
+        logger.info(f"Current tool trajectory: {json.dumps(trajectory, indent=2)}")
+
+        return {
+            "response": eval(response.msgs[0].content),
+            "tool_trajectory": trajectory,
+        }
 
     return _run_with_retry(input_query)
