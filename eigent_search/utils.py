@@ -24,22 +24,22 @@ import tenacity
 logger = get_logger(__name__)
 
 
+
 def extract_tool_trajectory(response: ChatAgentResponse) -> List[Dict[str, Any]]:
-    """Extract tool trajectory from ChatAgentResponse.
-
-    Args:
-        response: The ChatAgentResponse object
-
-    Returns:
-        List of tool call information dictionaries
-    """
+    """Extract tool trajectory from ChatAgentResponse."""
     trajectory = []
 
-    tool_calls = response.info["tool_calls"]
+    for i, tool_call in enumerate(response.info["tool_calls"]):
+        data = tool_call.as_dict()
 
-    for tool_call in tool_calls:
-        # Todo: Currently the index are unique ids (e.g., 'call_UA1BAkTGiFi8MNyh6VFH3hym') rather than ordered numbers (0,1,2,...) Should we change it?
-        trajectory.append(tool_call.as_dict())
+        # Extract the fields we want for RL training
+        trajectory.append({
+            "message_index": i,
+            "function_name": data.get("tool_name"),
+            "arguments": data.get("args"),
+            "result": data.get("result"),
+            "tool_call_id": data.get("tool_call_id")
+        })
 
     return trajectory
 
