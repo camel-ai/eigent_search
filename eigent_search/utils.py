@@ -66,6 +66,18 @@ def extract_tool_trajectory(response: ChatAgentResponse) -> List[Dict[str, Any]]
     return trajectory
 
 
+def extract_token_usage(response: ChatAgentResponse) -> int:
+    """Extract token usage from ChatAgentResponse.
+
+    Args:
+        response: The ChatAgentResponse object
+
+    Returns:
+        Total token usage as an integer
+    """
+    return response.info["usage"]["total_tokens"]
+
+
 def run_agent_with_retry(
     agent: ChatAgent,
     input_query: str,
@@ -107,10 +119,13 @@ def run_agent_with_retry(
         # Extract tool trajectory
         trajectory = extract_tool_trajectory(response)
         logger.info(f"Current tool trajectory: {json.dumps(trajectory, indent=2)}")
+        total_token_this_question = extract_token_usage(response)
+        logger.info(f"Total token usage for this question: {total_token_this_question}")
 
         return {
             "response": eval(response.msgs[0].content),
             "tool_trajectory": trajectory,
+            "token_usage": total_token_this_question,
         }
 
     return _run_with_retry(input_query)
