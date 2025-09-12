@@ -71,6 +71,7 @@ def run_agent_with_retry(
     input_query: str,
     response_format: Type[BaseModel],
     max_retries: int = 5,
+    timeout_minutes: int = 5,
 ) -> dict:
     """Run agent.step with exponential retry logic.
 
@@ -94,6 +95,7 @@ def run_agent_with_retry(
         before_sleep=lambda retry_state: logger.warning(
             f"Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Retrying..."
         ),
+        reraise=False,
     )
     def _run_with_retry(input_query: str) -> tuple[dict, List[Dict[str, Any]]]:
         import asyncio
@@ -101,7 +103,10 @@ def run_agent_with_retry(
 
         nest_asyncio.apply()
         response = asyncio.run(
-            agent.astep(input_query, response_format=response_format)
+            asyncio.wait_for(
+                agent.astep(input_query, response_format=response_format),
+                timeout=timeout_minutes * 60,
+            )
         )
 
         # Extract tool trajectory
@@ -113,4 +118,15 @@ def run_agent_with_retry(
             "tool_trajectory": trajectory,
         }
 
-    return _run_with_retry(input_query)
+    result = _run_with_retry(input_query)
+
+    # If all retries fail, return a dummy result, with error flag
+    if result is None:
+        logger.error(f"All {max_retries} attempts failed for query: {input_query}")
+        return {
+            "response": {
+                "error": True,
+            },
+            "tool_trajectory": [],
+        }
+    return result

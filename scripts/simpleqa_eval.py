@@ -153,6 +153,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 input_query=example["problem"],
                 response_format=SimpleQAResponse,
                 max_retries=5,
+                timeout_minutes=5,
             )
             response = result["response"]
             tool_trajectory = result["tool_trajectory"]
@@ -227,6 +228,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
 
     except Exception as e:
         logger.error(f"Evaluation failed: {str(e)}")
+        # Todo: Should we also avoid raising error here, to always complete the evaluation?
         raise e
 
     finally:
