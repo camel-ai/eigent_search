@@ -35,33 +35,11 @@ def extract_tool_trajectory(response: ChatAgentResponse) -> List[Dict[str, Any]]
     """
     trajectory = []
 
-    for i, message in enumerate(response.msgs):
-        # Check for tool calls in meta_dict
-        if message.meta_dict and "tool_calls" in message.meta_dict:
-            tool_calls = message.meta_dict["tool_calls"]
-            for tool_call in tool_calls:
-                trajectory.append(
-                    {
-                        "message_index": i,
-                        "function_name": tool_call.get("function", {}).get("name"),
-                        "arguments": tool_call.get("function", {}).get("arguments"),
-                        "role": message.role_name,
-                        "content": message.content,
-                    }
-                )
+    tool_calls = response.info["tool_calls"]
 
-        # Check for FunctionCallingMessage attributes
-        if hasattr(message, "func_name"):
-            trajectory.append(
-                {
-                    "message_index": i,
-                    "function_name": message.func_name,
-                    "arguments": getattr(message, "args", {}),
-                    "result": getattr(message, "result", None),
-                    "role": message.role_name,
-                    "content": message.content,
-                }
-            )
+    for tool_call in tool_calls:
+        # Todo: Currently the index are unique ids (e.g., 'call_UA1BAkTGiFi8MNyh6VFH3hym') rather than ordered numbers (0,1,2,...) Should we change it?
+        trajectory.append(tool_call.as_dict())
 
     return trajectory
 
@@ -120,7 +98,7 @@ def run_agent_with_retry(
                 timeout=timeout_minutes * 60,
             )
         )
-
+        logger.info(f"Agent response: {response}")
         # Extract tool trajectory
         trajectory = extract_tool_trajectory(response)
         logger.info(f"Current tool trajectory: {json.dumps(trajectory, indent=2)}")
