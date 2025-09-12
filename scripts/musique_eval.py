@@ -67,9 +67,9 @@ MODEL_NAMES = {
 
 
 
-ShortAnswer = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=16)]
+ShortAnswer = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=32)]
 
-class ResearchResponseShort(BaseModel):
+class MusiQueResponseShort(BaseModel):
     answer: ShortAnswer = Field(
         ..., description="ONLY the final short answer (entity/number/date/short NP)."
     )
@@ -87,6 +87,25 @@ def bind_response_format(agent, response_format_cls):
 
     agent.astep = MethodType(astep_with_format, agent)
     return agent
+
+from types import MethodType
+from contextlib import contextmanager
+
+@contextmanager
+def use_response_format(agent, response_format_cls):
+    """临时把 agent.astep 绑定为带 response_format 的版本；退出时恢复原方法。"""
+    orig = agent.astep
+
+    async def astep_with_format(self, input_query: str, *args, **kwargs):
+        # 无论外部是否传了 response_format，这里统一用我们指定的
+        kwargs.pop("response_format", None)
+        return await orig(input_query, *args, response_format=response_format_cls, **kwargs)
+
+    agent.astep = MethodType(astep_with_format, agent)
+    try:
+        yield agent
+    finally:
+        agent.astep = orig  # 恢复，保证对其他数据集不影响
 
 logging.basicConfig(
     level=logging.INFO,
@@ -134,7 +153,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int | 
             model_config_dict={"temperature": 0.0},
         )
     agent = AGENTS[agent_type](model=model)
-    agent = bind_response_format(agent, ResearchResponseShort)
+    # agent = bind_response_format(agent, ResearchResponseShort)
 
 
     evaluator = MusiQueEvaluator()
@@ -149,14 +168,16 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int | 
         for i, ex in enumerate(tqdm(examples, desc="MuSiQue Answer-only", unit="ex", leave=True)):
             idx = start_idx + i
             question = ex.get("question", "")
-
             # Run agent to generate prediction
-            response = run_agent_with_retry(
-                agent=agent,
-                # input_query=question,
-                input_query = f"In `answer`, return ONLY the final short answer (entity/number/date/short noun phrase). No sentences, no prefixes, no quotes, no extra text.\nQUESTION: {question}",
-                max_retries=5,
-            )
+            with use_response_format(agent, MusiQueResponseShort):
+                response = run_agent_with_retry(agent=agent, input_query=question, response_format=MusiQueResponseShort, max_retries=5)
+
+            # response = run_agent_with_retry(
+            #     agent=agent,
+            #     # input_query=question,
+            #     input_query = f"In `answer`, return ONLY the final short answer (entity/number/date/short noun phrase). No sentences, no prefixes, no quotes, no extra text.\nQUESTION: {question}",
+            #     max_retries=5,
+            # )
             pred_answer = response.get("answer", "") if isinstance(response, dict) else ""
 
             eval_req = evaluator.create_request(

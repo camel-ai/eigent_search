@@ -220,7 +220,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 response_format=BrowseCompResponse,  
                 max_retries=5,
             )
-            response = run_res["response"]
+            response = run_res["response"]["answer"]
             tool_trajectory = run_res.get("tool_trajectory", None)
             # Normal evaluation
             predicted = response.get("answer") if isinstance(response, dict) else str(response)
