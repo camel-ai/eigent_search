@@ -16,7 +16,7 @@ from __future__ import annotations
 import datetime
 import os
 import platform
-from typing import Type
+from typing import Type, Optional
 
 from camel.agents.chat_agent import ChatAgent
 from camel.logger import get_logger
@@ -193,7 +193,7 @@ class DeepSearchAgent(ChatAgent):
         # self.current_query_toolkit = None
 
     async def astep(
-        self, input_query: str, response_format: Type[BaseModel]
+        self, input_query: str, response_format: Optional[Type[BaseModel]] = None
     ) -> ChatAgentResponse:
         # self.current_query_toolkit = QueryProcessingToolkit(input_query)
         # self.add_tools(self.current_query_toolkit.get_tools())
