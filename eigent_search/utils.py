@@ -81,7 +81,6 @@ def run_agent_with_retry(
         response = asyncio.run(
             agent.astep(input_query, response_format=response_format)
         )
-        logger.info(f"Agent response: {response}")
         # Extract tool trajectory
         trajectory = extract_tool_trajectory(response)
         logger.info(f"Current tool trajectory: {json.dumps(trajectory, indent=2)}")
