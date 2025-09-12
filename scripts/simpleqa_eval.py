@@ -139,7 +139,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     output_file = (
         WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
     )
-
+    total_token_usage = 0
     try:
         for i, example in enumerate(
             tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
@@ -157,6 +157,9 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             )
             response = result["response"]
             tool_trajectory = result["tool_trajectory"]
+            token_usage = result.get("token_usage", 0)
+            total_token_usage += token_usage
+            logger.info("Total token usage so far: %d", total_token_usage)
 
             # Handle evaluation - check if response indicates error
             if response.get("error", False):
@@ -191,6 +194,8 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 "metadata": example.get(
                     "metadata", {}
                 ),  # Include metadata if available
+                "token_usage": token_usage,
+                "total_token_usage": total_token_usage,
             }
             results.append(result)
             counter[eval_result.metrics["grade"]] += 1
@@ -239,6 +244,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             f"Incorrect: {counter['INCORRECT']}, Not Attempted: {counter['NOT_ATTEMPTED']}, "
             f"Accuracy: {final_accuracy:.2f}%"
         )
+        logger.info("total token usage: %d", total_token_usage)
 
 
 if __name__ == "__main__":
