@@ -24,46 +24,36 @@ import tenacity
 logger = get_logger(__name__)
 
 
+
 def extract_tool_trajectory(response: ChatAgentResponse) -> List[Dict[str, Any]]:
-    """Extract tool trajectory from ChatAgentResponse.
+    """Extract tool trajectory from ChatAgentResponse."""
+    trajectory = []
+
+    for i, tool_call in enumerate(response.info["tool_calls"]):
+        data = tool_call.as_dict()
+
+        # Extract the fields we want for RL training
+        trajectory.append({
+            "message_index": i,
+            "function_name": data.get("tool_name"),
+            "arguments": data.get("args"),
+            "result": data.get("result"),
+            "tool_call_id": data.get("tool_call_id")
+        })
+
+    return trajectory
+
+
+def extract_token_usage(response: ChatAgentResponse) -> int:
+    """Extract token usage from ChatAgentResponse.
 
     Args:
         response: The ChatAgentResponse object
 
     Returns:
-        List of tool call information dictionaries
+        Total token usage as an integer
     """
-    trajectory = []
-
-    for i, message in enumerate(response.msgs):
-        # Check for tool calls in meta_dict
-        if message.meta_dict and "tool_calls" in message.meta_dict:
-            tool_calls = message.meta_dict["tool_calls"]
-            for tool_call in tool_calls:
-                trajectory.append(
-                    {
-                        "message_index": i,
-                        "function_name": tool_call.get("function", {}).get("name"),
-                        "arguments": tool_call.get("function", {}).get("arguments"),
-                        "role": message.role_name,
-                        "content": message.content,
-                    }
-                )
-
-        # Check for FunctionCallingMessage attributes
-        if hasattr(message, "func_name"):
-            trajectory.append(
-                {
-                    "message_index": i,
-                    "function_name": message.func_name,
-                    "arguments": getattr(message, "args", {}),
-                    "result": getattr(message, "result", None),
-                    "role": message.role_name,
-                    "content": message.content,
-                }
-            )
-
-    return trajectory
+    return response.info["usage"]["total_tokens"]
 
 
 def run_agent_with_retry(
@@ -71,6 +61,7 @@ def run_agent_with_retry(
     input_query: str,
     response_format: Type[BaseModel],
     max_retries: int = 5,
+    timeout_minutes: int = 5,
 ) -> dict:
     """Run agent.step with exponential retry logic.
 
@@ -94,6 +85,7 @@ def run_agent_with_retry(
         before_sleep=lambda retry_state: logger.warning(
             f"Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Retrying..."
         ),
+        reraise=False,
     )
     def _run_with_retry(input_query: str) -> tuple[dict, List[Dict[str, Any]]]:
         import asyncio
@@ -101,16 +93,32 @@ def run_agent_with_retry(
 
         nest_asyncio.apply()
         response = asyncio.run(
-            agent.astep(input_query, response_format=response_format)
+            asyncio.wait_for(
+                agent.astep(input_query, response_format=response_format),
+                timeout=timeout_minutes * 60,
+            )
         )
-
         # Extract tool trajectory
         trajectory = extract_tool_trajectory(response)
         logger.info(f"Current tool trajectory: {json.dumps(trajectory, indent=2)}")
+        total_token_this_question = extract_token_usage(response)
+        logger.info(f"Total token usage for this question: {total_token_this_question}")
 
         return {
             "response": eval(response.msgs[0].content),
             "tool_trajectory": trajectory,
+            "token_usage": total_token_this_question,
         }
 
-    return _run_with_retry(input_query)
+    result = _run_with_retry(input_query)
+
+    # If all retries fail, return a dummy result, with error flag
+    if result is None:
+        logger.error(f"All {max_retries} attempts failed for query: {input_query}")
+        return {
+            "response": {
+                "error": True,
+            },
+            "tool_trajectory": [],
+        }
+    return result
