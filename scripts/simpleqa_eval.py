@@ -156,7 +156,6 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 timeout_minutes=5,
             )
             response = result["response"]
-            tool_trajectory = result["tool_trajectory"]
             token_usage = result.get("token_usage", 0)
             total_token_usage += token_usage
             logger.info("Total token usage so far: %d", total_token_usage)
@@ -190,7 +189,6 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 "ground_truth_answer": example["answer"],
                 "agent_response": response,
                 "grade": grade,
-                "tool_trajectory": tool_trajectory,
                 "metadata": example.get(
                     "metadata", {}
                 ),  # Include metadata if available
