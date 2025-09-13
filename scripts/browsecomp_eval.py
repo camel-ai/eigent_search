@@ -165,6 +165,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
         ):
             problem_id = start_idx + i
 
+            # try to decode problem and answer before search
             canary = example.get("canary")
             enc_problem = example.get("problem")
             enc_answer = example.get("answer")
@@ -264,13 +265,14 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 logger.info(f"Results saved to {output_file} ...")
 
             agent.reset()
-            time.sleep(20)
+            # time.sleep(20)
 
     except Exception as e:
         logger.error(f"Evaluation failed: {str(e)}")
         raise e
 
     finally:
+        # Always print comprehensive summary, even if evaluation failed
         final_accuracy = (valid_yes / valid_count * 100) if valid_count else 0.0
         logger.info(
             f"[{agent_type}] Final Results - Total: {len(results)}, "

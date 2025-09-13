@@ -6,8 +6,6 @@ import string
 import collections
 from typing import Tuple, List
 
-# from .metric import Metric
-
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
@@ -54,17 +52,6 @@ def compute_f1(a_gold, a_pred):
     f1 = (2 * precision * recall) / (precision + recall)
     return f1
 
-# def compute_acc(prediction: str, ground_truths: List[str]) -> int:
-#     """
-#     Accuracy = 1 if prediction contains any ground truth or alias (after normalize).
-#     """
-#     pred_norm = normalize_answer(prediction)
-#     for gt in ground_truths:
-#         if normalize_answer(gt) in pred_norm:
-#             return 1
-#     return 0
-
-import re
 
 def compute_acc(prediction: str, gold: str) -> int:
     """
@@ -85,37 +72,3 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
     return max(scores_for_ground_truths)
 
 
-# class AnswerMetric(Metric):
-#     def __init__(self) -> None:
-#         self._total_em = 0.0
-#         self._total_f1 = 0.0
-#         self._count = 0
-
-#     def __call__(
-#         self,
-#         predicted_answer: str,
-#         ground_truth_answers: List[str],
-#     ):
-
-#         exact_scores = metric_max_over_ground_truths(
-#             compute_exact, predicted_answer, ground_truth_answers
-#         )
-#         f1_scores = metric_max_over_ground_truths(
-#             compute_f1, predicted_answer, ground_truth_answers
-#         )
-
-#         self._total_em += int(exact_scores)
-#         self._total_f1 += f1_scores
-#         self._count += 1
-
-#     def get_metric(self, reset: bool = False) -> Tuple[float, float]:
-#         exact_match = self._total_em / self._count if self._count > 0 else 0
-#         f1_score = self._total_f1 / self._count if self._count > 0 else 0
-#         if reset:
-#             self.reset()
-#         return exact_match, f1_score
-
-#     def reset(self):
-#         self._total_em = 0.0
-#         self._total_f1 = 0.0
-#         self._count = 0

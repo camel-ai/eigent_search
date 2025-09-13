@@ -26,7 +26,7 @@ from .answer import (
 )
 
 class MusiQuePayload(BaseModel):
-    """Single MuSiQue sample (only fields required for answer quality assessment)"""
+    """Single MuSiQue sample (only fields required for answer quality assessment, cause it also has retrieve quality assessment)"""
     qid: str = Field(..., description="The question id.")
     answer: str = Field(..., description="The ground truth answer.")
     answer_aliases: List[str] = Field(default_factory=list, description="The ground truth answer aliase.")
