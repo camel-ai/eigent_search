@@ -67,45 +67,11 @@ MODEL_NAMES = {
 
 
 
-ShortAnswer = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=32)]
-
-class MusiQueResponseShort(BaseModel):
-    answer: ShortAnswer = Field(
-        ..., description="ONLY the final short answer (entity/number/date/short NP)."
+class MusiQueResponse(BaseModel):
+    answer: str = Field(..., description="The answer to the research question.")
+    search_results: list[str] = Field(
+        ..., description="The search results that lead to the answer."
     )
-    search_results: list[str] = Field(default_factory=list, description="URLs/snippets.")
-
-def bind_response_format(agent, response_format_cls):
-    orig = agent.astep  
-
-    async def astep_with_format(self, input_query: str):
-        try:
-            
-            return await orig(input_query, response_format=response_format_cls)
-        except TypeError:
-            return await orig(input_query)
-
-    agent.astep = MethodType(astep_with_format, agent)
-    return agent
-
-from types import MethodType
-from contextlib import contextmanager
-
-@contextmanager
-def use_response_format(agent, response_format_cls):
-    """临时把 agent.astep 绑定为带 response_format 的版本；退出时恢复原方法。"""
-    orig = agent.astep
-
-    async def astep_with_format(self, input_query: str, *args, **kwargs):
-        # 无论外部是否传了 response_format，这里统一用我们指定的
-        kwargs.pop("response_format", None)
-        return await orig(input_query, *args, response_format=response_format_cls, **kwargs)
-
-    agent.astep = MethodType(astep_with_format, agent)
-    try:
-        yield agent
-    finally:
-        agent.astep = orig  # 恢复，保证对其他数据集不影响
 
 logging.basicConfig(
     level=logging.INFO,
@@ -169,30 +135,26 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int | 
             idx = start_idx + i
             question = ex.get("question", "")
             # Run agent to generate prediction
-            with use_response_format(agent, MusiQueResponseShort):
-                run_res = run_agent_with_retry(agent=agent, input_query=question, response_format=MusiQueResponseShort, max_retries=5)
 
-            # response = run_agent_with_retry(
-            #     agent=agent,
-            #     # input_query=question,
-            #     input_query = f"In `answer`, return ONLY the final short answer (entity/number/date/short noun phrase). No sentences, no prefixes, no quotes, no extra text.\nQUESTION: {question}",
-            #     max_retries=5,
-            # )
+            result = run_agent_with_retry(
+                agent=agent,
+                # input_query=question,
+                input_query = f"In `answer`, return ONLY the final short answer (entity/number/date/short noun phrase). No sentences, no prefixes, no quotes, no extra text.\nQUESTION: {question}",
+                response_format=MusiQueResponse,
+                max_retries=5,
+            )
             # pred_answer = response.get("answer", "") if isinstance(response, dict) else ""
 
-            agent_resp = run_res.get("response", run_res)  # 既兼容嵌套也兼容扁平
-            if isinstance(agent_resp, dict):
-                pred_answer = agent_resp.get("answer", "")
-            else:
-                # 兜底：有的实现可能返回对象/字符串
-                pred_answer = getattr(agent_resp, "answer", "") or str(agent_resp)
+
+            response = result["response"]["answer"]
+            tool_trajectory = result["tool_trajectory"]
                 
             eval_req = evaluator.create_request(
                 qid=ex["id"],
                 answer=ex["answer"],
                 answer_aliases=ex.get("answer_aliases", []),
                 answerable=ex.get("answerable", True),
-                prediction=pred_answer,
+                prediction=response,
             )
             eval_res = evaluator.evaluate(eval_req)
 
@@ -208,10 +170,11 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int | 
                 "answer": ex["answer"],
                 "aliases": ex.get("answer_aliases", []),
                 "answerable": ex.get("answerable", True),
-                "prediction": pred_answer,
+                "prediction": response,
                 "metrics": eval_res.metrics,  # {"answer_em": ..., "answer_f1": ..., "answer_acc": ...}
                 "score": eval_res.score,      # same as answer_f1
-                "raw_response": agent_resp,
+                "tool_trajectory": tool_trajectory,
+
             })
 
 

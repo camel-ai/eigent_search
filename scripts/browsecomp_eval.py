@@ -80,7 +80,7 @@ class BrowseCompResponse(BaseModel):
         ..., description="The search results that lead to the answer."
     )
 
-# decode problem function
+# decode function
 def _derive_key(password: str, length: int) -> bytes:
     h = hashlib.sha256()
     h.update(password.encode())
