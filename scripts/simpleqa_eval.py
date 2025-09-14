@@ -135,6 +135,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
 
     scores = []
     results = []
+    trajectories = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
     output_file = (
         WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
@@ -148,15 +149,15 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             problem_id = start_idx + i
 
             # Run agent with retry logic
-            result = run_agent_with_retry(
+            step_result = run_agent_with_retry(
                 agent=agent,
                 input_query=example["problem"],
                 response_format=SimpleQAResponse,
                 max_retries=5,
                 timeout_minutes=5,
             )
-            response = result["response"]
-            token_usage = result.get("token_usage", 0)
+            response = step_result["response"]
+            token_usage = step_result.get("token_usage", 0)
             total_token_usage += token_usage
             logger.info("Total token usage so far: %d", total_token_usage)
 
@@ -216,11 +217,20 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             #         f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
             #     )
 
+            trajectory = step_result.get("tool_trajectory", [])
+            trajectories.append(trajectory)
+
             # Save results periodically
             if (i + 1) % 2 == 0 or i == num_questions - 1:
                 with open(output_file, "w") as f:
                     json.dump(results, f, indent=4)
                 logger.info(f"Results saved to {output_file} ...")
+
+                with open(output_file.with_suffix(".traj.json"), "w") as f:
+                    json.dump(trajectories, f, indent=4)
+                logger.info(
+                    f"Trajectories saved to {output_file.with_suffix('.traj.json')} ..."
+                )
 
             # # Clear browser metrics for next problem
             # if agent_type == "eigent_search" and hasattr(agent, "web_toolkit"):
