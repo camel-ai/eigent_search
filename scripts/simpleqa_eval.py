@@ -135,11 +135,13 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
 
     scores = []
     results = []
-    trajectories = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
     output_file = (
         WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
     )
+    tool_trajectory_dir = WORKING_DIRECTORY / "tool_trajectories"
+    tool_trajectory_dir.mkdir(exist_ok=True, parents=True)
+
     total_token_usage = 0
     try:
         for i, example in enumerate(
@@ -217,20 +219,19 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             #         f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
             #     )
 
-            trajectory = step_result.get("tool_trajectory", [])
-            trajectories.append(trajectory)
+            # Save tool trajectory for this problem
+            trajectory_file = (
+                tool_trajectory_dir / f"problem_{problem_id}_trajectory.json"
+            )
+            with open(trajectory_file, "w") as f:
+                json.dump(step_result.get("tool_trajectory", []), f, indent=4)
+            logger.info(f"Tool trajectory saved to {trajectory_file} ...")
 
             # Save results periodically
             if (i + 1) % 2 == 0 or i == num_questions - 1:
                 with open(output_file, "w") as f:
                     json.dump(results, f, indent=4)
                 logger.info(f"Results saved to {output_file} ...")
-
-                with open(output_file.with_suffix(".traj.json"), "w") as f:
-                    json.dump(trajectories, f, indent=4)
-                logger.info(
-                    f"Trajectories saved to {output_file.with_suffix('.traj.json')} ..."
-                )
 
             # # Clear browser metrics for next problem
             # if agent_type == "eigent_search" and hasattr(agent, "web_toolkit"):
