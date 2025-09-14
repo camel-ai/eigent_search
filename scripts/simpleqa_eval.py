@@ -139,6 +139,9 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     output_file = (
         WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
     )
+    tool_trajectory_dir = WORKING_DIRECTORY / "tool_trajectories"
+    tool_trajectory_dir.mkdir(exist_ok=True, parents=True)
+
     total_token_usage = 0
     try:
         for i, example in enumerate(
@@ -148,15 +151,15 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             problem_id = start_idx + i
 
             # Run agent with retry logic
-            result = run_agent_with_retry(
+            step_result = run_agent_with_retry(
                 agent=agent,
                 input_query=example["problem"],
                 response_format=SimpleQAResponse,
                 max_retries=5,
                 timeout_minutes=5,
             )
-            response = result["response"]
-            token_usage = result.get("token_usage", 0)
+            response = step_result["response"]
+            token_usage = step_result.get("token_usage", 0)
             total_token_usage += token_usage
             logger.info("Total token usage so far: %d", total_token_usage)
 
@@ -215,6 +218,14 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             #     logger.info(
             #         f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
             #     )
+
+            # Save tool trajectory for this problem
+            trajectory_file = (
+                tool_trajectory_dir / f"problem_{problem_id}_trajectory.json"
+            )
+            with open(trajectory_file, "w") as f:
+                json.dump(step_result.get("tool_trajectory", []), f, indent=4)
+            logger.info(f"Tool trajectory saved to {trajectory_file} ...")
 
             # Save results periodically
             if (i + 1) % 2 == 0 or i == num_questions - 1:
