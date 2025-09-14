@@ -24,24 +24,34 @@ import tenacity
 logger = get_logger(__name__)
 
 
-
-def extract_tool_trajectory(response: ChatAgentResponse) -> List[Dict[str, Any]]:
+def extract_tool_trajectory(response: ChatAgentResponse) -> Dict[str, Any]:
     """Extract tool trajectory from ChatAgentResponse."""
     trajectory = []
+    tool_counts = {}
 
     for i, tool_call in enumerate(response.info["tool_calls"]):
         data = tool_call.as_dict()
+        tool_name = data.get("tool_name")
+
+        # Count tool usage
+        tool_counts[tool_name] = tool_counts.get(tool_name, 0) + 1
 
         # Extract the fields we want for RL training
         trajectory.append({
             "message_index": i,
-            "function_name": data.get("tool_name"),
+            "function_name": tool_name,
             "arguments": data.get("args"),
             "result": data.get("result"),
             "tool_call_id": data.get("tool_call_id")
         })
 
-    return trajectory
+    return {
+        "metadata": {
+            "trajectory_length": len(trajectory),
+            "tool_counts": tool_counts
+        },
+        "trajectory": trajectory
+    }
 
 
 def extract_token_usage(response: ChatAgentResponse) -> int:
