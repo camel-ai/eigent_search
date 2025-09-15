@@ -37,20 +37,19 @@ def extract_tool_trajectory(response: ChatAgentResponse) -> Dict[str, Any]:
         tool_counts[tool_name] = tool_counts.get(tool_name, 0) + 1
 
         # Extract the fields we want for RL training
-        trajectory.append({
-            "message_index": i,
-            "function_name": tool_name,
-            "arguments": data.get("args"),
-            "result": data.get("result"),
-            "tool_call_id": data.get("tool_call_id")
-        })
+        trajectory.append(
+            {
+                "message_index": i,
+                "function_name": tool_name,
+                "arguments": data.get("args"),
+                "result": data.get("result"),
+                "tool_call_id": data.get("tool_call_id"),
+            }
+        )
 
     return {
-        "metadata": {
-            "trajectory_length": len(trajectory),
-            "tool_counts": tool_counts
-        },
-        "trajectory": trajectory
+        "metadata": {"trajectory_length": len(trajectory), "tool_counts": tool_counts},
+        "trajectory": trajectory,
     }
 
 
@@ -120,10 +119,12 @@ def run_agent_with_retry(
             "token_usage": total_token_this_question,
         }
 
-    result = _run_with_retry(input_query)
+    try:
+        result = _run_with_retry(input_query)
+        return result
 
-    # If all retries fail, return a dummy result, with error flag
-    if result is None:
+    except Exception:
+        # If all retries fail, return a dummy result, with error flag
         logger.error(f"All {max_retries} attempts failed for query: {input_query}")
         return {
             "response": {
@@ -131,4 +132,3 @@ def run_agent_with_retry(
             },
             "tool_trajectory": [],
         }
-    return result
