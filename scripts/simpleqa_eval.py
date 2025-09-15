@@ -135,7 +135,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
 
     scores = []
     results = []
-    counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
+    counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0, "ERROR": 0}
     output_file = (
         WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
     )
