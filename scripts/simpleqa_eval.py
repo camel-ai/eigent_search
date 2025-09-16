@@ -224,7 +224,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
                 tool_trajectory_dir / f"problem_{problem_id}_trajectory.json"
             )
             with open(trajectory_file, "w") as f:
-                json.dump(step_result.get("tool_trajectory", []), f, indent=4)
+                json.dump(step_result.get("tool_trajectory", []), f, indent=2)
             logger.info(f"Tool trajectory saved to {trajectory_file} ...")
 
             # Save results periodically
