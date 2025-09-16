@@ -182,3 +182,8 @@ cython_debug/
 
 # Results
 eigent_search_results_*
+
+# node_modules
+node_modules/
+package-lock.json
+package.json
