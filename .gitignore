@@ -186,5 +186,9 @@ tmp/
 results/
 camel_terminal.txt
 scripts/musique_eval_schema.py
+node_modules
+package-lock.json
+package.json
 # Results
 eigent_search_results_*
+
