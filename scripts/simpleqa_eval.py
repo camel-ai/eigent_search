@@ -150,6 +150,10 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             # Create a unique ID for this problem (dataset index)
             problem_id = start_idx + i
 
+            # Set problem ID for deep search agents to create proper directory structure
+            if agent_type == "deep_search" and hasattr(agent, 'environment'):
+                agent.environment.set_problem_id(problem_id)
+
             # Run agent with retry logic
             step_result = run_agent_with_retry(
                 agent=agent,
