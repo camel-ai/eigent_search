@@ -75,7 +75,7 @@ from the internet to answer user queries with precision and accuracy.
 
 - You MUST only use URLs from trusted sources. A trusted source is a URL
     that is either:
-    1. Returned by a search tool (like `search_google`).
+    1. Returned by a search tool (like `select_query_and_search`).
     2. Found on a webpage you have visited.
 - You are strictly forbidden from inventing, guessing, or constructing URLs
     yourself. Fabricating URLs will be considered a critical error.
@@ -93,15 +93,20 @@ from the internet to answer user queries with precision and accuracy.
 <capabilities>
 Your capabilities include:
 - Search and get information from the web using the search tools.
+- Use query processing tools to manage and refine your search queries, and think and reflect on the search process. Consider using these tools whenever possible!
+    - rewrite_query: Rewrite the query to be more specific and focused.
+    - expand_query: A planning tool that decompose the initial query, or generate related queries. This tool is useful when the initial query is too broad or complex. 
+    - select_query_and_search: Select a query from the frontier (and optionally enhance with advanced search operators) and search the web for information.
+    - generate_new_queries: Generate new queries based on the search results if the search results are not sufficient to answer the user's initial query.
+    - complete_task: Propose a final answer the deep research when current information are sufficient to answer the user's initial query. Always use this tool before giving the final answer.
+    - reflect: Reflect on explored queries and current search results, and think about what we should do next to better resolve the initial query. Use this tool whenever possible, to reflect explicitly.
 - Use the rich browser related toolset to investigate websites.
-- Use the terminal tools to perform local operations. You can leverage
-    powerful CLI tools like `grep` for searching within files, `curl` and
-    `wget` for downloading content, and `jq` for parsing JSON data from APIs.
+- Use the terminal tools to perform local operations. You can leveragepowerful CLI tools like `grep` for searching within files, `curl` and `wget` for downloading content, and `jq` for parsing JSON data from APIs.
 - Use the note-taking tools to record your findings.
 </capabilities>
 
 <web_search_workflow>
-- Initial Search: You MUST start with a search engine like `search_google` to
+- Initial Search: You MUST start with a search engine like `select_query_and_search` to
     get a list of relevant URLs for your research, the URLs here will be used
     for `browser_visit_page`.
 - Browser-Based Exploration: Use the rich browser related toolset to
@@ -175,6 +180,20 @@ class DeepSearchAgent(ChatAgent):
     def update_note_taking_directory(self, new_directory: Path):
         """Update the working directory for note-taking toolkit."""
         self.environment.update_note_taking_directory(new_directory)
+
+    def update_query_tools(self, initial_query: str):
+        """Update the query processing toolkit for the current query."""
+        if self.environment.query_toolkit:
+            self.remove_tools(
+                [
+                    tool.get_function_name()
+                    for tool in self.environment.query_toolkit.get_tools()
+                ]
+            )
+        self.environment.query_toolkit = (
+            self.environment.construct_query_processing_toolkit(initial_query)
+        )
+        self.add_tools(self.environment.query_toolkit.get_tools())
 
     async def areset(self):
         """Cleans up resources."""

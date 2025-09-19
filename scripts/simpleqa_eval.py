@@ -197,6 +197,7 @@ def main(
             agent.update_note_taking_directory(
                 WORKING_DIRECTORY / "note_taking_logs" / f"problem_{problem_id}"
             )
+            agent.update_query_tools(example["problem"])
 
             # Run agent with retry logic
             step_result = run_agent_with_retry(
@@ -260,13 +261,13 @@ def main(
                 f"Token Usage: {token_usage} (Total: {total_token_usage})\n"
             )
 
-            # if agent_type == "research":
-            #     logger.info(
-            #         f"[{agent_type}] Number of searches: {agent.current_query_toolkit.search_counter}"
-            #     )
-            #     logger.info(
-            #         f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
-            #     )
+            if agent_type == "deep_search":
+                logger.info(
+                    f"[{agent_type}] Number of searches: {agent.environment.query_toolkit.search_counter}"
+                )
+                logger.info(
+                    f"[{agent_type}] Process Graph:\n{agent.environment.query_toolkit.trace_graph.render_trace_graph()}"
+                )
 
             # Save tool trajectory for this problem
             trajectory_file = (

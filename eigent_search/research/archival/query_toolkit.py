@@ -196,7 +196,9 @@ class QueryProcessingToolkit(BaseToolkit):
 
         # Helper function to perform search and handle results
         def search_and_record(query_str: str, action: str = "search_google"):
-            results = self.search_tool(query_str + " -site:huggingface.co")
+            results = self.search_tool(
+                query_str + " -site:huggingface.co", number_of_result_pages=5
+            )
             self.search_counter += 1
             # Check if search has returned anything valid
             if "error" in results[0]:
@@ -213,7 +215,9 @@ class QueryProcessingToolkit(BaseToolkit):
             }
             # Record results in trace graph
             for url in results.keys():
-                self.trace_graph.record_process(query_str, url, action, content=results[url])
+                self.trace_graph.record_process(
+                    query_str, url, action, content=results[url]
+                )
             return results
 
         # Try enhanced query first
@@ -245,10 +249,12 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             dict[str, list[str]]: The current frontier after the generating process.
         """
-
         self.frontier.update(new_queries)
         for new_query in new_queries:
-            for url in search_results.keys():
+            source_key = (
+                ["Null"] if search_results is None else list(search_results.keys())
+            )
+            for url in source_key:
                 self.trace_graph.record_process(url, new_query, "generate_new_queries")
         return {"frontier": list(self.frontier)}
 
@@ -269,7 +275,8 @@ class QueryProcessingToolkit(BaseToolkit):
             dict[str, str | list[str]]: The final answer and the search results.
         """
 
-        for url in search_results.keys():
+        source_key = ["Null"] if search_results is None else list(search_results.keys())
+        for url in source_key:
             self.trace_graph.record_process(url, final_answer, "complete_task")
 
         return {"answer": final_answer, "search_results": search_results}

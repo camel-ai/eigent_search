@@ -24,6 +24,7 @@ from camel.toolkits import (
     TerminalToolkit,
     ToolkitMessageIntegration,
 )
+from .archival.query_toolkit import QueryProcessingToolkit
 from pathlib import Path
 
 logger = get_logger(__name__)
@@ -42,7 +43,7 @@ class DeepSearchEnvironment:
         self.terminal_toolkit = self.construct_terminal_toolkit()
         self.note_taking_toolkit = self.construct_note_taking_toolkit()
         self.message_integration = self.construct_message_integration()
-
+        self.query_toolkit = None
         # Add messaging to toolkits
         self.search_toolkit = self.message_integration.register_toolkits(
             self.search_toolkit
@@ -71,10 +72,14 @@ class DeepSearchEnvironment:
         tools = [
             *self.browser_toolkit.get_tools(),
             *self.note_taking_toolkit.get_tools(),
-            *self.search_toolkit.get_tools(),
+            # *self.search_toolkit.get_tools(),
             *self.terminal_toolkit.get_tools(),
         ]
         return tools
+
+    def construct_query_processing_toolkit(self, initial_query: str):
+        """Construct a query processing toolkit for actions related to processing queries."""
+        return QueryProcessingToolkit(initial_query)
 
     def construct_search_toolkit(
         self, exclude_domains: list[str] = ["huggingface.co", "hf.co", "oxen.ai"]
