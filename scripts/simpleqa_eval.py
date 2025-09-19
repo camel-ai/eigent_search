@@ -180,7 +180,7 @@ def main(
 
     scores = []
     results = []
-    counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0}
+    counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0, "ERROR": 0}
     output_file = (
         WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
     )
@@ -194,6 +194,12 @@ def main(
         ):
             # Create a unique ID for this problem (dataset index)
             problem_id = test_sample_ids[i]
+
+
+            # Set problem ID for deep search agents to create proper directory structure
+            if agent_type == "deep_search" and hasattr(agent, 'environment'):
+                agent.environment.set_problem_id(problem_id)
+          
             # Run agent with retry logic
             step_result = run_agent_with_retry(
                 agent=agent,
@@ -269,7 +275,7 @@ def main(
                 tool_trajectory_dir / f"problem_{problem_id}_trajectory.json"
             )
             with open(trajectory_file, "w") as f:
-                json.dump(step_result.get("tool_trajectory", []), f, indent=4)
+                json.dump(step_result.get("tool_trajectory", []), f, indent=2)
             logger.info(f"Tool trajectory saved to {trajectory_file} ...")
 
             # Save results periodically
