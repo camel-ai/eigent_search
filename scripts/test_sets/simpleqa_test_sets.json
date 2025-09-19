@@ -1,0 +1,9 @@
+{
+  "_comment": "SimpleQA Test Sets - Question ID collections for evaluation",
+  "quick_example": [1, 3, 5],
+  "eigent_failures_0910": [4, 7, 21, 26, 32, 40, 72, 75, 83, 84, 91, 93, 108, 133, 143, 158, 169],
+  "_sets_info": {
+    "quick_example": "Small set for rapid testing",
+    "eigent_failures_0910": "eigent baseline failures from 20250910_123413 run (No SoM tools)"
+  }
+}
