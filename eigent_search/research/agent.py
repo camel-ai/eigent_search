@@ -17,6 +17,7 @@ import datetime
 import os
 import platform
 from typing import Type, Optional
+from pathlib import Path
 
 from camel.agents.chat_agent import ChatAgent
 from camel.logger import get_logger
@@ -171,12 +172,16 @@ class DeepSearchAgent(ChatAgent):
         )
         self.current_query_toolkit = None
 
+    def update_note_taking_directory(self, new_directory: Path):
+        """Update the working directory for note-taking toolkit."""
+        self.environment.update_note_taking_directory(new_directory)
+
     async def areset(self):
         """Cleans up resources."""
         super().reset()
-        if hasattr(self, 'environment') and self.environment:
+        if hasattr(self, "environment") and self.environment:
             await self.environment.cleanup()
-    
+
     def reset(self):
         """Synchronous reset."""
         import asyncio
