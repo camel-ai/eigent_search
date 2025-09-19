@@ -194,6 +194,9 @@ def main(
         ):
             # Create a unique ID for this problem (dataset index)
             problem_id = test_sample_ids[i]
+            agent.update_note_taking_directory(
+                WORKING_DIRECTORY / "note_taking_logs" / f"problem_{problem_id}"
+            )
 
             # Run agent with retry logic
             step_result = run_agent_with_retry(
