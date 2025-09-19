@@ -26,8 +26,6 @@ from camel.toolkits import (
 )
 from pathlib import Path
 
-from .snippet_toolkit import RelevanceFeedbackToolkit
-
 logger = get_logger(__name__)
 
 
@@ -45,8 +43,6 @@ class DeepSearchEnvironment:
         self.note_taking_toolkit = self.construct_note_taking_toolkit()
         self.message_integration = self.construct_message_integration()
 
-        self.snippet_toolkit = self.construct_snippet_toolkit()
-
         # Add messaging to toolkits
         self.search_toolkit = self.message_integration.register_toolkits(
             self.search_toolkit
@@ -60,14 +56,6 @@ class DeepSearchEnvironment:
         self.note_taking_toolkit = self.message_integration.register_toolkits(
             self.note_taking_toolkit
         )
-
-        self.snippet_toolkit = self.message_integration.register_toolkits(  # ADD THIS
-            self.snippet_toolkit
-        )
-
-    def construct_snippet_toolkit(self):
-        """Construct a snippet toolkit for selecting snippets and adjusting queries."""
-        return RelevanceFeedbackToolkit()
 
     def update_note_taking_directory(self, new_directory: Path):
         """Update the working directory for note-taking toolkit."""

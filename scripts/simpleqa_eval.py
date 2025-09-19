@@ -95,6 +95,37 @@ def load_question_ids_from_file(set_name: str = None) -> list[int]:
     return sorted(test_sets[set_name])
 
 
+def generate_evaluation_summary(results: list, output_dir: Path):
+    """Generate evaluation summary and save to JSON file."""
+    # Extract IDs by grade
+    incorrect_ids = [item['id'] for item in results if item.get('grade') == 'INCORRECT']
+    not_attempted_ids = [item['id'] for item in results if item.get('grade') == 'NOT_ATTEMPTED']
+    correct_count = sum(1 for item in results if item.get('grade') == 'CORRECT')
+    incorrect_count = len(incorrect_ids)
+    not_attempted_count = len(not_attempted_ids)
+    total_count = len(results)
+    accuracy = correct_count / total_count if total_count > 0 else 0
+
+    # Prepare metadata
+    metadata = {
+        "total_questions": total_count,
+        "correct_answers": correct_count,
+        "incorrect_answers": incorrect_count,
+        "not_attempted_answers": not_attempted_count,
+        "accuracy": round(accuracy, 4),
+        "incorrect_ids": incorrect_ids,
+        "not_attempted_ids": not_attempted_ids,
+    }
+
+    # Save to metadata file
+    metadata_file = output_dir / "evaluation_summary.json"
+    with open(metadata_file, 'w', encoding='utf-8') as f:
+        json.dump(metadata, f, indent=2)
+
+    logger.info(f"\nEvaluation Summary saved to: {metadata_file}")
+    return metadata
+
+
 @click.command()
 @click.option("--agent_type", "-a", type=click.Choice(AGENTS.keys()), required=True)
 @click.option(
@@ -303,6 +334,10 @@ def main(
             f"Accuracy: {final_accuracy:.2f}%"
         )
         logger.info("total token usage: %d", total_token_usage)
+
+    # Generate evaluation summary
+    if results:
+        generate_evaluation_summary(results, WORKING_DIRECTORY)
 
 
 if __name__ == "__main__":
