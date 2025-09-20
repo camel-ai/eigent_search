@@ -85,11 +85,13 @@ class DeepSearchEnvironment:
             *self.note_taking_toolkit.get_tools(),
             *self.search_toolkit.get_tools(),
             *self.terminal_toolkit.get_tools(),
+            *self.snippet_toolkit.get_tools(),
+
         ]
         return tools
 
     def construct_search_toolkit(
-        self, exclude_domains: list[str] = ["huggingface.co", "hf.co", "oxen.ai"]
+            self, exclude_domains: list[str] = ["huggingface.co", "hf.co", "oxen.ai"]
     ):
         """Construct a search toolkit for actions related to searching the web."""
 
@@ -167,9 +169,9 @@ class DeepSearchEnvironment:
 
         # TODO: Doc string needs to be rewritten to fit search context
         def send_message_to_user(
-            message_title: str,
-            message_description: str,
-            message_attachment: str = "",
+                message_title: str,
+                message_description: str,
+                message_attachment: str = "",
         ) -> str:
             r"""Use this tool to send a tidy message to the user, including a
             short title, a one-sentence description, and an optional attachment.

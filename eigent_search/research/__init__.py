@@ -12,6 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from .agent import deep_search_agent_factory
+from .agent_v2 import deep_search_agent_factory
+# from .agent_eigent_baseline import deep_search_agent_factory
 
 __all__ = ["deep_search_agent_factory"]

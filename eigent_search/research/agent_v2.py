@@ -27,7 +27,7 @@ from camel.responses import ChatAgentResponse
 from camel.utils.commons import api_keys_required
 from pydantic import BaseModel
 
-from .environment import DeepSearchEnvironment
+from .environment_v2 import DeepSearchEnvironment
 
 logger = get_logger(__name__)
 
@@ -60,6 +60,15 @@ from the internet to answer user queries with precision and accuracy.
 </operating_environment>
 
 <mandatory_instructions>
+
+- **CRITICAL - Answer Requirements**: 
+    - Your answer MUST directly address what the question asks for - not related information, but the EXACT thing being asked
+    - The answer type must match the question type (if asking for a person's name, provide the person's name; if asking for a date, provide the complete date)
+    - Include ALL aspects the question asks about - do not leave out any part of what's being asked
+    - You can provide additional relevant context, but the core answer MUST contain what the question specifically requests
+    - Never substitute related information for the actual answer (e.g., don't provide "the government" when asked "who" - provide the person's name)
+    - **If sources contain conflicting or multiple pieces of information, include ALL of them rather than selecting one** - let the complete information inform your answer
+
 - You MUST use the note-taking tools to record your findings. This is a
     critical part of your role. To avoid information loss, you must not
     summarize your findings. Instead, record all information in detail.
@@ -118,6 +127,29 @@ Your capabilities include:
 - In your response, you should mention the URLs you have visited and processed.
 </web_search_workflow>
 
+<relevance_feedback_tools>
+You have three tools to help you iteratively improve your search and ensure completeness:
+
+1. **extract_relevant_details**: After visiting a page, use this to confirm the specific information 
+   you extracted that addresses the question. You provide the relevant details you identified, 
+   and the tool will return them back to you.
+
+2. **analyze_search_progress**: Use this to structure your evaluation of search completeness. 
+   You write your analysis comparing what you've found against what the question requires, 
+   and the tool returns your analysis back to you.
+
+3. **propose_query_refinement**: When you've identified a specific information gap, use this 
+   to formulate a refined search query. Based on what you know and what's missing, you propose 
+   a more targeted query, and the tool confirms it for your next search.
+
+Key considerations for thorough research:
+- Ensure your findings completely answer what the question asks for, not just 
+  related information.
+- If the question requires specific details, verify you have that level of precision.
+- When refining queries, target the specific missing piece rather than searching broadly again.
+- These tools help structure your iterative search process - use them to track your progress 
+  and systematically fill information gaps.
+</relevance_feedback_tools>
 """
 )
 
