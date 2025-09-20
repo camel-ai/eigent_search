@@ -13,14 +13,13 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from __future__ import annotations
-
+from camel.logger import get_logger
 import networkx as nx
-import logging
 from functools import wraps
 from typing import Optional
 from camel.toolkits import FunctionTool, BaseToolkit, SearchToolkit
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def validate_input_query_in_frontier(func):
@@ -39,8 +38,8 @@ def validate_input_query_in_frontier(func):
                 f"❌ Invalid operation: Candidate query '{query}' must be selected "
                 f"from the current frontier listed below.\n{self.get_frontier_str()}"
             )
-            logger.error(f"[{func.__name__}] {error_message}")
-            return error_message
+            logger.warning(f"[{func.__name__}] {error_message}")
+            return func(self, **kwargs)
         return func(self, **kwargs)
 
     return wrapper
@@ -201,7 +200,11 @@ class QueryProcessingToolkit(BaseToolkit):
             )
             self.search_counter += 1
             # Check if search has returned anything valid
-            if "error" in results[0]:
+            if not results:
+                error_message = "No results found."
+                self.trace_graph.record_process(query_str, error_message, action)
+                return {"None": error_message}
+            elif "error" in results[0]:
                 self.trace_graph.record_process(query_str, results[0]["error"], action)
                 return {"None": results[0]["error"]}
             # linearize valid search results to dictionary of strings
@@ -295,7 +298,12 @@ class QueryProcessingToolkit(BaseToolkit):
     def reflect(self, reflection: str) -> str:
         """Reflect on explored queries and current search results, and think about what we should do next to better resolve the initial query.
 
-        Use this tool whenever possible, to reflect explicitly.
+        Use this tool whenever possible, to reflect explicitly. Particulaly, think about these questions:
+        - Whether we have enough information to answer the initial query?
+        - Whether the currently proposed answer is confident and well-supported by the search results?
+        - What are the gaps in our current understanding?
+        - What additional queries could help fill these gaps?
+
 
         Args:
             reflection (str): A comprehensive reflection on the process.
