@@ -287,7 +287,11 @@ class QueryProcessingToolkit(BaseToolkit):
         return {"answer": final_answer, "search_results": search_results}
 
     def evaluate_final_answer(
-        self, confidence_score: int, answer_query_score: int, gap: str
+        self,
+        gap_in_evidence: str,
+        confidence_score: int,
+        gap_in_answering_query: str,
+        answer_query_score: int,
     ) -> str:
         """Evaluate the final answer proposed by `propose_final_answer`. You MUST ALWAYS use `evaluate_final_answer` immediately after every call to `propose_final_answer`.
 
@@ -296,9 +300,10 @@ class QueryProcessingToolkit(BaseToolkit):
         Please think about the query and context very carefully before giving the scores. Do not give high scores easily if you are not very confident about the final answer.
 
         Args:
+            gap_in_evidence (str): The gap in evidence from the search results that supports the final answer.
             confidence_score: (int): The confidence score of the final answer, ranging from 1 (low confidence) to 5 (high confidence).
+            gap_in_answering_query (str): The gap between the proposed final answer and the user's initial query.
             answer_query_score (int): The relevance score of the final answer to the user's initial query, ranging from 1 (low relevance) to 5 (high relevance).
-            gap (str): The gap between the proposed final answer and the user's initial query.
 
         Returns:
             str: Suggestion on whether to accept the final answer or continue researching, and potential gap to address.
@@ -310,9 +315,9 @@ class QueryProcessingToolkit(BaseToolkit):
             return "Final answer is confident and relevant. Accept the final answer."
         else:
             self.trace_graph.record_process(
-                "evaluate_final_answer", f"Gap: {gap}", "evaluate_final_answer"
+                "evaluate_final_answer", "Rejected", "evaluate_final_answer"
             )
-            return f"Please do more research. Gap: {gap}"
+            return f"Please do more research.\n Gap in evidence: {gap_in_evidence}.\n Gap in answering query: {gap_in_answering_query}."
 
     def get_tools(self) -> list[FunctionTool]:
         """Get the tools for the query processing toolkit."""
