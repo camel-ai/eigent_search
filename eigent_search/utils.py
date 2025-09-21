@@ -79,6 +79,7 @@ def run_agent_with_retry(
                 timeout=timeout_minutes * 60,
             )
         )
+        logger.info(f"[Agent Response]: {response}")
         # Extract tool trajectory and token usage
         tool_trajectory = ToolTrajectory.extract_from_response(response)
         token_usage = extract_token_usage(response)

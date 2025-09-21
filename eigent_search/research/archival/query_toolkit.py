@@ -261,12 +261,12 @@ class QueryProcessingToolkit(BaseToolkit):
                 self.trace_graph.record_process(url, new_query, "generate_new_queries")
         return {"frontier": list(self.frontier)}
 
-    def complete_task(
+    def propose_final_answer(
         self, search_results: Optional[dict[str, str]], final_answer: str
     ) -> dict[str, str | list[str]] | str:
-        """Complete the deep research when search results are sufficient to answer the user's initial query.
+        """Propose a final answer when search results are sufficient to answer the user's initial query.
 
-        The agent should return the final answer and the search results to terminate the deep research.
+        The agent should return the final answer and the search results to terminate the deep research. The returned final answer will further be evaluated, and does not necessarily mean the end of the research.
 
         The search_results are formatted as a dictionary of strings, where the key is the URL and the value is the string of the title, description, and long description of the result.
 
@@ -280,9 +280,37 @@ class QueryProcessingToolkit(BaseToolkit):
 
         source_key = ["Null"] if search_results is None else list(search_results.keys())
         for url in source_key:
-            self.trace_graph.record_process(url, final_answer, "complete_task")
+            self.trace_graph.record_process(url, final_answer, "propose_final_answer")
 
         return {"answer": final_answer, "search_results": search_results}
+
+    def evaluate_final_answer(
+        self, confidence_score: int, answer_query_score: int, gap: str
+    ) -> str:
+        """Evaluate the final answer proposed by `propose_final_answer`. You MUST ALWAYS use `evaluate_final_answer` immediately after every call to `propose_final_answer`.
+
+        The agent should evaluate the confidence and relevance of the proposed final answer based on the search results. This evaluation helps determine whether the answer is well-supported and if further research is needed.
+
+        Please think about the query and context very carefully before giving the scores. Do not give high scores easily if you are not very confident about the final answer.
+
+        Args:
+            confidence_score: (int): The confidence score of the final answer, ranging from 1 (low confidence) to 5 (high confidence).
+            answer_query_score (int): The relevance score of the final answer to the user's initial query, ranging from 1 (low relevance) to 5 (high relevance).
+            gap (str): The gap between the proposed final answer and the user's initial query.
+
+        Returns:
+            str: Suggestion on whether to accept the final answer or continue researching, and potential gap to address.
+        """
+        if confidence_score >= 4 and answer_query_score >= 4:
+            self.trace_graph.record_process(
+                "evaluate_final_answer", "Accepted", "evaluate_final_answer"
+            )
+            return "Final answer is confident and relevant. Accept the final answer."
+        else:
+            self.trace_graph.record_process(
+                "evaluate_final_answer", f"Gap: {gap}", "evaluate_final_answer"
+            )
+            return f"Please do more research. Gap: {gap}"
 
     def get_tools(self) -> list[FunctionTool]:
         """Get the tools for the query processing toolkit."""
@@ -291,19 +319,24 @@ class QueryProcessingToolkit(BaseToolkit):
             FunctionTool(self.expand_query),
             FunctionTool(self.select_query_and_search),
             FunctionTool(self.generate_new_queries),
-            FunctionTool(self.complete_task),
+            FunctionTool(self.propose_final_answer),
+            FunctionTool(self.evaluate_final_answer),
             FunctionTool(self.reflect),
         ]
 
     def reflect(self, reflection: str) -> str:
         """Reflect on explored queries and current search results, and think about what we should do next to better resolve the initial query.
 
-        Use this tool whenever possible, to reflect explicitly. Particulaly, think about these questions:
+        Use this tool whenever possible, to reflect explicitly.
+        You should consider using this tool:
+        - At the very bgeinning of the task, think about how to make a plan.
+        - After exploring a few queries and obtaining some search results, think about the current situation.
+        - When you are uncertain about what to do next.
+
+        Particulaly, think about these questions:
         - Whether we have enough information to answer the initial query?
-        - Whether the currently proposed answer is confident and well-supported by the search results?
         - What are the gaps in our current understanding?
         - What additional queries could help fill these gaps?
-
 
         Args:
             reflection (str): A comprehensive reflection on the process.

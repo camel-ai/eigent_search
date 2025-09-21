@@ -205,7 +205,7 @@ def main(
                 input_query=example["problem"],
                 response_format=SimpleQAResponse,
                 max_retries=5,
-                timeout_minutes=5,
+                timeout_minutes=10,
             )
             response = step_result["response"]
             token_usage = step_result.get("token_usage", 0)
