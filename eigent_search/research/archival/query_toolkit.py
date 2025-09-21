@@ -36,10 +36,12 @@ def validate_input_query_in_frontier(func):
         if query and query not in self.frontier:
             error_message = (
                 f"❌ Invalid operation: Candidate query '{query}' must be selected "
-                f"from the current frontier listed below.\n{self.get_frontier_str()}"
+                f"from the current frontier listed below.\n{self.get_frontier_str()}\n"
+                f"If there there is no suitable query in the frontier, generate new queries using `expand_query` or `generate_new_queries`."
             )
             logger.warning(f"[{func.__name__}] {error_message}")
-            return func(self, **kwargs)
+            return error_message
+            # return func(self, **kwargs)
         return func(self, **kwargs)
 
     return wrapper
