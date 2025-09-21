@@ -104,7 +104,7 @@ class DeepSearchEnvironment:
             "browser_enter",
             "browser_switch_tab",
             "browser_visit_page",
-            "browser_get_som_screenshot",
+            # "browser_get_som_screenshot",
         ]
         web_toolkit_custom = HybridBrowserToolkit(
             mode="typescript",
