@@ -308,7 +308,7 @@ class QueryProcessingToolkit(BaseToolkit):
         Returns:
             str: Suggestion on whether to accept the final answer or continue researching, and potential gap to address.
         """
-        if confidence_score >= 4 and answer_query_score >= 4:
+        if confidence_score >= 5 and answer_query_score >= 5:
             self.trace_graph.record_process(
                 "evaluate_final_answer", "Accepted", "evaluate_final_answer"
             )
