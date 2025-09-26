@@ -20,6 +20,8 @@ from camel.responses import ChatAgentResponse
 from camel.types.agents.tool_calling_record import ToolCallingRecord
 from pydantic import BaseModel, Field
 
+import ast
+
 logger = get_logger(__name__)
 
 
@@ -47,6 +49,46 @@ class ToolCallInfo(BaseModel):
             result=tool_call_record.result,
         )
 
+    @classmethod
+    def extract_from_memory_messages(
+            cls, tool_call_index: int, tool_call_dict: dict, messages: list
+    ) -> "ToolCallInfo":
+        """从memory消息中提取单个工具调用信息"""
+        import json
+
+        name = tool_call_dict['function']['name']
+        args_raw = tool_call_dict['function']['arguments']
+        call_id = tool_call_dict['id']
+
+        # 解析arguments
+        args = json.loads(args_raw) if isinstance(args_raw, str) else args_raw
+
+        # try:
+        #     args = json.loads(args_raw) if isinstance(args_raw, str) else args_raw
+        # except:
+        #     args = {}
+
+        # 找结果
+        result = None
+        for msg in messages:
+            if msg.get('role') == 'tool' and msg.get('tool_call_id') == call_id:
+                content = msg.get('content', '')
+                # result = ast.literal_eval(content)
+
+                try:
+                    result = ast.literal_eval(content)
+                except:
+                    result = content
+                break
+
+        return cls(
+            tool_call_index=tool_call_index,
+            tool_call_id=call_id,
+            tool_name=name,
+            arguments=args,
+            result=result
+        )
+
 
 class ToolTrajectory(BaseModel):
     tool_counts: dict[str, int]
@@ -54,7 +96,7 @@ class ToolTrajectory(BaseModel):
     trajectory: list[ToolCallInfo]
 
     @classmethod
-    def extract_from_response(cls, response: ChatAgentResponse) -> list[ToolTrajectory]:
+    def extract_from_response(cls, response: ChatAgentResponse) -> "ToolTrajectory":
         trajectory = []
         tool_counts = {}
 
@@ -63,6 +105,33 @@ class ToolTrajectory(BaseModel):
             tool_name = tool_call_info.tool_name
             tool_counts[tool_name] = tool_counts.get(tool_name, 0) + 1
             trajectory.append(tool_call_info)
+
+        return cls(
+            tool_counts=tool_counts,
+            trajectory_length=len(trajectory),
+            trajectory=trajectory,
+        )
+
+    @classmethod
+    def extract_from_memory_context(cls, memory_context) -> "ToolTrajectory":
+        if not memory_context:
+            return cls(tool_counts={}, trajectory_length=0, trajectory=[])
+
+        messages, *_ = memory_context
+        trajectory = []
+        tool_counts = {}
+        tool_call_index = 0
+
+        for msg in messages:
+            if msg.get('role') == 'assistant' and msg.get('tool_calls'):
+                for tc in msg['tool_calls']:
+                    tool_info = ToolCallInfo.extract_from_memory_messages(
+                        tool_call_index, tc, messages
+                    )
+
+                    trajectory.append(tool_info)
+                    tool_counts[tool_info.tool_name] = tool_counts.get(tool_info.tool_name, 0) + 1
+                    tool_call_index += 1
 
         return cls(
             tool_counts=tool_counts,

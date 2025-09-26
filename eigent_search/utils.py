@@ -63,8 +63,10 @@ def run_agent_with_retry(
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(max_retries),
         wait=tenacity.wait_exponential(multiplier=1, min=1, max=10),
-        before_sleep=lambda retry_state: logger.warning(
-            f"Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Retrying..."
+        before_sleep=lambda retry_state: (
+                logger.warning(
+                    f"Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Retrying..."),
+                agent.reset()
         ),
         reraise=False,
     )
@@ -80,7 +82,13 @@ def run_agent_with_retry(
             )
         )
         # Extract tool trajectory and token usage
-        tool_trajectory = ToolTrajectory.extract_from_response(response)
+        memory_context = agent.memory.get_context()
+        tool_trajectory = ToolTrajectory.extract_from_memory_context(memory_context)
+
+        # # Extract tool trajectory and token usage
+        # tool_trajectory = ToolTrajectory.extract_from_response(response)
+
+
         token_usage = extract_token_usage(response)
         logger.info(f"[Tool Trajectory]:\n{tool_trajectory.model_dump_json(indent=2)}")
         logger.info(f"[Token Usage]: {token_usage}")

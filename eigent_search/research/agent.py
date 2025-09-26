@@ -27,7 +27,7 @@ from camel.responses import ChatAgentResponse
 from camel.utils.commons import api_keys_required
 from pydantic import BaseModel
 
-from .environment_eigent_baseline import DeepSearchEnvironment
+from .environment import DeepSearchEnvironment
 
 logger = get_logger(__name__)
 
