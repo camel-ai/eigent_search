@@ -1,5 +1,6 @@
 """
-Answer metric -- mostly taken directly from squad_tools of allennlp.
+Answer metric
+adapted from https://github.com/StonyBrookNLP/musique
 """
 import re
 import string
