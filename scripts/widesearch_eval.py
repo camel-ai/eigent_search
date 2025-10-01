@@ -93,18 +93,17 @@ logger = get_logger(__name__)
 
 
 class Trace(BaseModel):
-    # 明确定义允许的字段；不要用 dict[str, Any]
     steps: Optional[List[str]] = None
     tool_calls: Optional[List[str]] = None
-    model_config = ConfigDict(extra='forbid')  # 关键：封闭
+    model_config = ConfigDict(extra='forbid')  
 
 class WideSearchAgentResponse(BaseModel):
     answer: str = Field(..., description="The answer to the research question.")
     search_results: Optional[List[str]] = Field(
         default=None, description="The search results that lead to the answer."
     )
-    trace: Optional[Trace] = None   # 用封闭的 Trace，而不是 dict[Any]
-    model_config = ConfigDict(extra='forbid')  # 顶层也封闭
+    trace: Optional[Trace] = None   
+    model_config = ConfigDict(extra='forbid') 
 
 
 
@@ -325,24 +324,21 @@ def aggregate_trials_then_instances(
     metrics_keys: List[str],
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Dict[str, float]]]:
     """
-    先对每个问题(instance)聚合其 trials 的各项指标(avg/min/max)，
-    再对所有问题做宏平均(按问题数平均，而不是按trial数加权)。
+    First, aggregate the trial metrics (avg/min/max) for each problem, and then average them across all problems.
 
     Returns:
         per_instance: List[ {instance_id, <metric>: {avg_n,max_n,min_n}, ... } ]
-        summary: { metric: {avg_n, max_n, min_n}, ... }  # 宏平均（按问题）
+        summary: { metric: {avg_n, max_n, min_n}, ... } 
     """
     per_instance: List[Dict[str, Any]] = []
-    # 收集每个问题的统计，用于最后做“按问题宏平均”
     per_metric_buckets: Dict[str, List[Dict[str, float]]] = {k: [] for k in metrics_keys}
 
     for rec in results:
         trials = rec.get("trials", []) or []
-        # 收集该问题每个metric在不同trial上的值
+        # Collect the values ​​of each metric on different trials
         vals_by_metric: Dict[str, List[float]] = {k: [] for k in metrics_keys}
 
         for t in trials:
-            # 指标都在trial顶层
             for k in metrics_keys:
                 v = t.get(k, None)
                 if v is None:
@@ -350,7 +346,6 @@ def aggregate_trials_then_instances(
                 try:
                     v = float(v)
                 except (TypeError, ValueError):
-                    # 非数值/无法转换的跳过
                     continue
                 if math.isnan(v):
                     continue
@@ -371,7 +366,7 @@ def aggregate_trials_then_instances(
             per_metric_buckets[k].append(stat)
         per_instance.append(inst_stats)
 
-    # 按问题宏平均（对每个问题的 avg/max/min 再做平均）
+    # Average the avg/max/min for each problem)
     summary: Dict[str, Dict[str, float]] = {}
     for k in metrics_keys:
         bucket = per_metric_buckets[k]
