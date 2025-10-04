@@ -43,20 +43,6 @@ try:
 except (ImportError, AttributeError):
     from camel.utils import track_agent
 
-# v1 of the system prompt
-# - You MUST actively use the query processing tools throughout your research:
-#     1. After each search, use `extract_relevant_details` to document findings
-#     2. Regularly use `analyze_search_progress` to check if you have enough evidence
-#     3. When gaps are identified, use refine/expand tools (propose_query_refinement,
-#        local_refine_query, global_refine_query, or global_expand_query) to generate
-#        new queries targeting the missing information
-#     4. Use `select_query` to choose from the frontier and continue searching
-#
-# - Before concluding your research, you MUST verify completeness:
-#     1. Call `analyze_search_progress` to assess if all aspects are covered
-#     2. If gaps remain, use appropriate refine/expand tools(propose_query_refinement,
-#        local_refine_query, global_refine_query, or global_expand_query) to generate new queries
-#     3. Only stop when you have sufficient evidence to answer with confidence
 
 SYSTEM_PROMPT = (  # noqa: E731
     lambda working_directory: f"""

@@ -79,21 +79,6 @@ class DeepSearchEnvironment:
             self.query_processing_toolkit.frontier.add(initial_query)
             logger.info(f"Initialized frontier with query: '{initial_query}'")
 
-    # def initialize_query(self, initial_query: str):
-    #     """Initialize the query processing toolkit with an initial query.
-    #
-    #     This should be called before the agent starts processing. The initial query
-    #     is directly added to the explored set (not frontier), so the agent can
-    #     immediately search with it without calling select_query first.
-    #
-    #     Args:
-    #         initial_query (str): The user's initial research question
-    #     """
-    #     if not self.query_processing_toolkit.explored:
-    #         # Add initial query directly to explored, not frontier
-    #         self.query_processing_toolkit.explored.add(initial_query)
-    #         logger.info(f"Initialized with query: '{initial_query}' (added to explored)")
-
     def get_frontier_str(self) -> str:
         """Get the current frontier as a formatted string for display to agent.
 

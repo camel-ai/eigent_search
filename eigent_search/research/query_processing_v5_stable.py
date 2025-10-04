@@ -22,27 +22,6 @@ from camel.logger import get_logger
 logger = get_logger(__name__)
 
 
-# def validate_input_query_in_frontier(func):
-#     """Decorator to validate that the input query is in the current frontier.
-#
-#     This decorator should be applied to methods that take a query parameter
-#     and need to ensure it exists in the current frontier before processing.
-#     """
-#
-#     @wraps(func)
-#     def wrapper(self, **kwargs):
-#         # Get the query parameter - could be 'query' or 'current_query'
-#         query = kwargs.get("query") or kwargs.get("current_query") or kwargs.get("selected_query")
-#         if query and query not in self.frontier:
-#             error_message = (
-#                 f"❌ Invalid operation: Candidate query '{query}' must be selected "
-#                 f"from the current frontier listed below.\n{self.get_frontier_str()}"
-#             )
-#             logger.error(f"[{func.__name__}] {error_message}")
-#             return error_message
-#         return func(self, **kwargs)
-#
-#     return wrapper
 
 def validate_input_query_in_frontier(func):
     """Decorator to validate that the input query is in the current frontier.
@@ -136,42 +115,6 @@ class QueryProcessingToolkit(BaseToolkit):
         """Display the current frontier as a string."""
         return "📋 current frontier:\n  - " + "\n  - ".join(list(self.frontier))
 
-    # @validate_input_query_in_frontier
-    # @validate_output_query_not_explored
-    # def select_query(
-    #         self,
-    #         query: str,
-    #         selected_query: str,
-    #         selection_reason: str
-    # ) -> dict[str, list[str]]:
-    #     r"""Select the best query from the current frontier.
-    #
-    #     The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search.
-    #
-    #     If the search results are not sufficient to answer the user's initial query,
-    #     the agent should process and select another query from the current frontier.
-    #
-    #     After selection, call search_google with the selected query.
-    #
-    #
-    #
-    #     Args:
-    #         query (str): The input query from the current frontier being considered.
-    #         selected_query (str): The query you've chosen (should be same as query).
-    #         selection_reason (str): Why you selected this query.
-    #
-    #     Returns:
-    #         dict[str, list[str]]: The current frontier after the selection process.
-    #     """
-    #     # Move from frontier to explored
-    #     if selected_query in self.frontier:
-    #         self.frontier.remove(selected_query)
-    #     self.explored.add(selected_query)
-    #
-    #     logger.info(f"[select_query] Selected: '{selected_query}'")
-    #     logger.info(f"[select_query] Reason: {selection_reason}")
-    #
-    #     return {"frontier": list(self.frontier)}
 
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
@@ -211,47 +154,7 @@ class QueryProcessingToolkit(BaseToolkit):
         return {"frontier": list(self.frontier)}
 
 
-    # @validate_input_query_in_frontier
-    # @validate_output_query_not_explored
-    # def select_query(
-    #         self,
-    #         question: str,
-    #         frontier: list[str],
-    #         selected_query: str,
-    #         selection_reason: str,
-    #         search_results_summary: str = None
-    # ) -> dict[str, list[str]]:
-    #     r"""Select the best query from the current frontier to search next.
-    #
-    #     CRITICAL: The 'selected_query' parameters MUST contain text that
-    #     exists EXACTLY in the frontier list. Copy the exact text - do not paraphrase.
-    #
-    #     Choose based on specificity, clarity, and search potential to minimize searches.
-    #     After selection, immediately call search_google with the selected query.
-    #
-    #     Args:
-    #         question (str): The original research question from the user
-    #         frontier (list[str]): Current available queries (for reference only -
-    #                              validation uses internal self.frontier)
-    #         selected_query (str): The query you've chosen (must equal 'query' parameter)
-    #         selection_reason (str): Why you selected this specific query
-    #         search_results_summary (str, optional): Summary of previous search results
-    #
-    #     Returns:
-    #         dict[str, list[str]]: The updated frontier after removing selected query
-    #     """
-    #     # Move from frontier to explored
-    #     if selected_query in self.frontier:
-    #         self.frontier.remove(selected_query)
-    #     self.explored.add(selected_query)
-    #
-    #     logger.info(f"[select_query] Question: '{question}'")
-    #     logger.info(f"[select_query] Selected: '{selected_query}'")
-    #     logger.info(f"[select_query] Reason: {selection_reason}")
-    #     if search_results_summary:
-    #         logger.info(f"[select_query] Context: {search_results_summary}")
-    #
-    #     return {"frontier": list(self.frontier), "selected": selected_query}
+
 
     def extract_relevant_details(
             self,
@@ -261,32 +164,6 @@ class QueryProcessingToolkit(BaseToolkit):
             relevant_information: str,
             page_url: str = ""
     ) -> str:
-        # r"""Use this tool to extract relevant information from the page that answers the question.
-        #
-        # When extracting, carefully read the ENTIRE snapshot including:
-        # - Structured sections like tables, info boxes, and labeled fields (these often contain direct answers)
-        # - Main article text and paragraphs
-        # - All sections that might contain relevant facts
-        #
-        # Extraction guidelines:
-        # - Look for explicit, direct answers first (especially in tables/info boxes with labels like "Appointed by:", "Date:", etc.)
-        # - If you find conflicting or multiple pieces of information, include ALL of them - don't choose one over another
-        # - Include all relevant details that help answer the question
-        # - Be thorough - don't stop at the first piece of information you find
-        #
-        # The question asks for specific information - make sure your relevant_information contains that specific answer.
-        #
-        # Args:
-        #     snapshot (str): The complete page content from browser_visit_page
-        #     query (str): The search query you used to find this page
-        #     question (str): The original question - what specific information does it ask for?
-        #     relevant_information (str): Information you extract that answers the question (include all relevant details, even if conflicting)
-        #     page_url (str): The URL of the page
-        #
-        # Returns:
-        #     str: Confirmation that your extracted information has been recorded
-        # """
-
         r"""Use this tool to extract relevant information from the page that answers the question.
 
         When extracting, carefully read the ENTIRE snapshot including:
