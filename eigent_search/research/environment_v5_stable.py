@@ -26,7 +26,7 @@ from camel.toolkits import (
 )
 from pathlib import Path
 
-from .query_processing_v5_stable import QueryProcessingToolkit
+from .query_processing_v5_2_stable import QueryProcessingToolkit
 
 logger = get_logger(__name__)
 
@@ -68,9 +68,9 @@ class DeepSearchEnvironment:
     def initialize_query(self, initial_query: str):
         """Initialize the query processing toolkit with an initial query.
 
-    This should be called before the agent starts processing. The initial query
-    is directly added to the explored set (not frontier), so the agent can
-    immediately search with it without calling select_query first.
+    This should be called before the agent starts processing.
+    The initial query is directly added to the frontier.
+    The agent must first call `select_query` on it before using `search_google`.
 
         Args:
             initial_query (str): The user's initial research question

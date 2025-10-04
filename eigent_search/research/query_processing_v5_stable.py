@@ -22,6 +22,28 @@ from camel.logger import get_logger
 logger = get_logger(__name__)
 
 
+def validate_input_query_in_frontier_or_explored(func):
+    """Decorator to validate that the input query is in the current frontier or already explored.
+
+    This decorator should be applied to methods that take a query parameter
+    and need to ensure it exists in the current frontier OR has been previously explored.
+    """
+
+    @wraps(func)
+    def wrapper(self, **kwargs):
+        # Get the query parameter - could be 'query' or 'current_query'
+        query = kwargs.get("query") or kwargs.get("current_query") or kwargs.get("selected_query")
+        if query and (query not in self.frontier and query not in self.explored):
+            error_message = (
+                f"❌ Invalid operation: Candidate query '{query}' must come from the current frontier "
+                f"OR have been explored already.\n{self.get_frontier_str()}"
+            )
+            logger.error(f"[{func.__name__}] {error_message}")
+            return error_message
+        return func(self, **kwargs)
+
+    return wrapper
+
 
 def validate_input_query_in_frontier(func):
     """Decorator to validate that the input query is in the current frontier.
@@ -134,6 +156,10 @@ class QueryProcessingToolkit(BaseToolkit):
         After selection, call search_google with the selected query.
 
 
+        HARD RULE:
+        After you call `select_query`, the ONLY allowed search query is the exact
+        `selected_query` returned by this tool, character-for-character identical
+        (same casing, spacing, punctuation, quotes). Do not add or remove anything.
 
         Args:
             frontier (str): The input query from the current frontier being considered.
@@ -224,7 +250,7 @@ class QueryProcessingToolkit(BaseToolkit):
         logger.info(f"[analyze_search_progress] Query: '{current_query}'")
         return f"Analysis recorded:\n\n{your_analysis}"
 
-    @validate_input_query_in_frontier
+    @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
     def local_expand_query(
             self,
@@ -232,96 +258,107 @@ class QueryProcessingToolkit(BaseToolkit):
             current_query: str,
             what_you_know: str,
             what_exactly_missing: str,
-            refined_query: str
+            expanded_queries: list[str]  # 改成 list
     ) -> str:
-        r"""Call this to create a refined search query based on identified gaps (LOCAL EXPAND).
+        r"""Call this to create refined search queries based on identified gaps (LOCAL EXPAND).
 
-        Use the parameters to build your refined_query:
+        Use the parameters to build your expanded_queries:
         - Look at what_you_know to avoid searching for information you already have
-        - Focus refined_query specifically on what_exactly_missing
-        - Make the query more targeted than current_query to fill the precise gap
+        - Focus each query in expanded_queries specifically on what_exactly_missing
+        - Make queries more targeted than current_query to fill precise gaps
+        - Generate multiple query variations to explore different angles
 
-        Your refined_query should target the specific missing piece, not repeat previous searches.
+        Your expanded_queries should target the specific missing pieces from different perspectives.
+
+        'current_query' must be an existing query (either in frontier or explored).
 
         Args:
             question (str): The original research question (for context)
             current_query (str): The search query you last used
             what_you_know (str): Summary of information you've already found
             what_exactly_missing (str): The specific information gap you identified
-            refined_query (str): Your NEW search query (3-7 words) targeting what_exactly_missing
+            expanded_queries (list[str]): Multiple NEW search queries targeting what_exactly_missing
 
         Returns:
-            str: Confirmation of your refined query to use in search_google
+            str: Confirmation of your expanded queries to use in search_google
         """
-        # Add the refined query to the frontier
-        self.frontier.add(refined_query)
-        logger.info(f"[local_expand_query] '{current_query}' → '{refined_query}'")
+        # Add all expanded queries to the frontier
+        self.frontier.update(expanded_queries)
+
+        logger.info(f"[local_expand_query] '{current_query}' → {expanded_queries}")
+
         return f"""
-        REFINED QUERY (LOCAL EXPAND)
+        REFINED QUERIES (LOCAL EXPAND)
 
         Previous Query: "{current_query}"
         Already Found: {what_you_know}
         Missing: {what_exactly_missing}
-        New Query: "{refined_query}"
-        Frontier Queries: {list(self.frontier)}
-        Use this refined query in your next search_google call.
+        New Queries: {expanded_queries}
+
+        Current Frontier: {list(self.frontier)}
+
+        Use these refined queries in your next searches.
         """
 
-    @validate_input_query_in_frontier
+    @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
     def local_refine_query(
             self,
             question: str,
             current_query: str,
             search_results_summary: str,
-            refined_query: str
+            refined_queries: list[str]  # 改成 list
     ) -> str:
-        r"""Refine the current query based on search results without changing the core meaning (LOCAL REFINE).
+        r"""Refine the current query based on search results without changing core meaning (LOCAL REFINE).
 
         This tool helps you rephrase the query for better results while maintaining the same search intent.
-        Use this when your current query didn't return good results, but you want to search for the same information
-        using different phrasing, synonyms, or alternative formulations.
+        Generate multiple reformulations to try different phrasings, synonyms, or alternative formulations.
 
         Key differences from local_expand_query:
-        - local_refine: Same meaning, different phrasing (e.g., "CEO of Apple" → "Apple chief executive")
-        - local_expand_query: Different scope/focus based on gaps (e.g., "CEO of Apple" → "Tim Cook leadership style")
+        - local_refine: Same meaning, different phrasings (e.g., "CEO of Apple" → ["Apple chief executive", "Apple CEO name"])
+        - local_expand_query: Different scope/focus based on gaps (e.g., "CEO of Apple" → ["Tim Cook leadership", "Apple executive team"])
+
+        'current_query' must be an existing query (either in frontier or explored).
 
         Args:
             question (str): The original research question
             current_query (str): The search query that didn't work well
             search_results_summary (str): Brief summary of why current results were insufficient
-            refined_query (str): Your rephrased query with same meaning but different wording
+            refined_queries (list[str]): Multiple rephrased queries with same meaning but different wording
 
         Returns:
-            str: Confirmation of your refined query
+            str: Confirmation of your refined queries
         """
-        # Add the refined query to the frontier
-        self.frontier.add(refined_query)
-        logger.info(f"[local_refine_query] '{current_query}' → '{refined_query}'")
+        # Add all refined queries to the frontier
+        self.frontier.update(refined_queries)
+
+        logger.info(f"[local_refine_query] '{current_query}' → {refined_queries}")
+
         return f"""
-        QUERY REFINEMENT (LOCAL REFINE)
+        QUERY REFINEMENTS (LOCAL REFINE)
 
         Original Query: "{current_query}"
         Search Results Issue: {search_results_summary}
-        Refined Query: "{refined_query}"
-        Frontier Queries: {list(self.frontier)}
-        Use this refined query to search for the same information with better phrasing.
+        Refined Queries: {refined_queries}
+
+        Current Frontier: {list(self.frontier)}
+
+        Use these refined queries to search for the same information with better phrasing.
         """
 
-    @validate_input_query_in_frontier
+    @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
     def global_refine_query(
             self,
             question: str,
             current_query: str,
             refinement_reason: str,
-            refined_query: str
+            refined_queries: list[str]  # 改成 list
     ) -> str:
         r"""Refine the query based on your understanding without using search results (GLOBAL REFINE).
 
-        This tool helps you improve query clarity, remove ambiguity, or fix issues you identify
-        through your own analysis, not based on search results. Use this when you realize
-        the current query has problems that you can fix through better formulation.
+        This tool helps you improve query clarity, remove ambiguity, or fix issues through
+        your own analysis. Generate multiple refined versions to try different improvements.
 
         Common use cases:
         - Remove ambiguous terms
@@ -330,42 +367,47 @@ class QueryProcessingToolkit(BaseToolkit):
         - Use more standard terminology
         - Clarify temporal aspects (add year, "current", etc.)
 
+        'current_query' must be an existing query (either in frontier or explored).
+
         Args:
             question (str): The original research question
             current_query (str): The current search query
             refinement_reason (str): Why you think the query needs refinement
-            refined_query (str): Your improved query with same core meaning
+            refined_queries (list[str]): Multiple improved queries with same core meaning
 
         Returns:
-            str: Confirmation of your refined query
+            str: Confirmation of your refined queries
         """
-        # Add the refined query to the frontier
-        self.frontier.add(refined_query)
-        logger.info(f"[global_refine_query] '{current_query}' → '{refined_query}'")
+        # Add all refined queries to the frontier
+        self.frontier.update(refined_queries)
+
+        logger.info(f"[global_refine_query] '{current_query}' → {refined_queries}")
+
         return f"""
-        GLOBAL QUERY REFINEMENT
+        GLOBAL QUERY REFINEMENTS
 
         Original Query: "{current_query}"
         Refinement Reason: {refinement_reason}
-        Refined Query: "{refined_query}"
-        Frontier Queries: {list(self.frontier)}
-        Use this globally refined query in your next search.
+        Refined Queries: {refined_queries}
+
+        Current Frontier: {list(self.frontier)}
+
+        Use these globally refined queries in your next searches.
         """
 
-    @validate_input_query_in_frontier
+    @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
     def global_expand_query(
             self,
             question: str,
             current_query: str,
             expansion_strategy: str,
-            expanded_query: str
+            expanded_queries: list[str]  # 改成 list
     ) -> str:
         r"""Expand the query with additional terms without using search results (GLOBAL EXPAND).
 
         This tool helps you add synonyms, related terms, morphological variants, or context
-        to improve search coverage. Use your knowledge to broaden the query scope or
-        add relevant context that might help find better results.
+        to improve search coverage. Generate multiple expanded versions using different strategies.
 
         Expansion strategies:
         - Add synonyms or alternative terms
@@ -375,28 +417,33 @@ class QueryProcessingToolkit(BaseToolkit):
         - Add context from your knowledge
         - Include related entities or organizations
 
+        'current_query' must be an existing query (either in frontier or explored).
+
         Args:
             question (str): The original research question
             current_query (str): The current search query
             expansion_strategy (str): What type of expansion you're applying and why
-            expanded_query (str): Your expanded query with additional relevant terms
+            expanded_queries (list[str]): Multiple expanded queries with additional relevant terms
 
         Returns:
-            str: Confirmation of your expanded query
+            str: Confirmation of your expanded queries
         """
-        # Add the expanded query to the frontier
-        self.frontier.add(expanded_query)
-        logger.info(f"[global_expand_query] '{current_query}' → '{expanded_query}'")
+        # Add all expanded queries to the frontier
+        self.frontier.update(expanded_queries)
+
+        logger.info(f"[global_expand_query] '{current_query}' → {expanded_queries}")
+
         return f"""
-        GLOBAL QUERY EXPANSION
+        GLOBAL QUERY EXPANSIONS
 
         Original Query: "{current_query}"
         Expansion Strategy: {expansion_strategy}
-        Expanded Query: "{expanded_query}"
-        Frontier Queries: {list(self.frontier)}
-        Use this globally expanded query to cast a wider search net.
-        """
+        Expanded Queries: {expanded_queries}
 
+        Current Frontier: {list(self.frontier)}
+
+        Use these globally expanded queries to cast a wider search net.
+        """
     def get_tools(self) -> List[FunctionTool]:
         r"""Returns all available tools in the toolkit."""
         return [
