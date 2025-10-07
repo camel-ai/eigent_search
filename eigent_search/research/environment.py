@@ -125,7 +125,7 @@ class DeepSearchEnvironment:
         terminal_toolkit = TerminalToolkit(
             safe_mode=True,
             clone_current_env=False,
-            log_dir=os.path.join(self.working_directory, "terminal_logs"),
+            session_logs_dir=os.path.join(self.working_directory, "terminal_logs"),
         )
 
         # Override get_tools method to only include specific tools

@@ -54,7 +54,7 @@ class ToolTrajectory(BaseModel):
     trajectory: list[ToolCallInfo]
 
     @classmethod
-    def extract_from_response(cls, response: ChatAgentResponse) -> list[ToolTrajectory]:
+    def extract_from_response(cls, response: ChatAgentResponse) -> ToolTrajectory:
         trajectory = []
         tool_counts = {}
 
