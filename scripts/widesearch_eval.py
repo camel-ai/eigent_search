@@ -78,32 +78,26 @@ set_log_level(logging.INFO)
 logger = get_logger(__name__)
 
 
-
-# class WideSearchAgentResponse(BaseModel):
-# #     answer: str = Field(..., description="The answer to the research question.")
-# #     search_results: Optional[List[str]] = Field(
-# #         default=None, description="The search results that lead to the answer."
-# #     )
-# #     # trace: Optional[Dict[str, Any]] = None
-#     answer: str = Field(..., description="The answer to the research question.")
-#     search_results: list[str] = Field(
-#         ..., description="The search results that lead to the answer."
-#     )
-
-
-
-class Trace(BaseModel):
-    steps: Optional[List[str]] = None
-    tool_calls: Optional[List[str]] = None
-    model_config = ConfigDict(extra='forbid')  
-
 class WideSearchAgentResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    search_results: Optional[List[str]] = Field(
-        default=None, description="The search results that lead to the answer."
+    answer: str = Field(
+        ..., description="The markdown-formatted answer to the research question."
     )
-    trace: Optional[Trace] = None   
-    model_config = ConfigDict(extra='forbid') 
+    search_results: Optional[List[str]] = Field(
+        default=None, description="The URLs or data sources used for this answer."
+    )
+    model_config = ConfigDict(extra='ignore')
+
+format_string = f"""At the end, output STRICTLY in JSON format, with fields:\
+{{\
+  "answer": "<the full Markdown table and any necessary text>",\
+  "search_results": ["<source1>", "<source2>", ...]\
+}}\
+\
+The Markdown table must be enclosed in triple backticks, e.g.:\
+\
+"answer": "```markdown\n| A | B |\n|---|---|\n| 1 | 2 |\n```"\
+\
+Return ONLY this JSON object. Do not add extra commentary."""
 
 
 
@@ -197,7 +191,7 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int, t
             for trial_idx in range(trial_num):
                 run = run_agent_with_retry(
                     agent=agent,
-                    input_query=query.query,  # WideSearchQuery.query is plain text of the question.
+                    input_query=query.query + format_string,  # WideSearchQuery.query is plain text of the question.
                     response_format=WideSearchAgentResponse,
                     # response_format=None,
                     max_retries=2,
