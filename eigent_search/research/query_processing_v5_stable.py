@@ -1,4 +1,3 @@
-# query_processing_v4.py
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +12,11 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Set
+from typing import List, Set, Optional, Dict
 from functools import wraps
 from camel.toolkits.base import BaseToolkit
 from camel.toolkits.function_tool import FunctionTool
+from camel.toolkits import SearchToolkit
 from camel.logger import get_logger
 
 logger = get_logger(__name__)
@@ -32,7 +32,7 @@ def validate_input_query_in_frontier_or_explored(func):
     @wraps(func)
     def wrapper(self, **kwargs):
         # Get the query parameter - could be 'query' or 'current_query'
-        query = kwargs.get("query") or kwargs.get("current_query") or kwargs.get("selected_query")
+        query = kwargs.get("query") or kwargs.get("current_query")
         if query and (query not in self.frontier and query not in self.explored):
             error_message = (
                 f"❌ Invalid operation: Candidate query '{query}' must come from the current frontier "
@@ -54,8 +54,8 @@ def validate_input_query_in_frontier(func):
 
     @wraps(func)
     def wrapper(self, **kwargs):
-        # Get the query parameter - could be 'query' or 'current_query'
-        query = kwargs.get("query") or kwargs.get("current_query") or kwargs.get("selected_query")
+        # Get the query parameter
+        query = kwargs.get("query")
         if query and query not in self.frontier:
             error_message = (
                 f"❌ Invalid operation: Candidate query '{query}' must be selected "
@@ -66,7 +66,6 @@ def validate_input_query_in_frontier(func):
         return func(self, **kwargs)
 
     return wrapper
-
 
 
 def validate_output_query_not_explored(func):
@@ -80,11 +79,10 @@ def validate_output_query_not_explored(func):
     def wrapper(self, **kwargs):
         # Find output query parameters
         output_params = {
-            "select_query": "selected_query",
-            "local_expand_query": "expanded_query",
-            "local_refine_query": "refined_query",
-            "global_refine_query": "refined_query",
-            "global_expand_query": "expanded_query",
+            "local_expand_query": "expanded_queries",
+            "local_refine_query": "refined_queries",
+            "global_refine_query": "refined_queries",
+            "global_expand_query": "expanded_queries",
         }
         output_param = output_params.get(func.__name__)
         output_query = kwargs.get(output_param)
@@ -129,6 +127,12 @@ class QueryProcessingToolkit(BaseToolkit):
         self.frontier: Set[str] = set()  # set of queries to be explored
         self.explored: Set[str] = set()  # set of queries that have been explored
 
+        # Initialize search tool
+        self.__search_tool = SearchToolkit(
+            exclude_domains=["huggingface.co", "hf.co", "oxen.ai"]
+        ).search_google
+        self.search_counter = 0  # For counting the number of searches
+
         # If initial query provided, add to frontier
         if initial_query:
             self.frontier.add(initial_query)
@@ -137,50 +141,154 @@ class QueryProcessingToolkit(BaseToolkit):
         """Display the current frontier as a string."""
         return "📋 current frontier:\n  - " + "\n  - ".join(list(self.frontier))
 
+    # @validate_input_query_in_frontier
+    # @validate_output_query_not_explored
+    # def select_query_and_search(
+    #         self, query: str, enhanced_query: str
+    # ) -> Dict[str, Dict[str, str]]:
+    #     r"""Select the best query from the current frontier and perform web search.
+    #
+    #     The agent should choose based on specificity, clarity, and search potential,
+    #     in order to minimize the number of searches and the cost of the search.
+    #     Then, OPTIONALLY add advanced search operators (AND, OR, NOT, quotes, site:,
+    #     filetype:, etc.) to improve search precision and relevance. Finally, perform
+    #     an actual web search using the enhanced query first, and fall back to the
+    #     original query if the enhanced query fails.
+    #
+    #     If the search results are not sufficient to answer the user's initial query,
+    #     the agent should process and select another query from the current frontier
+    #     and perform web search again, or generate new queries based on the search results.
+    #
+    #     Args:
+    #         query (str): The input query from the current frontier that is selected
+    #             for web search.
+    #         enhanced_query (str): The enhanced query with optional advanced search
+    #             operators added to the selected query that will be used for searching
+    #             the web. If the enhanced query leads to an error in search, search
+    #             results of the original query will be returned.
+    #
+    #     Returns:
+    #         Dict[str, Dict[str, str]]: The search results from the web search. The key
+    #             is "search_results" and the value is a dict where each key is a URL and
+    #             each value is the string of the title, description, and long description
+    #             of the result. If the search fails, the key is "None" and the value is
+    #             the error message.
+    #     """
+    #     # Record enhancement and add to frontier if needed
+    #     if enhanced_query != query:
+    #         logger.info(
+    #             f"[select_query_and_search] Enhanced: '{query}' → '{enhanced_query}'"
+    #         )
+    #         self.frontier.add(enhanced_query)
+    #     else:
+    #         # If queries are identical, no need to search twice
+    #         logger.info(
+    #             "[select_query_and_search] Query and enhanced query are identical, "
+    #             "performing single search"
+    #         )
+    #
+    #     # Update frontier and explored sets; the search will be conducted anyway
+    #     for q in [enhanced_query, query]:
+    #         if q in self.frontier:
+    #             self.explored.add(q)
+    #             self.frontier.remove(q)
+    #
+    #     # Helper function to perform search and handle results
+    #     def search_and_record(query_str: str):
+    #         results = self.__search_tool(query_str)
+    #         self.search_counter += 1
+    #
+    #         # Check if search has returned anything valid
+    #         if "error" in results[0]:
+    #             logger.error(
+    #                 f"[search] Error for '{query_str}': {results[0]['error']}"
+    #             )
+    #             return {"None": results[0]["error"]}
+    #
+    #         # Linearize valid search results to dictionary of strings
+    #         results: Dict[str, str] = {
+    #             result["url"]: (
+    #                 f"Title: {result['title']}\n"
+    #                 f"Description: {result['description']}\n"
+    #                 f"Long Description: {result['long_description']}"
+    #             )
+    #             for result in results
+    #         }
+    #
+    #         logger.info(f"[search] Found {len(results)} results for '{query_str}'")
+    #         return results
+    #
+    #     # Try enhanced query first
+    #     enhanced_results = search_and_record(enhanced_query)
+    #     if "None" not in enhanced_results:
+    #         return {"search_results": enhanced_results}
+    #     else:
+    #         if query != enhanced_query:
+    #             # Fall back to original query
+    #             logger.info(
+    #                 "[select_query_and_search] Falling back to original query"
+    #             )
+    #             return {"search_results": search_and_record(query)}
+    #         else:
+    #             return {"search_results": enhanced_results}
 
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
-    def select_query(
-            self,
-            frontier: str,
-            selected_query: str,
-            selection_reason: str
-    ) -> dict[str, list[str]]:
-        r"""Select the best query from the current frontier.
+    def select_query_and_search(
+            self, query: str
+    ) -> Dict[str, Dict[str, str]]:
+        r"""Select the best query from the current frontier and perform web search.
 
-        The agent should choose based on specificity, clarity, and search potential, in order to minimize the number of searches and the cost of the search.
+        The agent should choose based on specificity, clarity, and search potential,
+        in order to minimize the number of searches and the cost of the search.
 
         If the search results are not sufficient to answer the user's initial query,
-        the agent should process and select another query from the current frontier.
-
-        After selection, call search_google with the selected query.
-
-
-        HARD RULE:
-        After you call `select_query`, the ONLY allowed search query is the exact
-        `selected_query` returned by this tool, character-for-character identical
-        (same casing, spacing, punctuation, quotes). Do not add or remove anything.
+        the agent should process and select another query from the current frontier
+        and perform web search again, or generate new queries based on the search results.
 
         Args:
-            frontier (str): The input query from the current frontier being considered.
-            selected_query (str): The query you've chosen (should be same as query).
-            selection_reason (str): Why you selected this query.
+            query (str): The input query from the current frontier that is selected
+                for web search.
 
         Returns:
-            dict[str, list[str]]: The current frontier after the selection process.
+            Dict[str, Dict[str, str]]: The search results from the web search. The key
+                is "search_results" and the value is a dict where each key is a URL and
+                each value is the string of the title, description, and long description
+                of the result. If the search fails, the key is "None" and the value is
+                the error message.
         """
-        # Move from frontier to explored
-        if selected_query in self.frontier:
-            self.frontier.remove(selected_query)
-        self.explored.add(selected_query)
+        # Update frontier and explored sets; the search will be conducted anyway
+        if query in self.frontier:
+            self.explored.add(query)
+            self.frontier.remove(query)
 
-        logger.info(f"[select_query] Selected: '{selected_query}'")
-        logger.info(f"[select_query] Reason: {selection_reason}")
+        # Helper function to perform search and handle results
+        def search_and_record(query_str: str):
+            results = self.__search_tool(query_str)
+            self.search_counter += 1
 
-        return {"frontier": list(self.frontier)}
+            # Check if search has returned anything valid
+            if "error" in results[0]:
+                logger.error(
+                    f"[search] Error for '{query_str}': {results[0]['error']}"
+                )
+                return {"None": results[0]["error"]}
 
+            # Linearize valid search results to dictionary of strings
+            results: Dict[str, str] = {
+                result["url"]: (
+                    f"Title: {result['title']}\n"
+                    f"Description: {result['description']}\n"
+                    f"Long Description: {result['long_description']}"
+                )
+                for result in results
+            }
 
+            logger.info(f"[search] Found {len(results)} results for '{query_str}'")
+            return results
 
+        # Perform search
+        return {"search_results": search_and_record(query)}
 
     def extract_relevant_details(
             self,
@@ -188,32 +296,41 @@ class QueryProcessingToolkit(BaseToolkit):
             query: str,
             question: str,
             relevant_information: str,
-            page_url: str = ""
+            page_url: str = "",
     ) -> str:
-        r"""Use this tool to extract relevant information from the page that answers the question.
+        r"""Use this tool to extract relevant information from the page that answers
+        the question.
 
         When extracting, carefully read the ENTIRE snapshot including:
-        - Structured sections like tables, info boxes, and labeled fields (these often contain direct answers)
+        - Structured sections like tables, info boxes, and labeled fields (these often
+          contain direct answers)
         - Main article text and paragraphs
         - All sections that might contain relevant facts
 
         CRITICAL - Precision Requirements:
-        - Extract information that EXACTLY matches what the question asks for, not just related information
-        - If the question asks for specific terms (e.g., "Gold"), don't substitute with related terms (e.g., "Platinum")
-        - If the question asks for complete details (e.g., "day, month, and year"), ensure you capture all components
-        - If you find information that's close but not exact, note what's missing and mark it as incomplete
+        - Extract information that EXACTLY matches what the question asks for, not just
+          related information
+        - If the question asks for specific terms (e.g., "Gold"), don't substitute with
+          related terms (e.g., "Platinum")
+        - If the question asks for complete details (e.g., "day, month, and year"),
+          ensure you capture all components
+        - If you find information that's close but not exact, note what's missing and
+          mark it as incomplete
 
         Extraction guidelines:
-        - Look for explicit, direct answers first (especially in tables/info boxes with structured data)
+        - Look for explicit, direct answers first (especially in tables/info boxes with
+          structured data)
         - If you find conflicting or multiple pieces of information, include ALL of them
         - Be thorough - don't stop at the first relevant snippet; scan the entire page
-        - If the exact information requested is NOT on this page, explicitly state what's missing
+        - If the exact information requested is NOT on this page, explicitly state
+          what's missing
 
         Args:
             snapshot (str): The complete page content from browser_visit_page
             query (str): The search query you used to find this page
             question (str): The original question - what EXACTLY does it ask for?
-            relevant_information (str): Information you extract (must precisely match question requirements)
+            relevant_information (str): Information you extract (must precisely match
+                question requirements)
             page_url (str): The URL of the page
 
         Returns:
@@ -227,7 +344,7 @@ class QueryProcessingToolkit(BaseToolkit):
             question: str,
             current_query: str,
             findings_so_far: str,
-            your_analysis: str
+            your_analysis: str,
     ) -> str:
         r"""Call this to analyse whether you have enough information to answer the question.
 
@@ -242,7 +359,8 @@ class QueryProcessingToolkit(BaseToolkit):
             question (str): The original research question
             current_query (str): The search query you last used
             findings_so_far (str): All relevant details you've extracted from visited pages
-            your_analysis (str): Your written evaluation - do findings answer the question completely?
+            your_analysis (str): Your written evaluation - do findings answer the question
+                completely?
 
         Returns:
             str: Your analysis, recorded
@@ -258,9 +376,10 @@ class QueryProcessingToolkit(BaseToolkit):
             current_query: str,
             what_you_know: str,
             what_exactly_missing: str,
-            expanded_queries: list[str]  # 改成 list
+            expanded_queries: List[str],
     ) -> str:
-        r"""Call this to create refined search queries based on identified gaps (LOCAL EXPAND).
+        r"""Call this to create refined search queries based on identified gaps
+        (LOCAL EXPAND).
 
         Use the parameters to build your expanded_queries:
         - Look at what_you_know to avoid searching for information you already have
@@ -268,7 +387,8 @@ class QueryProcessingToolkit(BaseToolkit):
         - Make queries more targeted than current_query to fill precise gaps
         - Generate multiple query variations to explore different angles
 
-        Your expanded_queries should target the specific missing pieces from different perspectives.
+        Your expanded_queries should target the specific missing pieces from different
+        perspectives.
 
         'current_query' must be an existing query (either in frontier or explored).
 
@@ -277,28 +397,27 @@ class QueryProcessingToolkit(BaseToolkit):
             current_query (str): The search query you last used
             what_you_know (str): Summary of information you've already found
             what_exactly_missing (str): The specific information gap you identified
-            expanded_queries (list[str]): Multiple NEW search queries targeting what_exactly_missing
+            expanded_queries (List[str]): Multiple NEW search queries targeting
+                what_exactly_missing
 
         Returns:
-            str: Confirmation of your expanded queries to use in search_google
+            str: Confirmation of your expanded queries to use in select_query_and_search
         """
         # Add all expanded queries to the frontier
         self.frontier.update(expanded_queries)
 
         logger.info(f"[local_expand_query] '{current_query}' → {expanded_queries}")
 
-        return f"""
-        REFINED QUERIES (LOCAL EXPAND)
+        return f"""REFINED QUERIES (LOCAL EXPAND)
 
-        Previous Query: "{current_query}"
-        Already Found: {what_you_know}
-        Missing: {what_exactly_missing}
-        New Queries: {expanded_queries}
+Previous Query: "{current_query}"
+Already Found: {what_you_know}
+Missing: {what_exactly_missing}
+New Queries: {expanded_queries}
 
-        Current Frontier: {list(self.frontier)}
+Current Frontier: {list(self.frontier)}
 
-        Use these refined queries in your next searches.
-        """
+Use these refined queries in your next searches."""
 
     @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
@@ -307,24 +426,30 @@ class QueryProcessingToolkit(BaseToolkit):
             question: str,
             current_query: str,
             search_results_summary: str,
-            refined_queries: list[str]  # 改成 list
+            refined_queries: List[str],
     ) -> str:
-        r"""Refine the current query based on search results without changing core meaning (LOCAL REFINE).
+        r"""Refine the current query based on search results without changing core
+        meaning (LOCAL REFINE).
 
-        This tool helps you rephrase the query for better results while maintaining the same search intent.
-        Generate multiple reformulations to try different phrasings, synonyms, or alternative formulations.
+        This tool helps you rephrase the query for better results while maintaining
+        the same search intent. Generate multiple reformulations to try different
+        phrasings, synonyms, or alternative formulations.
 
         Key differences from local_expand_query:
-        - local_refine: Same meaning, different phrasings (e.g., "CEO of Apple" → ["Apple chief executive", "Apple CEO name"])
-        - local_expand_query: Different scope/focus based on gaps (e.g., "CEO of Apple" → ["Tim Cook leadership", "Apple executive team"])
+        - local_refine: Same meaning, different phrasings
+          (e.g., "CEO of Apple" → ["Apple chief executive", "Apple CEO name"])
+        - local_expand_query: Different scope/focus based on gaps
+          (e.g., "CEO of Apple" → ["Tim Cook leadership", "Apple executive team"])
 
         'current_query' must be an existing query (either in frontier or explored).
 
         Args:
             question (str): The original research question
             current_query (str): The search query that didn't work well
-            search_results_summary (str): Brief summary of why current results were insufficient
-            refined_queries (list[str]): Multiple rephrased queries with same meaning but different wording
+            search_results_summary (str): Brief summary of why current results were
+                insufficient
+            refined_queries (List[str]): Multiple rephrased queries with same meaning
+                but different wording
 
         Returns:
             str: Confirmation of your refined queries
@@ -334,17 +459,15 @@ class QueryProcessingToolkit(BaseToolkit):
 
         logger.info(f"[local_refine_query] '{current_query}' → {refined_queries}")
 
-        return f"""
-        QUERY REFINEMENTS (LOCAL REFINE)
+        return f"""QUERY REFINEMENTS (LOCAL REFINE)
 
-        Original Query: "{current_query}"
-        Search Results Issue: {search_results_summary}
-        Refined Queries: {refined_queries}
+Original Query: "{current_query}"
+Search Results Issue: {search_results_summary}
+Refined Queries: {refined_queries}
 
-        Current Frontier: {list(self.frontier)}
+Current Frontier: {list(self.frontier)}
 
-        Use these refined queries to search for the same information with better phrasing.
-        """
+Use these refined queries to search for the same information with better phrasing."""
 
     @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
@@ -353,12 +476,14 @@ class QueryProcessingToolkit(BaseToolkit):
             question: str,
             current_query: str,
             refinement_reason: str,
-            refined_queries: list[str]  # 改成 list
+            refined_queries: List[str],
     ) -> str:
-        r"""Refine the query based on your understanding without using search results (GLOBAL REFINE).
+        r"""Refine the query based on your understanding without using search results
+        (GLOBAL REFINE).
 
-        This tool helps you improve query clarity, remove ambiguity, or fix issues through
-        your own analysis. Generate multiple refined versions to try different improvements.
+        This tool helps you improve query clarity, remove ambiguity, or fix issues
+        through your own analysis. Generate multiple refined versions to try different
+        improvements.
 
         Common use cases:
         - Remove ambiguous terms
@@ -373,7 +498,7 @@ class QueryProcessingToolkit(BaseToolkit):
             question (str): The original research question
             current_query (str): The current search query
             refinement_reason (str): Why you think the query needs refinement
-            refined_queries (list[str]): Multiple improved queries with same core meaning
+            refined_queries (List[str]): Multiple improved queries with same core meaning
 
         Returns:
             str: Confirmation of your refined queries
@@ -383,17 +508,15 @@ class QueryProcessingToolkit(BaseToolkit):
 
         logger.info(f"[global_refine_query] '{current_query}' → {refined_queries}")
 
-        return f"""
-        GLOBAL QUERY REFINEMENTS
+        return f"""GLOBAL QUERY REFINEMENTS
 
-        Original Query: "{current_query}"
-        Refinement Reason: {refinement_reason}
-        Refined Queries: {refined_queries}
+Original Query: "{current_query}"
+Refinement Reason: {refinement_reason}
+Refined Queries: {refined_queries}
 
-        Current Frontier: {list(self.frontier)}
+Current Frontier: {list(self.frontier)}
 
-        Use these globally refined queries in your next searches.
-        """
+Use these globally refined queries in your next searches."""
 
     @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
@@ -402,12 +525,14 @@ class QueryProcessingToolkit(BaseToolkit):
             question: str,
             current_query: str,
             expansion_strategy: str,
-            expanded_queries: list[str]  # 改成 list
+            expanded_queries: List[str],
     ) -> str:
-        r"""Expand the query with additional terms without using search results (GLOBAL EXPAND).
+        r"""Expand the query with additional terms without using search results
+        (GLOBAL EXPAND).
 
-        This tool helps you add synonyms, related terms, morphological variants, or context
-        to improve search coverage. Generate multiple expanded versions using different strategies.
+        This tool helps you add synonyms, related terms, morphological variants, or
+        context to improve search coverage. Generate multiple expanded versions using
+        different strategies.
 
         Expansion strategies:
         - Add synonyms or alternative terms
@@ -423,7 +548,8 @@ class QueryProcessingToolkit(BaseToolkit):
             question (str): The original research question
             current_query (str): The current search query
             expansion_strategy (str): What type of expansion you're applying and why
-            expanded_queries (list[str]): Multiple expanded queries with additional relevant terms
+            expanded_queries (List[str]): Multiple expanded queries with additional
+                relevant terms
 
         Returns:
             str: Confirmation of your expanded queries
@@ -433,25 +559,24 @@ class QueryProcessingToolkit(BaseToolkit):
 
         logger.info(f"[global_expand_query] '{current_query}' → {expanded_queries}")
 
-        return f"""
-        GLOBAL QUERY EXPANSIONS
+        return f"""GLOBAL QUERY EXPANSIONS
 
-        Original Query: "{current_query}"
-        Expansion Strategy: {expansion_strategy}
-        Expanded Queries: {expanded_queries}
+Original Query: "{current_query}"
+Expansion Strategy: {expansion_strategy}
+Expanded Queries: {expanded_queries}
 
-        Current Frontier: {list(self.frontier)}
+Current Frontier: {list(self.frontier)}
 
-        Use these globally expanded queries to cast a wider search net.
-        """
+Use these globally expanded queries to cast a wider search net."""
+
     def get_tools(self) -> List[FunctionTool]:
         r"""Returns all available tools in the toolkit."""
         return [
-            FunctionTool(self.select_query),
+            FunctionTool(self.select_query_and_search),
             FunctionTool(self.extract_relevant_details),
             FunctionTool(self.analyze_search_progress),
-            FunctionTool(self.local_expand_query),  # LOCAL EXPAND
-            FunctionTool(self.local_refine_query),  # LOCAL REFINE
-            FunctionTool(self.global_refine_query),  # GLOBAL REFINE
-            FunctionTool(self.global_expand_query),  # GLOBAL EXPAND
+            FunctionTool(self.local_expand_query),
+            FunctionTool(self.local_refine_query),
+            FunctionTool(self.global_refine_query),
+            FunctionTool(self.global_expand_query),
         ]

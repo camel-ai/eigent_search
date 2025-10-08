@@ -20,13 +20,12 @@ from camel.toolkits import (
     FunctionTool,
     HybridBrowserToolkit,
     NoteTakingToolkit,
-    SearchToolkit,
     TerminalToolkit,
     ToolkitMessageIntegration,
 )
 from pathlib import Path
 
-from .query_processing_v5_2_stable import QueryProcessingToolkit
+from .query_processing_v5_stable import QueryProcessingToolkit
 
 logger = get_logger(__name__)
 
@@ -39,7 +38,6 @@ class DeepSearchEnvironment:
         self.working_directory = working_directory
 
         # Construct toolkits
-        self.search_toolkit = self.construct_search_toolkit()
         self.browser_toolkit = self.construct_browser_toolkit()
         self.terminal_toolkit = self.construct_terminal_toolkit()
         self.note_taking_toolkit = self.construct_note_taking_toolkit()
@@ -47,10 +45,6 @@ class DeepSearchEnvironment:
 
         self.query_processing_toolkit = self.construct_query_processing_toolkit()
 
-        # Add messaging to toolkits
-        self.search_toolkit = self.message_integration.register_toolkits(
-            self.search_toolkit
-        )
         self.browser_toolkit = self.message_integration.register_toolkits(
             self.browser_toolkit
         )
@@ -70,7 +64,6 @@ class DeepSearchEnvironment:
 
     This should be called before the agent starts processing.
     The initial query is directly added to the frontier.
-    The agent must first call `select_query` on it before using `search_google`.
 
         Args:
             initial_query (str): The user's initial research question
@@ -105,21 +98,11 @@ class DeepSearchEnvironment:
         tools = [
             *self.browser_toolkit.get_tools(),
             *self.note_taking_toolkit.get_tools(),
-            *self.search_toolkit.get_tools(),
             *self.terminal_toolkit.get_tools(),
             *self.query_processing_toolkit.get_tools(),
         ]
         return tools
 
-    def construct_search_toolkit(
-        self, exclude_domains: list[str] = ["huggingface.co", "hf.co", "oxen.ai"]
-    ):
-        """Construct a search toolkit for actions related to searching the web."""
-
-        search_toolkit = SearchToolkit(exclude_domains=exclude_domains)
-        # Only search_google is needed, so we override the get_tools method
-        search_toolkit.get_tools = lambda: [FunctionTool(search_toolkit.search_google)]
-        return search_toolkit
 
     def construct_browser_toolkit(self):
         """Construct a browser toolkit for actions related to browsing the web."""
@@ -173,7 +156,6 @@ class DeepSearchEnvironment:
                 FunctionTool(terminal_toolkit.shell_wait),
                 FunctionTool(terminal_toolkit.shell_write_to_process),
                 FunctionTool(terminal_toolkit.shell_kill_process),
-                # FunctionTool(terminal_toolkit.ask_user_for_help),
             ]
 
         terminal_toolkit.get_tools = custom_get_tools

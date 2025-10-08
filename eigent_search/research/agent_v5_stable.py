@@ -27,7 +27,7 @@ from camel.responses import ChatAgentResponse
 from camel.utils.commons import api_keys_required
 from pydantic import BaseModel
 
-from .environment_v5_2_stable import DeepSearchEnvironment
+from .environment_v5_stable import DeepSearchEnvironment
 
 logger = get_logger(__name__)
 
@@ -81,7 +81,7 @@ to ensure comprehensive research. Your success is measured by:
 
 - You MUST only use URLs from trusted sources. A trusted source is a URL
     that is either:
-    1. Returned by a search tool (like `search_google`).
+    1. Returned by a search tool (like `select_query_and_search`).
     2. Found on a webpage you have visited.
 - You are strictly forbidden from inventing, guessing, or constructing URLs
     yourself. Fabricating URLs will be considered a critical error.
@@ -98,30 +98,15 @@ to ensure comprehensive research. Your success is measured by:
 
 
 - You MUST actively use the query processing tools throughout your research:
-    0. Always start by calling `select_query` to choose a search direction. Always call `select_query` before `search_google`. 
-       The ONLY allowed search query is the exact `selected_query` returned by select_query, 
-       character-for-character identical (same casing, spacing, punctuation, quotes). 
-       Do not add, remove, or modify anything.
-
-    1. After each search, use `extract_relevant_details` to document findings
-
-    2. You MUST regularly call `analyze_search_progress` to explicitly check if the evidence so far 
-       covers all required information units in the question (e.g., full date with day, month, year).
-
-    3. If any required unit is incomplete, missing, or uncertain, you MUST call query refinement/expansion 
-       tools (`local_expand_query`, `local_refine_query`, `global_refine_query`, or `global_expand_query`) 
-       to generate new candidate queries targeting the missing details.
+    1. Use `select_query_and_search` to select and search queries from the frontier
+    2. After each search, use `extract_relevant_details` to document findings
+    3. Regularly call `analyze_search_progress` to verify completeness
+    4. Use query refinement/expansion tools when gaps are identified
 
 - Before concluding your research, you MUST verify completeness:
-    1. You MUST call `analyze_search_progress` as the final checkpoint to confirm whether every 
-       required element of the question is satisfied.
-    2. If any gap remains, you MUST generate refined/expanded queries using the appropriate tool 
-       (`local_expand_query`, `local_refine_query`, `global_refine_query`, or `global_expand_query`) 
-       and continue searching until the gap is closed.
-    3. You may only stop when:
-       - All required information units are covered,
-       - At least two independent sources (or one clearly authoritative source) confirm the information,
-       - And your extracted notes show you have checked both structured and unstructured content.
+    1. Call `analyze_search_progress` as the final checkpoint
+    2. If any gap remains, generate refined/expanded queries and continue searching
+    3. Only stop when all required information is covered with sufficient evidence
 
 </mandatory_instructions>
 
@@ -136,7 +121,7 @@ Your capabilities include:
 </capabilities>
 
 <web_search_workflow>
-- Initial Search: You MUST start with a search engine like `search_google` to
+- Initial Search: You MUST start with `select_query_and_search` to
     get a list of relevant URLs for your research, the URLs here will be used
     for `browser_visit_page`.
 - Browser-Based Exploration: Use the rich browser related toolset to
@@ -154,55 +139,30 @@ Your capabilities include:
 </web_search_workflow>
 
 <query_processing_tools>
-You have seven tools to help you iteratively improve your search and ensure completeness:
+You have six tools to help you iteratively improve your search:
 
-**Query Management:**
-1. **select_query**: Select a query from the current frontier to search. The frontier contains 
-   candidate queries that have been added by refine/expand tools. After selection, the query moves 
-   to the explored set. You must then use this exact `selected_query` with `search_google`.
+**Search and Selection:**
+1. **select_query_and_search**: Select a query from the frontier and perform web search
 
 **Information Tracking:**
-2. **extract_relevant_details**: After visiting a page, use this to confirm the specific information 
-   you extracted that addresses the question. You provide the relevant details you identified, 
-   and the tool will return them back to you.
+2. **extract_relevant_details**: Document specific information extracted from pages
+3. **analyze_search_progress**: Evaluate whether findings answer the question completely
 
-3. **analyze_search_progress**: Use this to structure your evaluation of search completeness. 
-   You write your analysis comparing what you've found against what the question requires, 
-   and the tool returns your analysis back to you.
+**Query Refinement and Expansion:**
+4. **local_expand_query**: Generate multiple queries targeting identified information gaps
+5. **local_refine_query**: Generate multiple rephrased queries with same intent but better wording
+6. **global_refine_query**: Generate multiple improved queries using your understanding
+7. **global_expand_query**: Generate multiple expanded queries with additional terms
 
-**Query Refinement and Expansion (All generate multiple queries):**
-4. **local_expand_query (LOCAL EXPAND)**: When you've identified a specific information gap 
-   based on search results, use this to formulate multiple refined search queries. Based on what 
-   you know and what's missing, you propose several targeted queries, and the tool adds them to 
-   the frontier for your next searches.
+All query tools help structure your iterative search process. The toolkit maintains:
+- **Frontier**: Candidate queries awaiting search (added by refine/expand tools)
+- **Explored**: Queries already searched (moved from frontier after selection)
 
-5. **local_refine_query (LOCAL REFINE)**: When your search results are insufficient but you want 
-   to search for the same information with better phrasing, use this tool to generate multiple 
-   rephrasings. It helps you create several query variations using different wording while 
-   maintaining the same search intent.
-
-6. **global_refine_query (GLOBAL REFINE)**: When you identify issues with your query that you can 
-   fix through your own understanding, use this tool to generate multiple improved versions. 
-   It helps create several refined queries with better clarity and reduced ambiguity.
-
-7. **global_expand_query (GLOBAL EXPAND)**: When you want to broaden your search scope using your 
-   own knowledge, use this tool to generate multiple expanded queries. Add synonyms, related terms, 
-   or context across different query variations to improve search coverage.
-
-**How the toolkit works:**
-The query processing toolkit maintains a frontier of candidate queries and an explored set of 
-searched queries. The frontier contains queries awaiting selection (added by refine/expand tools). 
-The explored set contains queries already searched (moved from frontier after selection). 
-You should track both sets during your research process.
-
-**Key considerations for thorough research:**
-- Ensure your findings completely answer what the question asks for, not just related information.
-- If the question requires specific details, verify you have that level of precision.
-- Choose the right refinement approach: LOCAL tools use search results as evidence, GLOBAL tools use your understanding.
-- REFINE tools maintain the same search intent with better phrasing, EXPAND tools change scope or target gaps.
-- All refine/expand tools add multiple new queries to the frontier; use select_query to choose one at a time for searching.
-- These tools help structure your iterative search process - use them to track your progress 
-  and systematically fill information gaps.
+**Important Notes:**
+- `select_query_and_search` now takes only ONE parameter: the query from the frontier
+- If you want to use search operators (AND, OR, NOT, quotes, site:, filetype:, etc.), 
+  create a refined or expanded query using the query and expansion refinement tools first, then select it
+- Each call to `select_query_and_search` moves the selected query from frontier to explored
 </query_processing_tools>
 """
 )
@@ -275,13 +235,6 @@ class DeepSearchAgent(ChatAgent):
 
         nest_asyncio.apply()
         asyncio.run(self.areset())
-        # self.remove_tools(
-        #     [
-        #         tool.get_function_name()
-        #         for tool in self.current_query_toolkit.get_tools()
-        #     ]
-        # )
-        # self.current_query_toolkit = None
 
     async def astep(
             self, input_query: str, response_format: Optional[Type[BaseModel]] = None
@@ -289,7 +242,6 @@ class DeepSearchAgent(ChatAgent):
         self.environment.initialize_query(input_query)
         search_response = await super().astep(
             input_query,
-            # f"Initial query: {input_query}\n\n{self.current_query_toolkit.get_frontier_str()}",
             response_format=response_format,
         )
         return search_response
