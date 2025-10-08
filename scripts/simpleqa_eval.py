@@ -67,6 +67,8 @@ GRADE_EMOJI_MAP = {
     "ERROR": "🚫",
 }
 
+TEST_SET_FILE = Path(__file__).parent / "test_sets" / "simpleqa_test_sets.json"
+
 set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
@@ -79,6 +81,20 @@ class SimpleQAResponse(BaseModel):
     )
 
 
+def load_question_ids_from_file(set_name: str = None) -> list[int]:
+    """Load question IDs from JSON file."""
+    with open(TEST_SET_FILE, "r") as f:
+        data = json.load(f)
+
+    # Filter out metadata keys (starting with underscore)
+    test_sets = {k: v for k, v in data.items() if not k.startswith("_")}
+
+    if set_name not in test_sets:
+        available = list(test_sets.keys())
+        raise ValueError(f"Set '{set_name}' not found. Available: {available}")
+    return sorted(test_sets[set_name])
+
+
 @click.command()
 @click.option("--agent_type", "-a", type=click.Choice(AGENTS.keys()), required=True)
 @click.option(
@@ -88,18 +104,52 @@ class SimpleQAResponse(BaseModel):
 @click.option(
     "--start_idx", "-s", type=int, default=0, help="Start index for the test samples."
 )
-def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
-    # Log evaluation configuration
-    logger.info(
-        f"\n{'=' * 100}\n"
-        "Starting SimpleQA Evaluation\n"
-        f"Agent Type: {agent_type}\n"
-        f"Model: {model_name}\n"
-        f"Questions: {num_questions}\n"
-        f"Start Index: {start_idx}\n"
-        f"Output directory: {WORKING_DIRECTORY}\n"
-        f"\n{'=' * 100}\n"
-    )
+@click.option(
+    "--customized_test_set",
+    "-c",
+    type=str,
+    default=None,
+    help="Test sets set_name (e.g., 'quick_example')",
+)
+def main(
+    agent_type: str,
+    model_name: str,
+    num_questions: int,
+    start_idx: int,
+    customized_test_set: str,
+):
+    # load the dataset
+    dataset = load_dataset("basicv8vc/SimpleQA")
+
+    if customized_test_set:
+        test_sample_ids = load_question_ids_from_file(set_name=customized_test_set)
+        test_samples = [dataset["test"][idx] for idx in test_sample_ids]
+        num_questions = len(test_sample_ids)
+        logger.info(
+            f"\n{'=' * 100}\n"
+            "Starting SimpleQA Evaluation\n"
+            f"Agent Type: {agent_type}\n"
+            f"Model: {model_name}\n"
+            f"Customized test set: {customized_test_set}\n"
+            f"test_sample_ids: {test_sample_ids}\n"
+            f"Output directory: {WORKING_DIRECTORY}\n"
+            f"\n{'=' * 100}\n"
+        )
+
+    else:
+        test_samples = list(dataset["test"])[start_idx : start_idx + num_questions]
+        test_sample_ids = list(range(start_idx, start_idx + num_questions))
+        # Log evaluation configuration
+        logger.info(
+            f"\n{'=' * 100}\n"
+            "Starting SimpleQA Evaluation\n"
+            f"Agent Type: {agent_type}\n"
+            f"Model: {model_name}\n"
+            f"Questions: {num_questions}\n"
+            f"Start Index: {start_idx}\n"
+            f"Output directory: {WORKING_DIRECTORY}\n"
+            f"\n{'=' * 100}\n"
+        )
 
     # setup the agent for evaluation
     load_dotenv()  # load the openai key from .env
@@ -128,11 +178,6 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
     eval_agent = ChatAgent(model=eval_model)
     evaluator = SimpleQAEvaluator(eval_agent)
 
-    # load the dataset
-    dataset = load_dataset("basicv8vc/SimpleQA")
-
-    test_samples = list(dataset["test"])[start_idx : start_idx + num_questions]
-
     scores = []
     results = []
     counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0, "ERROR": 0}
@@ -148,7 +193,10 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
         ):
             # Create a unique ID for this problem (dataset index)
-            problem_id = start_idx + i
+            problem_id = test_sample_ids[i]
+            agent.update_note_taking_directory(
+                WORKING_DIRECTORY / "note_taking_logs" / f"problem_{problem_id}"
+            )
 
             # Run agent with retry logic
             step_result = run_agent_with_retry(
@@ -203,12 +251,13 @@ def main(agent_type: str, model_name: str, num_questions: int, start_idx: int):
             current_accuracy = counter["CORRECT"] / (i + 1) * 100
 
             logger.info(
-                f"\nQuestion: {i + 1} / {num_questions}\n"
+                f"\nQuestion: {i + 1} / {num_questions} (ID: {problem_id}) \n"
                 f"Agent: {agent_type}\n"
                 f"Grade: {grade_with_emoji}\n"
                 f"Running totals: {counter}\n"
                 f"Current accuracy: {current_accuracy:.2f}%\n"
                 f"Result: {json.dumps(result, indent=2)}\n"
+                f"Token Usage: {token_usage} (Total: {total_token_usage})\n"
             )
 
             # if agent_type == "research":

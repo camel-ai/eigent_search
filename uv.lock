@@ -601,7 +601,7 @@ wheels = [
 
 [[package]]
 name = "camel-ai"
-version = "0.2.76a1"
+version = "0.2.76a5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
@@ -615,9 +615,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d8/3a/5da23ae7b56bbec65e84820d706db8eefbc0ec4c7387a6165fa737748c81/camel_ai-0.2.76a1.tar.gz", hash = "sha256:db9c8fdaa68fb0dd567239a1813f509b31fe966b56e9c39e6cbc20fe3c6314e9", size = 938171, upload-time = "2025-09-10T08:39:45.337Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/5e/a993fcb70dc67c43f09ad18b287d5c3991bb49583bba1c4522400f523ec8/camel_ai-0.2.76a5.tar.gz", hash = "sha256:86f267d5e5cf0ffcf3f422247684b562667994bd3e20c25abbc966fbe8f24ddf", size = 952512, upload-time = "2025-09-23T18:53:09.63Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/be/ca/2f9e13a52687a5919a109a1b0fc68b2c8190eb97fe2ea613fd88fa4a4c29/camel_ai-0.2.76a1-py3-none-any.whl", hash = "sha256:4203eb3d06c2444814a2cc97b3d45782a2d985db98b7b044a0e519a314dae764", size = 1380027, upload-time = "2025-09-10T08:39:43.048Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/3e/49eaeb7dca62646057a32bce69be5f35610708caefd2b05271db023062f7/camel_ai-0.2.76a5-py3-none-any.whl", hash = "sha256:535303919e91d0f60f0252e58b18dd233b9f31b639c2394b495715159f710946", size = 1398674, upload-time = "2025-09-23T18:53:07.331Z" },
 ]
 
 [package.optional-dependencies]
@@ -710,13 +710,14 @@ all = [
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
     { name = "python-pptx" },
-    { name = "pytidb-experimental" },
+    { name = "pytidb" },
     { name = "qdrant-client" },
     { name = "rank-bm25" },
     { name = "redis" },
     { name = "reka-api" },
     { name = "reportlab" },
     { name = "requests-oauthlib" },
+    { name = "resend" },
     { name = "rlcard" },
     { name = "rouge" },
     { name = "scenedetect" },
@@ -1478,11 +1479,11 @@ wheels = [
 
 [[package]]
 name = "docstring-parser"
-version = "0.15"
+version = "0.17.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e8/2d/ea1dfc15b909cc660f657a3a9d698a2916b7f3b05535a2d72e8d7ea3ad5b/docstring_parser-0.15.tar.gz", hash = "sha256:48ddc093e8b1865899956fcc03b03e66bb7240c310fac5af81814580c55bf682", size = 26768, upload-time = "2022-09-05T07:36:08.139Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b2/9d/c3b43da9515bd270df0f80548d9944e389870713cc1fe2b8fb35fe2bcefd/docstring_parser-0.17.0.tar.gz", hash = "sha256:583de4a309722b3315439bb31d64ba3eebada841f2e2cee23b99df001434c912", size = 27442, upload-time = "2025-07-21T07:35:01.868Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/89/e3/32e272db7adcf90e93f73e9a98fd763049ed7c641fb57ab26cb8f3e7e79c/docstring_parser-0.15-py3-none-any.whl", hash = "sha256:d1679b86250d269d06a99670924d6bce45adc00b08069dae8c47d98e89b667a9", size = 36093, upload-time = "2022-09-05T07:36:05.303Z" },
+    { url = "https://files.pythonhosted.org/packages/55/e2/2537ebcff11c1ee1ff17d8d0b6f4db75873e3b0fb32c2d4a2ee31ecb310a/docstring_parser-0.17.0-py3-none-any.whl", hash = "sha256:cf2569abd23dce8099b300f9b4fa8191e9582dda731fd533daf54c4551658708", size = 36896, upload-time = "2025-07-21T07:35:00.684Z" },
 ]
 
 [[package]]
@@ -1605,7 +1606,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "camel-ai", extras = ["all"], specifier = "==0.2.76a1" }]
+requires-dist = [{ name = "camel-ai", extras = ["all"], specifier = "==0.2.76a5" }]
 
 [[package]]
 name = "emoji"
@@ -5555,17 +5556,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ef/c6/2c5999de3bb1533521f1101e8fe56fd9c266732f4d48011c7c69b29d12ae/python3-xlib-0.15.tar.gz", hash = "sha256:dc4245f3ae4aa5949c1d112ee4723901ade37a96721ba9645f2bfa56e5b383f8", size = 132828, upload-time = "2014-05-31T12:28:59.603Z" }
 
 [[package]]
-name = "pytidb-experimental"
-version = "0.0.1.dev4"
+name = "pytidb"
+version = "0.0.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "numpy" },
     { name = "pymysql" },
+    { name = "sqlalchemy" },
     { name = "sqlmodel" },
-    { name = "tidb-vector" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/b9/11fdb74a0cf645cb02ccff7a1f163333eedd461e364425caede13dba5d6b/pytidb_experimental-0.0.1.dev4.tar.gz", hash = "sha256:0161b77758af363a6d3f0c16df010effae2cea3b0f98ca08b6d0b9eb07760923", size = 15079, upload-time = "2025-03-21T03:11:07.625Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a5/c1/511c5f7e6660b4929f730db68a45c183ce919064189f1c8718ccd67a9418/pytidb-0.0.13.tar.gz", hash = "sha256:0c5da2f84f97a7dce6552e3369bfd181af83e7cfbfaf9bc1e878a10686807030", size = 46666, upload-time = "2025-08-29T02:42:38.22Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8b/71/a531e6648455fd8a936530c67c619a33726f55331bacdac74aa6742d0baf/pytidb_experimental-0.0.1.dev4-py3-none-any.whl", hash = "sha256:5ba3f5bb533927b0f82421df4c6f379dafd4f2afe8cfaf15ec0f00833794f1d0", size = 17824, upload-time = "2025-03-21T03:11:06.299Z" },
+    { url = "https://files.pythonhosted.org/packages/47/93/e33501ceeb48a0cffe45c4a2816a2136b9c49461d1977facf81a9689cf3f/pytidb-0.0.13-py3-none-any.whl", hash = "sha256:85f9eefa21714c7e0d5ed5c24c710b07d4453fbfb0062774d03354941b35e180", size = 57598, upload-time = "2025-08-29T02:42:33.523Z" },
 ]
 
 [[package]]
@@ -5937,6 +5939,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f3/61/d7545dafb7ac2230c70d38d31cbfe4cc64f7144dc41f6e4e4b78ecd9f5bb/requests-toolbelt-1.0.0.tar.gz", hash = "sha256:7681a0a3d047012b5bdc0ee37d7f8f07ebe76ab08caeccfc3921ce23c88d5bc6", size = 206888, upload-time = "2023-05-01T04:11:33.229Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3f/51/d4db610ef29373b879047326cbf6fa98b6c1969d6f6dc423279de2b1be2c/requests_toolbelt-1.0.0-py2.py3-none-any.whl", hash = "sha256:cccfdd665f0a24fcf4726e690f65639d272bb0637b9b92dfd91a5568ccf6bd06", size = 54481, upload-time = "2023-05-01T04:11:28.427Z" },
+]
+
+[[package]]
+name = "resend"
+version = "2.14.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f9/31/957c143f433bfcaff30c733ee7a63484f2abb10c36521640619d1e44a7af/resend-2.14.0.tar.gz", hash = "sha256:2c5385ca8bc72aafc494e747818a6c514e51bb1199213ffd02d62f24aa78b3f2", size = 15762, upload-time = "2025-09-20T00:26:44.742Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/46/f5/7039cbd5917d8518eba94950416af557fd1ab7f30e21aff8c35854e1d229/resend-2.14.0-py2.py3-none-any.whl", hash = "sha256:1f5aea2966b59695f3af8571d75fb4b769b6d2ecf6b8d0f8c6ca8de1dffb6c12", size = 22584, upload-time = "2025-09-20T00:26:43.503Z" },
 ]
 
 [[package]]
@@ -6896,18 +6911,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/b7/4d/08c89e34946fce2aec4fbb45c9016efd5f4d7f24af8e5d93296e935631d8/threadpoolctl-3.6.0.tar.gz", hash = "sha256:8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e", size = 21274, upload-time = "2025-03-13T13:49:23.031Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/32/d5/f9a850d79b0851d1d4ef6456097579a9005b31fea68726a4ae5f2d82ddd9/threadpoolctl-3.6.0-py3-none-any.whl", hash = "sha256:43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb", size = 18638, upload-time = "2025-03-13T13:49:21.846Z" },
-]
-
-[[package]]
-name = "tidb-vector"
-version = "0.0.14"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d8/fc/039b05b6b9002e49e004958bc3fc9b4424bb5b44783da17ceae7d158d0dc/tidb_vector-0.0.14.tar.gz", hash = "sha256:a63f4af54bb91aea51ae55d8cb9528b7bd2d3838181d7978cf5fcadfa8ab2887", size = 20805, upload-time = "2024-11-11T01:58:16.703Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/28/83/41a82d7248f213ea800e65ab1733405070a8d13825f5756f1784e6553c3c/tidb_vector-0.0.14-py3-none-any.whl", hash = "sha256:19f25d5c3fd024d4dbabac54d4f2920c19235a678b832f7a1c46a00b1bc990a3", size = 21914, upload-time = "2024-11-11T01:58:14.788Z" },
 ]
 
 [[package]]

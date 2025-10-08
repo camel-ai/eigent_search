@@ -24,7 +24,7 @@ from camel.toolkits import (
     TerminalToolkit,
     ToolkitMessageIntegration,
 )
-
+from pathlib import Path
 
 logger = get_logger(__name__)
 
@@ -56,6 +56,15 @@ class DeepSearchEnvironment:
         self.note_taking_toolkit = self.message_integration.register_toolkits(
             self.note_taking_toolkit
         )
+
+    def update_note_taking_directory(self, new_directory: Path):
+        """Update the working directory for note-taking toolkit."""
+        if hasattr(self, "note_taking_toolkit"):
+            self.note_taking_toolkit.working_directory = new_directory
+            self.note_taking_toolkit.registry_file = new_directory / ".note_register"
+            self.note_taking_toolkit.registry = []
+            new_directory.mkdir(parents=True, exist_ok=True)
+            logger.info(f"Note-taking directory updated to: {new_directory}")
 
     def construct_action_space(self):
         """Construct a toolkit for actions related to the deep search environment."""
@@ -111,7 +120,7 @@ class DeepSearchEnvironment:
         terminal_toolkit = TerminalToolkit(
             safe_mode=True,
             clone_current_env=False,
-            log_dir=os.path.join(self.working_directory, "terminal_logs"),
+            session_logs_dir=os.path.join(self.working_directory, "terminal_logs"),
         )
 
         # Override get_tools method to only include specific tools
