@@ -328,6 +328,8 @@ class QueryProcessingToolkit(BaseToolkit):
             FunctionTool(self.generate_new_queries),
             FunctionTool(self.propose_final_answer),
             FunctionTool(self.evaluate_final_answer),
+            FunctionTool(self.analyze_search_progress),
+            FunctionTool(self.extract_relevant_details),
             FunctionTool(self.reflect),
         ]
 
@@ -360,6 +362,65 @@ class QueryProcessingToolkit(BaseToolkit):
             error_msg = f"Error recording reflection: {e}"
             logger.error(error_msg)
             return error_msg
+        
+    def extract_relevant_details(
+                self,
+                snapshot: str,
+                query: str,
+                question: str,
+                relevant_information: str,
+                page_url: str = ""
+        ) -> str:
+            r"""Use this tool to extract relevant information from the page that answers the question.
+            When extracting, carefully read the ENTIRE snapshot including:
+            - Structured sections like tables, info boxes, and labeled fields (these often contain direct answers)
+            - Main article text and paragraphs
+            - All sections that might contain relevant facts
+            CRITICAL - Precision Requirements:
+            - Extract information that EXACTLY matches what the question asks for, not just related information
+            - If the question asks for specific terms (e.g., "Gold"), don't substitute with related terms (e.g., "Platinum")
+            - If the question asks for complete details (e.g., "day, month, and year"), ensure you capture all components
+            - If you find information that's close but not exact, note what's missing and mark it as incomplete
+            Extraction guidelines:
+            - Look for explicit, direct answers first (especially in tables/info boxes with structured data)
+            - If you find conflicting or multiple pieces of information, include ALL of them
+            - Be thorough - don't stop at the first relevant snippet; scan the entire page
+            - If the exact information requested is NOT on this page, explicitly state what's missing
+            Args:
+                snapshot (str): The complete page content from browser_visit_page
+                query (str): The search query you used to find this page
+                question (str): The original question - what EXACTLY does it ask for?
+                relevant_information (str): Information you extract (must precisely match question requirements)
+                page_url (str): The URL of the page
+            Returns:
+                str: Confirmation that your extracted information has been recorded
+            """
+            logger.info(f"[extract_relevant_details] From: {page_url}")
+            return f"Relevant details recorded:\n\n{relevant_information}"
+    
+    def analyze_search_progress(
+            self,
+            question: str,
+            current_query: str,
+            findings_so_far: str,
+            your_analysis: str
+    ) -> str:
+        r"""Call this to analyse whether you have enough information to answer the question.
+        In your_analysis parameter, write your evaluation by:
+        1. Comparing your findings_so_far against what the question asks
+        2. Identifying any gaps or missing details
+        3. Determining if you need to refine your search
+        Your analysis should explain what you have vs what you still need.
+        Args:
+            question (str): The original research question
+            current_query (str): The search query you last used
+            findings_so_far (str): All relevant details you've extracted from visited pages
+            your_analysis (str): Your written evaluation - do findings answer the question completely?
+        Returns:
+            str: Your analysis, recorded
+        """
+        logger.info(f"[analyze_search_progress] Query: '{current_query}'")
+        return f"Analysis recorded:\n\n{your_analysis}"
 
 
 class QueryProcessingGraph:
