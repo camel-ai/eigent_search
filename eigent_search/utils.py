@@ -60,12 +60,14 @@ def run_agent_with_retry(
         Exception: If all retries fail
     """
 
+    def _handle_retry(retry_state: tenacity.RetryCallState):
+        logger.warning(f"Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Reset agent memory and environment and retry.")
+        agent.reset()
+
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(max_retries),
         wait=tenacity.wait_exponential(multiplier=1, min=1, max=10),
-        before_sleep=lambda retry_state: logger.warning(
-            f"Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Retrying..."
-        ),
+        before_sleep=_handle_retry,
         reraise=False,
     )
     def _run_with_retry(input_query: str) -> tuple[dict, List[Dict[str, Any]]]:
