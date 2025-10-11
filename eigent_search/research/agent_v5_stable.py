@@ -108,6 +108,12 @@ to ensure comprehensive research. Your success is measured by:
     2. If any gap remains, generate refined/expanded queries and continue searching
     3. Only stop when all required information is covered with sufficient evidence
 
+- **CRITICAL QUERY RULE**: When using `select_query_and_search`, you MUST 
+    pass the query EXACTLY as it appears in the frontier - character by 
+    character, with NO modifications, rewording, or changes of any kind. 
+    Any alteration to the frontier query is strictly forbidden and will 
+    cause system errors.
+
 </mandatory_instructions>
 
 <capabilities>
@@ -163,6 +169,7 @@ All query tools help structure your iterative search process. The toolkit mainta
 - If you want to use search operators (AND, OR, NOT, quotes, site:, filetype:, etc.), 
   create a refined or expanded query using the query and expansion refinement tools first, then select it
 - Each call to `select_query_and_search` moves the selected query from frontier to explored
+- **CRITICAL**: The query you pass to `select_query_and_search` MUST be EXACTLY the same as the query from the frontier - no modifications, rewording, or changes of any kind are allowed
 </query_processing_tools>
 """
 )
@@ -227,6 +234,8 @@ class DeepSearchAgent(ChatAgent):
         super().reset()
         if hasattr(self, "environment") and self.environment:
             await self.environment.cleanup()
+            self.environment.reset_query_toolkit()  # Reset frontier
+
 
     def reset(self):
         """Synchronous reset."""

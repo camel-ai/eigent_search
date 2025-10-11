@@ -59,18 +59,32 @@ class DeepSearchEnvironment:
             self.query_processing_toolkit
         )
 
+    def reset_query_toolkit(self):
+        """Reset query processing toolkit to clean state.
+
+        This should be called:
+        1. Before each new task (via initialize_query)
+        2. When agent.reset() is called
+        """
+        if hasattr(self, 'query_processing_toolkit'):
+            self.query_processing_toolkit.frontier.clear()
+            self.query_processing_toolkit.explored.clear()
+            self.query_processing_toolkit.search_counter = 0
+
+
     def initialize_query(self, initial_query: str):
         """Initialize the query processing toolkit with an initial query.
 
-    This should be called before the agent starts processing.
-    The initial query is directly added to the frontier.
+        This should be called before the agent starts processing.
+        The initial query is directly added to the frontier.
 
         Args:
             initial_query (str): The user's initial research question
         """
-        if not self.query_processing_toolkit.frontier:
-            self.query_processing_toolkit.frontier.add(initial_query)
-            logger.info(f"Initialized frontier with query: '{initial_query}'")
+        self.reset_query_toolkit()
+
+        self.query_processing_toolkit.frontier.add(initial_query)
+        logger.info(f"Frontier reset and initialized with query: '{initial_query}'")
 
     def get_frontier_str(self) -> str:
         """Get the current frontier as a formatted string for display to agent.
