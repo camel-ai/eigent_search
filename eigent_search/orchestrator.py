@@ -47,15 +47,7 @@ class ErrorSearchResult(BaseModel):
 
 
 class SearchOrchestrator:
-    """Orchestrates interaction between `SearchAgent` and `SearchEnvironment`.
-
-    Responsibilities:
-    - Coordinates agent-environment interaction
-    - Manages retry logic with exponential backoff
-    - Handles timeouts and error recovery
-    - Tracks metrics (tool trajectories, token usage)
-    - Manages lifecycle (reset, cleanup)
-    """
+    """Orchestrates search agent execution."""
 
     def __init__(self, config: SearchConfig):
         """Initialize the orchestrator.
