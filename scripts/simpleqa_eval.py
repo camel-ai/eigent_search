@@ -178,7 +178,7 @@ def run_search_and_evaluate_multithreaded(
 @click.option(
     "--custom_idx_list",
     "-c",
-    type=str,
+    type=list[int],
     default=None,
     help="Customized list of question IDs to evaluate (e.g., '[1,2,3]') If provided, will override the `start_idx` and `num_questions`.",
 )
@@ -188,7 +188,7 @@ def main(
     model_name: str,
     num_questions: int,
     start_idx: int,
-    custom_idx_list: str,
+    custom_idx_list: list[int],
     num_workers: int,
 ):
     # load the dataset
@@ -199,7 +199,7 @@ def main(
         logger.info(
             f"Overriding `start_idx` and `num_questions` with customized list of question IDs: {custom_idx_list}"
         )
-        test_sample_ids = eval(custom_idx_list)
+        test_sample_ids = custom_idx_list
         test_samples = [dataset[idx] for idx in test_sample_ids]
         num_questions = len(test_sample_ids)
 
