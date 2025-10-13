@@ -152,9 +152,7 @@ class SearchConfig(BaseModel):
             self.working_directory.as_posix(), agent_type
         )
 
-    def set_preset_tools(
-        self, agent_type: SearchAgentType, initial_query: str | None = None
-    ):
+    def set_preset_tools(self, agent_type: SearchAgentType):
         eigent_search_toolkit = EigentSearchToolkit(
             working_directory=self.working_directory,
             exclude_search_domains=["huggingface.co", "hf.co", "oxen.ai"],
@@ -170,17 +168,13 @@ class SearchConfig(BaseModel):
             self.toolkits_to_cleanup = [eigent_search_toolkit]
 
         if agent_type == SearchAgentType.EIGENT_SEARCH_PLUS:
-            if initial_query is None:
-                raise ValueError(
-                    "`initial_query` is required for `EIGENT_SEARCH_PLUS` with query processing tools"
-                )
             query_processing_toolkit = QueryProcessingToolkit(
-                initial_query=initial_query,
                 exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
             )
             eigent_search_toolkit.register(query_processing_toolkit)
             self.tools = (
-                eigent_search_toolkit.get_tools() + query_processing_toolkit.get_tools()
+                eigent_search_toolkit.get_tools(exclude_search_toolkit=True)
+                + query_processing_toolkit.get_tools()
             )
             self.toolkits_to_register_agent = [eigent_search_toolkit.browser_toolkit]
             self.toolkits_to_cleanup = [eigent_search_toolkit]

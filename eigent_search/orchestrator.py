@@ -23,12 +23,17 @@ import tenacity
 
 from .config import SearchConfig
 from .tool_trajectory import ToolTrajectory
-from .toolkit import QueryProcessingToolkit
+from .toolkit import QueryProcessingToolkit, EigentSearchToolkit
 
 logger = get_logger(__name__)
 
 
-class SearchResponse(BaseModel):
+class SearchInput(BaseModel):
+    query_id: str
+    input_query: str
+
+
+class SearchResult(SearchInput):
     response: ChatAgentResponse
     tool_trajectory: list[ToolTrajectory]
 
@@ -37,7 +42,7 @@ class SearchResponse(BaseModel):
         return self.response.info["usage"]["total_tokens"]
 
 
-class ErrorSearchResponse(BaseModel):
+class ErrorSearchResult(BaseModel):
     error: str
 
 
@@ -63,8 +68,11 @@ class SearchOrchestrator:
         """
         self.config = config
         self.agent = config.create_agent()
+        self.eigent_search_toolkit = None
         self.query_processing_toolkit = None
         for toolkit in config.toolkits:
+            if isinstance(toolkit, EigentSearchToolkit):
+                self.eigent_search_toolkit = toolkit
             if isinstance(toolkit, QueryProcessingToolkit):
                 self.query_processing_toolkit = toolkit
 
@@ -85,14 +93,14 @@ class SearchOrchestrator:
 
     async def astep(self, input_query: str) -> ChatAgentResponse:
         if self.query_processing_toolkit:
-            self.query_processing_toolkit.reset(input_query)
+            self.query_processing_toolkit.load_initial_query(input_query)
         response = await self.agent.astep(
             input_query,
             response_format=self.config.response_format,
         )
         return response
 
-    def run_agent(self, input_query: str) -> SearchResponse:
+    def run_agent(self, search_input: SearchInput) -> SearchResult:
         """Run the agent with retry logic, timeout and error handling.
 
         Args:
@@ -122,11 +130,13 @@ class SearchOrchestrator:
             timeout_seconds = self.config.timeout_minutes_per_orchestrator_step * 60
             response = asyncio.run(
                 asyncio.wait_for(
-                    self.astep(input_query),
+                    self.astep(search_input.input_query),
                     timeout=timeout_seconds,
                 )
             )
-            return SearchResponse(
+            return SearchResult(
+                query_id=search_input.query_id,
+                input_query=search_input.input_query,
                 response=response,
                 tool_trajectory=ToolTrajectory.extract_from_response(response),
             )
@@ -138,4 +148,4 @@ class SearchOrchestrator:
                 f"Agent failed after {self.config.max_orchestrator_retries} attempts: {e}"
             )
             self.reset()
-            return ErrorSearchResponse(error=str(e))
+            return ErrorSearchResult(error=str(e))

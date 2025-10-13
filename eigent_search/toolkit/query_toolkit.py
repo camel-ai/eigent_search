@@ -124,11 +124,11 @@ class QueryProcessingToolkit(BaseToolkit):
     allowing agents to iteratively refine their search strategy.
     """
 
-    def __init__(self, initial_query: str, exclude_domains: list[str] | None = None):
+    def __init__(self, exclude_domains: list[str] | None = None):
         super().__init__()
-        self.frontier = {initial_query}
+        self.frontier = set()
         self.explored = set()
-        self.initial_query = initial_query
+        self.initial_query = None
         self._search_toolkit = SearchToolkit(exclude_domains=exclude_domains)
         self.search = lambda query: self._search_toolkit.search_google(
             query=query,
@@ -138,11 +138,11 @@ class QueryProcessingToolkit(BaseToolkit):
         )
         self.search_counter = 0
 
-    def reset(self, initial_query: str):
+    def load_initial_query(self, initial_query: str):
         """Reset with the new initial query."""
+        self.initial_query = initial_query
         self.frontier = {initial_query}
         self.explored = set()
-        self.initial_query = initial_query
 
     def get_frontier_str(self) -> str:
         """Display the current frontier as a string."""
