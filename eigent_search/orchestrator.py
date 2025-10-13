@@ -83,9 +83,22 @@ class SearchOrchestrator:
         nest_asyncio.apply()
         asyncio.run(self.cleanup())
 
-    async def astep(self, input_query: str) -> ChatAgentResponse:
+    async def astep(
+        self, input_query: str, query_id: str | None = None
+    ) -> ChatAgentResponse:
+        # Load initial query into query processing toolkit
         if self.query_processing_toolkit:
             self.query_processing_toolkit.load_initial_query(input_query)
+
+        # Update note-taking directory for eigent search toolkit
+        if self.eigent_search_toolkit:
+            note_taking_directory = self.config.working_directory / "note_taking_logs"
+            if query_id:
+                note_taking_directory = note_taking_directory / query_id
+            self.eigent_search_toolkit.update_note_taking_directory(
+                note_taking_directory
+            )
+
         response = await self.agent.astep(
             input_query,
             response_format=self.config.response_format,
@@ -93,17 +106,7 @@ class SearchOrchestrator:
         return response
 
     def run_agent(self, search_input: SearchInput) -> SearchResult:
-        """Run the agent with retry logic, timeout and error handling.
-
-        Args:
-            input_query: The user's search query
-
-        Returns:
-            SearchResponse containing the agent's response and metadata
-
-        Raises:
-            Exception: If execution fails or times out after all retries
-        """
+        """Run the agent with retry logic, timeout and error handling."""
 
         def _handle_retry(retry_state: tenacity.RetryCallState):
             logger.error(
@@ -122,19 +125,20 @@ class SearchOrchestrator:
             timeout_seconds = self.config.timeout_minutes_per_orchestrator_step * 60
             response = asyncio.run(
                 asyncio.wait_for(
-                    self.astep(search_input.input_query),
+                    self.astep(search_input.input_query, search_input.query_id),
                     timeout=timeout_seconds,
                 )
             )
             return SearchResult(
-                query_id=search_input.query_id,
-                input_query=search_input.input_query,
+                **search_input.model_dump(),
                 response=response,
                 tool_trajectory=ToolTrajectory.extract_from_response(response),
             )
 
         try:
-            return _run_with_retry()
+            result = _run_with_retry()
+            self.reset()
+            return result
         except Exception as e:
             logger.error(
                 f"Agent failed after {self.config.max_orchestrator_retries} attempts: {e}"
