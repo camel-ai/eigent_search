@@ -53,7 +53,7 @@ class SearchResult(SearchRequest):
         return response
 
 
-class ErrorSearchResult(BaseModel):
+class ErrorSearchResult(SearchRequest):
     error: str
 
 
@@ -113,7 +113,7 @@ class SearchOrchestrator:
     ) -> SearchRequest:
         return SearchRequest(input_query=input_query, query_id=query_id)
 
-    def run_agent(self, search_input: SearchRequest) -> SearchResult:
+    def run_agent(self, search_input: SearchRequest) -> SearchResult | ErrorSearchResult:
         """Run the agent with retry logic, timeout and error handling."""
 
         def _handle_retry(retry_state: tenacity.RetryCallState):
