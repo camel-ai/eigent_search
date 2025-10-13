@@ -18,12 +18,13 @@ from typing import Any, Generic, TypeVar, Union
 
 from datasets import Dataset, DatasetDict, IterableDataset, IterableDatasetDict
 from pydantic import BaseModel, Field
-
+from pydantic.generics import GenericModel
 
 BenchmarkPayload = TypeVar("T", bound=BaseModel)
 
 
 class EvaluationRequest(BaseModel, Generic[BenchmarkPayload]):
+
     payload: BenchmarkPayload
     metadata: dict[str, Any] = Field(default_factory=dict)
 

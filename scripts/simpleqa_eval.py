@@ -36,7 +36,7 @@ from eigent_search import (
 from eigent_search.evaluation import SimpleQAEvaluator
 
 
-WORKING_DIRECTORY = os.getcwd()
+WORKING_DIRECTORY = Path(os.getcwd())
 set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
@@ -79,12 +79,12 @@ def set_up_config(
     return {
         "search_config": SearchConfig(
             working_directory=os.getcwd(),
-            **MODEL_CONFIGS[model_name],
+            **MODEL_CONFIGS[model_name].value,
             agent_type=AGENT_TYPES[agent_type],
             response_format=SimpleQAResponse,
         ),
         "judge_config": LLMasJudgeConfig(
-            **MODEL_CONFIGS["gpt-4.1"],  # We use gpt-4.1 as the judge model
+            **MODEL_CONFIGS["gpt-4.1"].value,  # We use gpt-4.1 as the judge model
         ),
         "result_file": result_file,
         "tool_trajectory_dir": tool_trajectory_dir,
@@ -115,9 +115,9 @@ def run_search_and_evaluate(
     judge_agent = judge_config.create_agent()
     evaluator = SimpleQAEvaluator(judge_agent)
     eval_request = evaluator.create_request(
-        problem=test_sample["problem"],
-        answer=test_sample["answer"],
-        prediction=search_result.formatted_response,
+        query=test_sample["problem"],
+        reference_answer=test_sample["answer"],
+        model_answer=search_result.formatted_response,
     )
     eval_result = evaluator.evaluate(eval_request)
     return {
@@ -203,6 +203,10 @@ def main(
         test_samples = [dataset[idx] for idx in test_sample_ids]
         num_questions = len(test_sample_ids)
 
+    # Add id field to each test sample
+    for i, sample in enumerate(test_samples):
+        sample["id"] = str(test_sample_ids[i])
+
     # Load the search config and judge config
     config = set_up_config(agent_type, model_name)
     search_config = config["search_config"]
@@ -213,7 +217,7 @@ def main(
         f"\n{'=' * 100}\n"
         "Starting SimpleQA Evaluation:\n"
         f"[Search Config]\n"
-        f"{search_config.model_dump_json(indent=2)}\n"
+        f"{search_config.model_dump_json(indent=2, exclude={'toolkits', 'toolkits_to_register_agent', 'toolkits_to_cleanup', 'response_format'})}\n"
         f"[Judge Config]\n"
         f"{judge_config.model_dump_json(indent=2)}\n"
         f"\n{'=' * 100}\n"
