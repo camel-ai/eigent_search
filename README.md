@@ -1,4 +1,6 @@
-# Eigent Search AgentQ
+# EigentSearch-Q+
+
+Eigent search agent enhanced with query processing toolkit.
 
 ## Development Logs
 
