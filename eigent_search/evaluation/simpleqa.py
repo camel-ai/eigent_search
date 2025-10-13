@@ -88,9 +88,9 @@ Also note the following things:
 
 Here is a new example. Simply reply with either CORRECT, INCORRECT, NOT ATTEMPTED. Don't apologize or correct yourself if there was a mistake; we are just trying to grade the answer.
 ```
-Question: {problem}
-Gold target: {answer}
-Predicted answer: {prediction}
+Question: {query}
+Gold target: {reference_answer}
+Predicted answer: {model_answer}
 ```
 
 Grade the predicted answer of this new question as one of: "CORRECT", "INCORRECT", "NOT_ATTEMPTED".
@@ -100,9 +100,9 @@ Just return the grade, with no text around it.
 
 
 class SimpleQAPayload(BaseModel):
-    problem: str = Field(..., description="The question to evaluate.")
-    answer: str = Field(..., description="The ground truth answer.")
-    prediction: str = Field(..., description="The predicted answer.")
+    query: str = Field(..., description="The question to evaluate.")
+    reference_answer: str = Field(..., description="The ground truth answer.")
+    model_answer: str = Field(..., description="The model predicted answer.")
 
 
 class SimpleQAGrade(BaseModel):
@@ -116,33 +116,37 @@ class SimpleQAGrade(BaseModel):
 class SimpleQAEvaluator(BaseEvaluator):
     """A chat agent-based class for evaluating the quality of predicted answers for SimpleQA."""
 
-    def __init__(self, chat_agent: ChatAgent):
-        self.agent = chat_agent
+    def __init__(self, judge_agent: ChatAgent):
+        self.judge_agent = judge_agent
 
     @staticmethod
     def load_dataset() -> Dataset:
         return load_dataset("basicv8vc/SimpleQA")
 
     def create_request(
-        self, problem: str, answer: str, prediction: str
+        self, query: str, reference_answer: str, model_answer: str
     ) -> EvaluationRequest[SimpleQAPayload]:
         return EvaluationRequest(
             payload=SimpleQAPayload(
-                problem=problem, answer=answer, prediction=prediction
+                query=query,
+                reference_answer=reference_answer,
+                model_answer=model_answer,
             )
         )
 
     def evaluate(self, request: EvaluationRequest[SimpleQAPayload]) -> EvaluationResult:
-        self.agent.reset()
-        response = self.agent.step(
+        self.judge_agent.reset()
+        response = self.judge_agent.step(
             GRADER_TEMPLATE.format(
-                problem=request.payload.problem,
-                answer=request.payload.answer,
-                prediction=request.payload.prediction,
+                query=request.payload.query,
+                reference_answer=request.payload.reference_answer,
+                model_answer=request.payload.model_answer,
             ),
             response_format=SimpleQAGrade,
         )
         grade = eval(response.msgs[0].content.strip())["grade"]
         return EvaluationResult(
-            score=1.0 if grade == "CORRECT" else 0.0, metrics={"grade": grade}
+            **request.model_dump(),
+            score=1.0 if grade == "CORRECT" else 0.0,
+            metrics={"grade": grade},
         )

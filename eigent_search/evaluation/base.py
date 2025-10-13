@@ -13,11 +13,11 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from __future__ import annotations
-
 from abc import ABC, abstractmethod
-from pydantic import BaseModel, Field
-from typing import TypeVar, Generic, Any, Union
+from typing import Any, Generic, TypeVar, Union
+
 from datasets import Dataset, DatasetDict, IterableDataset, IterableDatasetDict
+from pydantic import BaseModel, Field
 
 
 BenchmarkPayload = TypeVar("T", bound=BaseModel)
@@ -28,8 +28,8 @@ class EvaluationRequest(BaseModel, Generic[BenchmarkPayload]):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
-class EvaluationResult(BaseModel):
-    """Result of an evaluation with an overall score and detailed metrics."""
+class EvaluationResult(EvaluationRequest[BenchmarkPayload]):
+    """Result of an evaluation with an overall score and detailed metrics, along with the original request payload and metadata."""
 
     score: float = Field(
         default_factory=float, description="Standard score for the evaluation."
