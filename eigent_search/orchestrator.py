@@ -24,17 +24,17 @@ import tenacity
 
 from .config import SearchConfig
 from .tool_trajectory import ToolTrajectory
-from .toolkit import QueryProcessingToolkit, EigentSearchToolkit
+from .toolkit import EigentSearchToolkit, QueryProcessingToolkit
 
 logger = get_logger(__name__)
 
 
-class SearchInput(BaseModel):
+class SearchRequest(BaseModel):
     query_id: str
     input_query: str
 
 
-class SearchResult(SearchInput):
+class SearchResult(SearchRequest):
     response: ChatAgentResponse
     response_format: Type[BaseModel] | None
     tool_trajectory: list[ToolTrajectory]
@@ -116,7 +116,7 @@ class SearchOrchestrator:
         )
         return response
 
-    def run_agent(self, search_input: SearchInput) -> SearchResult:
+    def run_agent(self, search_input: SearchRequest) -> SearchResult:
         """Run the agent with retry logic, timeout and error handling."""
 
         def _handle_retry(retry_state: tenacity.RetryCallState):

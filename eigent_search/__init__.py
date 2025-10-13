@@ -12,12 +12,15 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from .config import SearchAgentType, SearchModelConfig, SearchConfig
-from .orchestrator import SearchOrchestrator
+from .config import SearchAgentType, BackendModelConfig, SearchConfig, LLMasJudgeConfig
+from .orchestrator import SearchOrchestrator, SearchRequest, SearchResult
 
 __all__ = [
     "SearchAgentType",
-    "SearchModelConfig",
+    "BackendModelConfig",
     "SearchConfig",
+    "LLMasJudgeConfig",
     "SearchOrchestrator",
+    "SearchRequest",
+    "SearchResult",
 ]

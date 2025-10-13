@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Type
 
 from camel.agents import ChatAgent
+from camel.utils import api_keys_required
 from camel.logger import get_logger
 from camel.models import BaseModelBackend, ModelFactory
 from camel.toolkits import BaseToolkit, RegisteredAgentToolkit
@@ -57,22 +58,30 @@ class SearchAgentType(Enum):
     CUSTOMIZED = "customized"
 
 
-class SearchModelConfig(Enum):
+class BackendModelConfig(Enum):
+    GPT_4_1 = {
+        "model_type": ModelType.GPT_4_1,
+        "model_platform": ModelPlatformType.OPENAI,
+        "temperature": 0.0,
+        "self_host_url": None,
+    }
     GPT_4_1_MINI = {
         "model_type": ModelType.GPT_4_1_MINI,
         "model_platform": ModelPlatformType.OPENAI,
         "temperature": 0.0,
         "self_host_url": None,
-        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
-        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
+    }
+    GPT_4O = {
+        "model_type": ModelType.GPT_4O,
+        "model_platform": ModelPlatformType.OPENAI,
+        "temperature": 0.0,
+        "self_host_url": None,
     }
     GPT_4O_MINI = {
         "model_type": ModelType.GPT_4O_MINI,
         "model_platform": ModelPlatformType.OPENAI,
         "temperature": 0.0,
         "self_host_url": None,
-        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
-        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
     }
 
     GPT_OSS = {
@@ -80,10 +89,9 @@ class SearchModelConfig(Enum):
         "model_platform": ModelPlatformType.OLLAMA,
         "temperature": 0.0,
         "self_host_url": "http://129.212.188.6:7861/v1",  # need to changed by @wendong when needed
-        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
-        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
     }
-    ALL = [GPT_4_1_MINI, GPT_4O_MINI, GPT_OSS]
+
+    ALL = [GPT_4_1, GPT_4_1_MINI, GPT_4O, GPT_4O_MINI, GPT_OSS]
 
 
 class SearchConfig(BaseModel):
@@ -140,6 +148,12 @@ class SearchConfig(BaseModel):
             url=self.self_host_url,
         )
 
+    @api_keys_required(
+        [
+            (None, "GOOGLE_API_KEY"),
+            (None, "SEARCH_ENGINE_ID"),
+        ]
+    )
     def create_agent(self) -> ChatAgent:
         return ChatAgent(
             system_message=self.system_prompt,
@@ -182,3 +196,21 @@ class SearchConfig(BaseModel):
             self.toolkits = [eigent_search_toolkit, query_processing_toolkit]
             self.toolkits_to_register_agent = [eigent_search_toolkit.browser_toolkit]
             self.toolkits_to_cleanup = [eigent_search_toolkit]
+
+
+class LLMasJudgeConfig(BaseModel):
+    model_type: str | ModelType = ModelType.GPT_4_1
+    model_platform: ModelPlatformType = ModelPlatformType.OPENAI
+    temperature: float = 0.0
+    self_host_url: str | None = None
+
+    def create_model(self) -> BaseModelBackend:
+        return ModelFactory.create(
+            model_platform=self.model_platform,
+            model_type=self.model_type,
+            model_config_dict={"temperature": self.temperature},
+            url=self.self_host_url,
+        )
+
+    def create_agent(self) -> ChatAgent:
+        return ChatAgent(model=self.create_model())
