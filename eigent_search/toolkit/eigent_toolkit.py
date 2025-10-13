@@ -74,16 +74,14 @@ class EigentSearchToolkit(CleanupToolkit):
         except Exception as e:
             logger.warning(f"Error during browser cleanup: {e}")
 
-    def get_tools(self, exclude_search_toolkit: bool = False) -> list[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         """Get the tools for the eigent search toolkit."""
-        tools = [
+        return [
+            *self.search_toolkit.get_tools(),
             *self.browser_toolkit.get_tools(),
             *self.terminal_toolkit.get_tools(),
             *self.note_taking_toolkit.get_tools(),
         ]
-        if not exclude_search_toolkit:
-            tools.extend(self.search_toolkit.get_tools())
-        return tools
 
     def update_note_taking_directory(self, new_directory: Path):
         """Update the working directory for note-taking toolkit."""

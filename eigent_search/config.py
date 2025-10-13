@@ -15,6 +15,7 @@
 from __future__ import annotations
 import datetime
 from enum import Enum
+import itertools
 import os
 from pathlib import Path
 from typing import Type
@@ -42,34 +43,6 @@ DEFAULT_MAX_ORCHESTRATOR_RETRIES = 5
 DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP = 5
 
 
-MODEL_SEARCH_CONFIGS = {
-    "gpt-4.1-mini": {
-        "model_type": ModelType.GPT_4_1_MINI,
-        "model_platform": ModelPlatformType.OPENAI,
-        "temperature": 0.0,
-        "self_host_url": None,
-        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
-        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
-    },
-    "gpt-4o-mini": {
-        "model_type": ModelType.GPT_4O_MINI,
-        "model_platform": ModelPlatformType.OPENAI,
-        "temperature": 0.0,
-        "self_host_url": None,
-        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
-        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
-    },
-    "gpt-oss": {
-        "model_type": "gpt-oss:120b",
-        "model_platform": ModelPlatformType.OLLAMA,
-        "temperature": 0.0,
-        "self_host_url": "http://129.212.188.6:7861/v1",  # need to changed by @wendong when needed
-        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
-        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
-    },
-}
-
-
 class SearchAgentType(Enum):
     """Predefined agent types for using different tools in the search environment."""
 
@@ -82,6 +55,35 @@ class SearchAgentType(Enum):
 
     # Customized agent (no preset system prompt or tools)
     CUSTOMIZED = "customized"
+
+
+class SearchModelConfig(Enum):
+    GPT_4_1_MINI = {
+        "model_type": ModelType.GPT_4_1_MINI,
+        "model_platform": ModelPlatformType.OPENAI,
+        "temperature": 0.0,
+        "self_host_url": None,
+        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
+        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
+    }
+    GPT_4O_MINI = {
+        "model_type": ModelType.GPT_4O_MINI,
+        "model_platform": ModelPlatformType.OPENAI,
+        "temperature": 0.0,
+        "self_host_url": None,
+        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
+        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
+    }
+
+    GPT_OSS = {
+        "model_type": "gpt-oss:120b",
+        "model_platform": ModelPlatformType.OLLAMA,
+        "temperature": 0.0,
+        "self_host_url": "http://129.212.188.6:7861/v1",  # need to changed by @wendong when needed
+        "max_orchestrator_retries": DEFAULT_MAX_ORCHESTRATOR_RETRIES,
+        "timeout_minutes_per_orchestrator_step": DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP,
+    }
+    ALL = [GPT_4_1_MINI, GPT_4O_MINI, GPT_OSS]
 
 
 class SearchConfig(BaseModel):
@@ -142,7 +144,11 @@ class SearchConfig(BaseModel):
         return ChatAgent(
             system_message=self.system_prompt,
             model=self.create_model(),
-            tools=[tool for toolkit in self.toolkits for tool in toolkit.get_tools()],
+            tools=list(
+                itertools.chain.from_iterable(
+                    toolkit.get_tools() for toolkit in self.toolkits
+                )
+            ),
             toolkits_to_register_agent=self.toolkits_to_register_agent,
             prune_tool_calls_from_memory=self.prune_tool_calls_from_memory,
         )
@@ -159,11 +165,11 @@ class SearchConfig(BaseModel):
         )
 
         if agent_type == SearchAgentType.SEARCH_ONLY:
-            self.tools = eigent_search_toolkit.search_toolkit.get_tools()
+            self.toolkits = [eigent_search_toolkit.search_toolkit]
             self.toolkits_to_register_agent = []
 
         if agent_type == SearchAgentType.EIGENT_SEARCH:
-            self.tools = eigent_search_toolkit.get_tools()
+            self.toolkits = [eigent_search_toolkit]
             self.toolkits_to_register_agent = [eigent_search_toolkit.browser_toolkit]
             self.toolkits_to_cleanup = [eigent_search_toolkit]
 
@@ -172,9 +178,7 @@ class SearchConfig(BaseModel):
                 exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
             )
             eigent_search_toolkit.register(query_processing_toolkit)
-            self.tools = (
-                eigent_search_toolkit.get_tools(exclude_search_toolkit=True)
-                + query_processing_toolkit.get_tools()
-            )
+            eigent_search_toolkit.search_toolkit.get_tools = lambda: []
+            self.toolkits = [eigent_search_toolkit, query_processing_toolkit]
             self.toolkits_to_register_agent = [eigent_search_toolkit.browser_toolkit]
             self.toolkits_to_cleanup = [eigent_search_toolkit]
