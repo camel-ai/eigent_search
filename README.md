@@ -1,11 +1,9 @@
-# CAMEL-AI DeepResearch
+# Eigent Search AgentQ
 
 ## Development Logs
 
-- [X] Base module design.
-- [ ] Create evaluation guidelines.
-- [X] Establish base evaluation at `evaluation`; evaluators for SimpleQA and BrowseComp are both ready. 
-- [X] Create simple single agent baselines.
+- [X] Support search benchmarks on `SimpleQA`.
+- [X] Support three predefined agent types: (1) `eigent_search`: default eigent search agent, (2) `eigent_search_plus`: eigent search agent with enhanced query processing toolkit, (3) `search_only`: search agent with google search tool only.
 
 ## Get Started
 
