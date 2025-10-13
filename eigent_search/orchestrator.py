@@ -61,14 +61,6 @@ class SearchOrchestrator:
     """Orchestrates search agent execution."""
 
     def __init__(self, config: SearchConfig):
-        """Initialize the orchestrator.
-
-        Args:
-            agent: The DeepSearchAgent instance
-            environment: The DeepSearchEnvironment instance
-            max_retries: Maximum number of retry attempts (default: 5)
-            timeout_minutes: Timeout in minutes for each step (default: 5)
-        """
         self.config = config
         self.agent = config.create_agent()
         self.eigent_search_toolkit = None
