@@ -116,6 +116,11 @@ class SearchOrchestrator:
         )
         return response
 
+    def create_search_request(
+        self, input_query: str, query_id: str | None = None
+    ) -> SearchRequest:
+        return SearchRequest(input_query=input_query, query_id=query_id)
+
     def run_agent(self, search_input: SearchRequest) -> SearchResult:
         """Run the agent with retry logic, timeout and error handling."""
 
