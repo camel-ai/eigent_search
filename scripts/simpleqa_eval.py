@@ -12,297 +12,242 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
 import logging
 import os
 from pathlib import Path
+from typing import Literal
 
-from camel.agents import ChatAgent
 from camel.logger import get_logger, set_log_file, set_log_level
-from camel.models import ModelFactory
-from camel.types import ModelPlatformType, ModelType
 import click
-from datasets import load_dataset
+from datasets.formatting import Dict
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
 
-from eigent_search.baseline import (
-    ChainOfThoughtAgent,
-    DirectAnswerAgent,
-    KnowledgeThenReasoningAgent,
-    SimpleResearchAgent,
+from eigent_search import (
+    BackendModelConfig,
+    LLMasJudgeConfig,
+    SearchAgentType,
+    SearchConfig,
+    SearchOrchestrator,
 )
 from eigent_search.evaluation import SimpleQAEvaluator
-from eigent_search.research import deep_search_agent_factory
-from eigent_search.utils import run_agent_with_retry
 
 
-TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-WORKING_DIRECTORY = Path(
-    f"eigent_search_results_{TIMESTAMP}",
-)
-os.makedirs(WORKING_DIRECTORY, exist_ok=True)
-
-AGENTS = {
-    "simple_research": SimpleResearchAgent,
-    "direct_answer": DirectAnswerAgent,
-    "chain_of_thought": ChainOfThoughtAgent,
-    "knowledge_then_reasoning": KnowledgeThenReasoningAgent,
-    "deep_search": lambda model: deep_search_agent_factory(model, WORKING_DIRECTORY),
-}
-
-MODEL_NAMES = {
-    "gpt-4o-mini": ModelType.GPT_4O_MINI,
-    "gpt-4.1-mini": ModelType.GPT_4_1_MINI,
-    "gpt-oss": "gpt-oss:120b",  # Ollama model for now
-}
-
-GRADE_EMOJI_MAP = {
-    "CORRECT": "✅",
-    "INCORRECT": "❌",
-    "NOT_ATTEMPTED": "⚠️",
-    "ERROR": "🚫",
-}
-
-TEST_SET_FILE = Path(__file__).parent / "test_sets" / "simpleqa_test_sets.json"
-
+WORKING_DIRECTORY = os.getcwd()
 set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
 
 
-class SimpleQAResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    search_results: list[str] = Field(
-        ..., description="The search results that lead to the answer."
+AGENT_TYPES = {
+    "eigent_search": SearchAgentType.EIGENT_SEARCH,
+    "eigent_search_plus": SearchAgentType.EIGENT_SEARCH_PLUS,
+    "search_only": SearchAgentType.SEARCH_ONLY,
+}
+
+
+MODEL_CONFIGS = {
+    "gpt-4.1": BackendModelConfig.GPT_4_1,
+    "gpt-4.1-mini": BackendModelConfig.GPT_4_1_MINI,
+    "gpt-4o": BackendModelConfig.GPT_4O,
+    "gpt-4o-mini": BackendModelConfig.GPT_4O_MINI,
+    "gpt-oss": BackendModelConfig.GPT_OSS,
+}
+
+
+def set_up_config(
+    agent_type: Literal[AGENT_TYPES.keys()], model_name: Literal[MODEL_CONFIGS.keys()]
+) -> Dict:
+    """Set up the search config."""
+
+    class SimpleQAResponse(BaseModel):
+        answer: str = Field(..., description="The answer to the research question.")
+        evidence: list[str] = Field(
+            ...,
+            description="The evidence from the search results that lead to the answer.",
+        )
+
+    result_file = (
+        WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
     )
+    tool_trajectory_dir = WORKING_DIRECTORY / "tool_trajectories"
+    os.makedirs(tool_trajectory_dir, exist_ok=True)
+
+    return {
+        "search_config": SearchConfig(
+            working_directory=os.getcwd(),
+            **MODEL_CONFIGS[model_name],
+            agent_type=AGENT_TYPES[agent_type],
+            response_format=SimpleQAResponse,
+        ),
+        "judge_config": LLMasJudgeConfig(
+            **MODEL_CONFIGS["gpt-4.1"],  # We use gpt-4.1 as the judge model
+        ),
+        "result_file": result_file,
+        "tool_trajectory_dir": tool_trajectory_dir,
+    }
 
 
-def load_question_ids_from_file(set_name: str = None) -> list[int]:
-    """Load question IDs from JSON file."""
-    with open(TEST_SET_FILE, "r") as f:
-        data = json.load(f)
+def run_search_and_evaluate(
+    test_sample: dict, search_config: SearchConfig, judge_config: LLMasJudgeConfig
+) -> dict:
+    """Run the search and evaluation for a single test sample."""
 
-    # Filter out metadata keys (starting with underscore)
-    test_sets = {k: v for k, v in data.items() if not k.startswith("_")}
+    # run the search
+    search_orchestrator = SearchOrchestrator(search_config)
+    search_result = search_orchestrator.run_agent(
+        search_orchestrator.create_search_request(
+            input_query=test_sample["problem"], query_id=test_sample["id"]
+        )
+    )
+    if hasattr(search_result, "error"):
+        return {
+            "search_result": {
+                **search_result.model_dump(),
+            },
+            "eval_result": None,
+        }
 
-    if set_name not in test_sets:
-        available = list(test_sets.keys())
-        raise ValueError(f"Set '{set_name}' not found. Available: {available}")
-    return sorted(test_sets[set_name])
+    # run the evaluation
+    judge_agent = judge_config.create_agent()
+    evaluator = SimpleQAEvaluator(judge_agent)
+    eval_request = evaluator.create_request(
+        problem=test_sample["problem"],
+        answer=test_sample["answer"],
+        prediction=search_result.formatted_response,
+    )
+    eval_result = evaluator.evaluate(eval_request)
+    return {
+        "search_result": {
+            **search_result.model_dump(),
+            "token_usage": search_result.token_usage,
+        },
+        "eval_result": eval_result.model_dump(),
+    }
+
+
+def run_search_and_evaluate_multithreaded(
+    test_samples: list[dict],
+    search_config: SearchConfig,
+    judge_config: LLMasJudgeConfig,
+    num_workers: int,
+    result_file: Path,
+) -> list[dict]:
+    """Run the search and evaluation for a list of test samples in parallel."""
+
+    process_bar = tqdm(total=len(test_samples), desc="SimpleQA Evaluation")
+
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = [
+            executor.submit(
+                run_search_and_evaluate, sample, search_config, judge_config
+            )
+            for sample in test_samples
+        ]
+        results = []
+
+        for i, future in enumerate(as_completed(futures)):
+            result = future.result()
+            results.append(result)
+            if (i + 1) % 10 == 0 or i == len(test_samples) - 1:
+                with open(result_file, "w") as f:
+                    json.dump(results, f, indent=2)
+                logger.info(f"Results saved to {result_file} ...")
+            process_bar.update(1)
+
+        return results
 
 
 @click.command()
-@click.option("--agent_type", "-a", type=click.Choice(AGENTS.keys()), required=True)
 @click.option(
-    "--model_name", "-m", type=click.Choice(MODEL_NAMES.keys()), default="gpt-4.1-mini"
+    "--agent_type", "-a", type=click.Choice(AGENT_TYPES.keys()), required=True
+)
+@click.option(
+    "--model_name",
+    "-m",
+    type=click.Choice(MODEL_CONFIGS.keys()),
+    default="gpt-4.1-mini",
 )
 @click.option("--num_questions", "-n", type=int, default=5)
 @click.option(
     "--start_idx", "-s", type=int, default=0, help="Start index for the test samples."
 )
 @click.option(
-    "--customized_test_set",
+    "--custom_idx_list",
     "-c",
     type=str,
     default=None,
-    help="Test sets set_name (e.g., 'quick_example')",
+    help="Customized list of question IDs to evaluate (e.g., '[1,2,3]') If provided, will override the `start_idx` and `num_questions`.",
 )
+@click.option("--num_workers", "-w", type=int, default=10)
 def main(
     agent_type: str,
     model_name: str,
     num_questions: int,
     start_idx: int,
-    customized_test_set: str,
+    custom_idx_list: str,
+    num_workers: int,
 ):
     # load the dataset
-    dataset = load_dataset("basicv8vc/SimpleQA")
-
-    if customized_test_set:
-        test_sample_ids = load_question_ids_from_file(set_name=customized_test_set)
-        test_samples = [dataset["test"][idx] for idx in test_sample_ids]
+    dataset = list(SimpleQAEvaluator.load_dataset()["test"])
+    test_samples = dataset[start_idx : start_idx + num_questions]
+    test_sample_ids = list(range(start_idx, start_idx + num_questions))
+    if custom_idx_list:
+        logger.info(
+            f"Overriding `start_idx` and `num_questions` with customized list of question IDs: {custom_idx_list}"
+        )
+        test_sample_ids = eval(custom_idx_list)
+        test_samples = [dataset[idx] for idx in test_sample_ids]
         num_questions = len(test_sample_ids)
-        logger.info(
-            f"\n{'=' * 100}\n"
-            "Starting SimpleQA Evaluation\n"
-            f"Agent Type: {agent_type}\n"
-            f"Model: {model_name}\n"
-            f"Customized test set: {customized_test_set}\n"
-            f"test_sample_ids: {test_sample_ids}\n"
-            f"Output directory: {WORKING_DIRECTORY}\n"
-            f"\n{'=' * 100}\n"
-        )
 
-    else:
-        test_samples = list(dataset["test"])[start_idx : start_idx + num_questions]
-        test_sample_ids = list(range(start_idx, start_idx + num_questions))
-        # Log evaluation configuration
-        logger.info(
-            f"\n{'=' * 100}\n"
-            "Starting SimpleQA Evaluation\n"
-            f"Agent Type: {agent_type}\n"
-            f"Model: {model_name}\n"
-            f"Questions: {num_questions}\n"
-            f"Start Index: {start_idx}\n"
-            f"Output directory: {WORKING_DIRECTORY}\n"
-            f"\n{'=' * 100}\n"
-        )
+    # Load the search config and judge config
+    config = set_up_config(agent_type, model_name)
+    search_config = config["search_config"]
+    judge_config = config["judge_config"]
+    result_file = config["result_file"]
 
-    # setup the agent for evaluation
-    load_dotenv()  # load the openai key from .env
-    # for ollama models, we need to specify the url that hosts the model
-    if model_name == "gpt-oss":
-        model = ModelFactory.create(
-            model_platform=ModelPlatformType.OLLAMA,
-            model_type="gpt-oss:120b",
-            url="http://129.212.188.6:7861/v1",
-            model_config_dict={"temperature": 0.0},
-        )
-    else:
-        model = ModelFactory.create(
-            model_platform=ModelPlatformType.OPENAI,
-            model_type=MODEL_NAMES[model_name],
-            model_config_dict={"temperature": 0.0},
-        )
-    agent = AGENTS[agent_type](model=model)
-
-    # setup the evaluator; don't use the same model as the agent
-    eval_model = ModelFactory.create(
-        model_platform=ModelPlatformType.OPENAI,
-        model_type=ModelType.GPT_4_1_MINI,
-        model_config_dict={"temperature": 0.0},
+    logger.info(
+        f"\n{'=' * 100}\n"
+        "Starting SimpleQA Evaluation:\n"
+        f"[Search Config]\n"
+        f"{search_config.model_dump_json(indent=2)}\n"
+        f"[Judge Config]\n"
+        f"{judge_config.model_dump_json(indent=2)}\n"
+        f"\n{'=' * 100}\n"
     )
-    eval_agent = ChatAgent(model=eval_model)
-    evaluator = SimpleQAEvaluator(eval_agent)
 
-    scores = []
-    results = []
-    counter = {"CORRECT": 0, "INCORRECT": 0, "NOT_ATTEMPTED": 0, "ERROR": 0}
-    output_file = (
-        WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
+    # run the search and evaluation
+    load_dotenv()  # load openai, google api, and search api keys
+    results = run_search_and_evaluate_multithreaded(
+        test_samples=test_samples,
+        search_config=search_config,
+        judge_config=judge_config,
+        num_workers=num_workers,
+        result_file=result_file,
     )
-    tool_trajectory_dir = WORKING_DIRECTORY / "tool_trajectories"
-    tool_trajectory_dir.mkdir(exist_ok=True, parents=True)
 
+    # post summary
+    error_ids = []
+    accuracy = 0.0
     total_token_usage = 0
-    try:
-        for i, example in enumerate(
-            tqdm(test_samples, desc="SimpleQA Evaluation", unit="example", leave=True)
-        ):
-            # Create a unique ID for this problem (dataset index)
-            problem_id = test_sample_ids[i]
-            agent.update_note_taking_directory(
-                WORKING_DIRECTORY / "note_taking_logs" / f"problem_{problem_id}"
-            )
+    for result in results:
+        if "error" in result["search_result"]:
+            error_ids.append(result["search_result"]["query_id"])
+        accuracy += result["eval_result"]["is_correct"]
+        total_token_usage += result["search_result"]["token_usage"]
 
-            # Run agent with retry logic
-            step_result = run_agent_with_retry(
-                agent=agent,
-                input_query=example["problem"],
-                response_format=SimpleQAResponse,
-                max_retries=5,
-                timeout_minutes=5,
-            )
-            response = step_result["response"]
-            token_usage = step_result.get("token_usage", 0)
-            total_token_usage += token_usage
-            logger.info("Total token usage so far: %d", total_token_usage)
-
-            # Handle evaluation - check if response indicates error
-            if response.get("error", False):
-                # Create a dummy evaluation result for errors
-                eval_result = type(
-                    "obj",
-                    (object,),
-                    {"score": -1.0, "metrics": {"grade": "ERROR"}},
-                )()
-                scores.append(-1.0)
-            else:
-                # Normal evaluation
-                eval_request = evaluator.create_request(
-                    problem=example["problem"],
-                    answer=example["answer"],
-                    prediction=response["answer"],
-                )
-                eval_result = evaluator.evaluate(eval_request)
-                scores.append(eval_result.score)
-
-            # process the evaluation result for logging and saving
-            grade = eval_result.metrics["grade"]
-            grade_with_emoji = f"{GRADE_EMOJI_MAP.get(grade, '❓')} {grade}"
-
-            result = {
-                "id": problem_id,  # Index in the original dataset
-                "problem": example["problem"],
-                "ground_truth_answer": example["answer"],
-                "agent_response": response,
-                "grade": grade,
-                "metadata": example.get(
-                    "metadata", {}
-                ),  # Include metadata if available
-                "token_usage": token_usage,
-                "total_token_usage": total_token_usage,
-            }
-            results.append(result)
-            counter[eval_result.metrics["grade"]] += 1
-            current_accuracy = counter["CORRECT"] / (i + 1) * 100
-
-            logger.info(
-                f"\nQuestion: {i + 1} / {num_questions} (ID: {problem_id}) \n"
-                f"Agent: {agent_type}\n"
-                f"Grade: {grade_with_emoji}\n"
-                f"Running totals: {counter}\n"
-                f"Current accuracy: {current_accuracy:.2f}%\n"
-                f"Result: {json.dumps(result, indent=2)}\n"
-                f"Token Usage: {token_usage} (Total: {total_token_usage})\n"
-            )
-
-            # if agent_type == "research":
-            #     logger.info(
-            #         f"[{agent_type}] Number of searches: {agent.current_query_toolkit.search_counter}"
-            #     )
-            #     logger.info(
-            #         f"[{agent_type}] Process Graph:\n{agent.current_query_toolkit.trace_graph.render_trace_graph()}"
-            #     )
-
-            # Save tool trajectory for this problem
-            trajectory_file = (
-                tool_trajectory_dir / f"problem_{problem_id}_trajectory.json"
-            )
-            with open(trajectory_file, "w") as f:
-                json.dump(step_result.get("tool_trajectory", []), f, indent=2)
-            logger.info(f"Tool trajectory saved to {trajectory_file} ...")
-
-            # Save results periodically
-            if (i + 1) % 2 == 0 or i == num_questions - 1:
-                with open(output_file, "w") as f:
-                    json.dump(results, f, indent=4)
-                logger.info(f"Results saved to {output_file} ...")
-
-            # # Clear browser metrics for next problem
-            # if agent_type == "eigent_search" and hasattr(agent, "web_toolkit"):
-            #     agent.web_toolkit.clear_metrics()
-
-            agent.reset()
-            # time.sleep(20)
-
-    except Exception as e:
-        logger.error(f"Evaluation failed: {str(e)}")
-        # Todo: Should we also avoid raising error here, to always complete the evaluation?
-        raise e
-
-    finally:
-        # Always print comprehensive summary, even if evaluation failed
-        final_accuracy = sum(scores) / len(scores) * 100 if scores else 0
-        logger.info(
-            f"[{agent_type}] Final Results - Total: {len(results)}, Correct: {counter['CORRECT']}, "
-            f"Incorrect: {counter['INCORRECT']}, Not Attempted: {counter['NOT_ATTEMPTED']}, "
-            f"Accuracy: {final_accuracy:.2f}%"
-        )
-        logger.info("total token usage: %d", total_token_usage)
+    accuracy /= len(results)
+    logger.info(
+        f"{'=' * 100}\n"
+        "Summary:\n"
+        f"Accuracy (Excluding Error Cases): {accuracy:.2f}\n"
+        f"Total token usage: {total_token_usage}\n"
+        f"Error IDs: {error_ids}\n"
+        f"{'=' * 100}\n"
+    )
 
 
 if __name__ == "__main__":
