@@ -37,7 +37,7 @@ class SearchRequest(BaseModel):
 class SearchResult(SearchRequest):
     response: ChatAgentResponse
     response_format: Type[BaseModel] | None
-    tool_trajectory: list[ToolTrajectory]
+    tool_trajectory: ToolTrajectory
 
     @property
     def token_usage(self) -> int:
