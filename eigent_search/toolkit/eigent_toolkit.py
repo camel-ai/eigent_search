@@ -13,6 +13,7 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
+from pathlib import Path
 import uuid
 
 from camel.logger import get_logger
@@ -24,38 +25,63 @@ from camel.toolkits import (
     TerminalToolkit,
     ToolkitMessageIntegration,
 )
-from pathlib import Path
+
+from eigent_search.toolkit import CleanupToolkit
 
 logger = get_logger(__name__)
 
 
-class DeepSearchEnvironment:
-    """Toolkit for conducting deep search on a given question."""
+class EigentSearchToolkit(CleanupToolkit):
+    """Default Eigent search toolkit implementation."""
 
-    def __init__(self, working_directory: str):
-        self.environment_id = str(uuid.uuid4())[:8]
+    def __init__(
+        self,
+        working_directory: Path,
+        exclude_search_domains: list[str] = ["huggingface.co", "hf.co", "oxen.ai"],
+    ):
+        super().__init__()
+        # Basic session information
         self.working_directory = working_directory
+        self.session_id = str(uuid.uuid4())[:8]
+        self.exclude_search_domains = exclude_search_domains
 
         # Construct toolkits
-        self.search_toolkit = self.construct_search_toolkit()
-        self.browser_toolkit = self.construct_browser_toolkit()
-        self.terminal_toolkit = self.construct_terminal_toolkit()
-        self.note_taking_toolkit = self.construct_note_taking_toolkit()
-        self.message_integration = self.construct_message_integration()
+        self.search_toolkit = self._construct_search_toolkit()
+        self.browser_toolkit = self._construct_browser_toolkit()
+        self.terminal_toolkit = self._construct_terminal_toolkit()
+        self.note_taking_toolkit = self._construct_note_taking_toolkit()
+        self.message_integration = self._construct_message_integration()
+        # Initialize query processing toolkit (will be created with specific query when needed)
+        self.query_processing_toolkit = None
+
+        # Message registration function for toolkits
+        self.register = lambda toolkit: self.message_integration.register_toolkits(
+            toolkit
+        )
 
         # Add messaging to toolkits
-        self.search_toolkit = self.message_integration.register_toolkits(
-            self.search_toolkit
-        )
-        self.browser_toolkit = self.message_integration.register_toolkits(
-            self.browser_toolkit
-        )
-        self.terminal_toolkit = self.message_integration.register_toolkits(
-            self.terminal_toolkit
-        )
-        self.note_taking_toolkit = self.message_integration.register_toolkits(
-            self.note_taking_toolkit
-        )
+        self.search_toolkit = self.register(self.search_toolkit)
+        self.browser_toolkit = self.register(self.browser_toolkit)
+        self.terminal_toolkit = self.register(self.terminal_toolkit)
+        self.note_taking_toolkit = self.register(self.note_taking_toolkit)
+
+    async def cleanup(self):
+        """Clean up browser resources"""
+        try:
+            if hasattr(self.browser_toolkit, "browser_close"):
+                await self.browser_toolkit.browser_close()
+                logger.info("Browser closed successfully during cleanup.")
+        except Exception as e:
+            logger.warning(f"Error during browser cleanup: {e}")
+
+    def get_tools(self) -> list[FunctionTool]:
+        """Get the tools for the eigent search toolkit."""
+        return [
+            *self.search_toolkit.get_tools(),
+            *self.browser_toolkit.get_tools(),
+            *self.terminal_toolkit.get_tools(),
+            *self.note_taking_toolkit.get_tools(),
+        ]
 
     def update_note_taking_directory(self, new_directory: Path):
         """Update the working directory for note-taking toolkit."""
@@ -66,30 +92,18 @@ class DeepSearchEnvironment:
             new_directory.mkdir(parents=True, exist_ok=True)
             logger.info(f"Note-taking directory updated to: {new_directory}")
 
-    def construct_action_space(self):
-        """Construct a toolkit for actions related to the deep search environment."""
-        tools = [
-            *self.browser_toolkit.get_tools(),
-            *self.note_taking_toolkit.get_tools(),
-            *self.search_toolkit.get_tools(),
-            *self.terminal_toolkit.get_tools(),
-        ]
-        return tools
-
-    def construct_search_toolkit(
-        self, exclude_domains: list[str] = ["huggingface.co", "hf.co", "oxen.ai"]
-    ):
+    def _construct_search_toolkit(self):
         """Construct a search toolkit for actions related to searching the web."""
 
-        search_toolkit = SearchToolkit(exclude_domains=exclude_domains)
+        search_toolkit = SearchToolkit(exclude_domains=self.exclude_search_domains)
         # Only search_google is needed, so we override the get_tools method
         search_toolkit.get_tools = lambda: [FunctionTool(search_toolkit.search_google)]
         return search_toolkit
 
-    def construct_browser_toolkit(self):
+    def _construct_browser_toolkit(self):
         """Construct a browser toolkit for actions related to browsing the web."""
 
-        custom_tools = [
+        enabled_tools = [
             "browser_open",
             "browser_close",
             "browser_back",
@@ -101,26 +115,28 @@ class DeepSearchEnvironment:
             "browser_visit_page",
             "browser_get_som_screenshot",
         ]
-        web_toolkit_custom = HybridBrowserToolkit(
+        browser_toolkit = HybridBrowserToolkit(
             mode="typescript",
             headless=True,
-            enabled_tools=custom_tools,
+            enabled_tools=enabled_tools,
             browser_log_to_file=True,
             stealth=True,
-            session_id=self.environment_id,
+            session_id=self.session_id,
             viewport_limit=False,
-            log_dir=os.path.join(self.working_directory, "browser_logs"),
-            cache_dir=os.path.join(self.working_directory, "browser_logs"),
+            log_dir=os.path.join(self.working_directory.as_posix(), "browser_logs"),
+            cache_dir=os.path.join(self.working_directory.as_posix(), "browser_logs"),
             default_start_url="https://search.brave.com/",
         )
-        return web_toolkit_custom
+        return browser_toolkit
 
-    def construct_terminal_toolkit(self):
+    def _construct_terminal_toolkit(self):
         """Construct a terminal toolkit for actions related to terminal operations."""
         terminal_toolkit = TerminalToolkit(
             safe_mode=True,
             clone_current_env=False,
-            session_logs_dir=os.path.join(self.working_directory, "terminal_logs"),
+            session_logs_dir=os.path.join(
+                self.working_directory.as_posix(), "terminal_logs"
+            ),
         )
 
         # Override get_tools method to only include specific tools
@@ -144,13 +160,15 @@ class DeepSearchEnvironment:
         terminal_toolkit.get_tools = custom_get_tools
         return terminal_toolkit
 
-    def construct_note_taking_toolkit(self):
+    def _construct_note_taking_toolkit(self):
         """Construct a note toolkit for actions related to note-taking."""
         return NoteTakingToolkit(
-            working_directory=os.path.join(self.working_directory, "note_taking_logs")
+            working_directory=os.path.join(
+                self.working_directory.as_posix(), "note_taking_logs"
+            )
         )
 
-    def construct_message_integration(self):
+    def _construct_message_integration(self):
         """Construct a message integration toolkit to allow agents to send status updates to users"""
 
         # TODO: Doc string needs to be rewritten to fit search context
@@ -206,12 +224,3 @@ class DeepSearchEnvironment:
             )
 
         return ToolkitMessageIntegration(message_handler=send_message_to_user)
-
-    async def cleanup(self):
-        """Clean up resources"""
-        try:
-            if hasattr(self.browser_toolkit, "browser_close"):
-                await self.browser_toolkit.browser_close()
-                logger.info("Browser closed successfully during cleanup.")
-        except Exception as e:
-            logger.warning(f"Error during browser cleanup: {e}")

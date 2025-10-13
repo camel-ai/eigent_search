@@ -11,3 +11,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
+
+from camel.toolkits import BaseToolkit
+
+
+class CleanupToolkit(BaseToolkit):
+    """Interface for toolkit that should be cleaned up to release resources."""
+
+    def __init__(self):
+        super().__init__()
+
+    async def cleanup(self):
+        """Clean up the resources."""
+        raise NotImplementedError("Subclasses must implement this method.")
