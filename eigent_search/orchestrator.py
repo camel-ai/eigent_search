@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 import asyncio
+from typing import Type
 
 from camel.logger import get_logger
 from camel.responses import ChatAgentResponse
@@ -35,11 +36,21 @@ class SearchInput(BaseModel):
 
 class SearchResult(SearchInput):
     response: ChatAgentResponse
+    response_format: Type[BaseModel] | None
     tool_trajectory: list[ToolTrajectory]
 
     @property
     def token_usage(self) -> int:
         return self.response.info["usage"]["total_tokens"]
+
+    @property
+    def formatted_response(self) -> str:
+        response = self.response.msgs[0].content.strip()
+        if self.response_format:
+            return self.response_format.model_validate_json(response).model_dump_json(
+                indent=2
+            )
+        return response
 
 
 class ErrorSearchResult(BaseModel):
@@ -132,6 +143,7 @@ class SearchOrchestrator:
             return SearchResult(
                 **search_input.model_dump(),
                 response=response,
+                response_format=self.config.response_format,
                 tool_trajectory=ToolTrajectory.extract_from_response(response),
             )
 
