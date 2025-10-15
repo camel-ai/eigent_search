@@ -40,6 +40,20 @@ class EvaluationResult(EvaluationRequest[BenchmarkPayload]):
         description="Optional detailed metrics for the evaluation.",
     )
 
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary, handling the generic payload properly."""
+        payload_dict = {
+            field_name: getattr(self.payload, field_name)
+            for field_name in self.payload.model_fields.keys()
+        }
+
+        return {
+            "payload": payload_dict,
+            "metadata": self.metadata,
+            "score": self.score,
+            "metrics": self.metrics,
+        }
+
 
 class BaseEvaluator(ABC):
     """Abstract interface for scoring agent responses."""

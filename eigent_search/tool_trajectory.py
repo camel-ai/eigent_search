@@ -69,3 +69,6 @@ class ToolTrajectory(BaseModel):
             trajectory_length=len(trajectory),
             trajectory=trajectory,
         )
+
+    def to_dict(self) -> dict[str, Any]:
+        return self.model_dump()

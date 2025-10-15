@@ -146,7 +146,8 @@ class SimpleQAEvaluator(BaseEvaluator):
         )
         grade = eval(response.msgs[0].content.strip())["grade"]
         return EvaluationResult(
-            **request.model_dump(),
+            payload=request.payload,
+            metadata=request.metadata,
             score=1.0 if grade == "CORRECT" else 0.0,
             metrics={"grade": grade},
         )

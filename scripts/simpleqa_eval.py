@@ -37,9 +37,6 @@ from eigent_search.evaluation import SimpleQAEvaluator
 
 
 WORKING_DIRECTORY = Path(os.getcwd())
-set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
-set_log_level(logging.INFO)
-logger = get_logger(__name__)
 
 
 AGENT_TYPES = {
@@ -70,19 +67,19 @@ def set_up_config(
             description="The evidence from the search results that lead to the answer.",
         )
 
-    result_file = (
-        WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
-    )
     tool_trajectory_dir = WORKING_DIRECTORY / "tool_trajectories"
     os.makedirs(tool_trajectory_dir, exist_ok=True)
-
+    search_config = SearchConfig(
+        working_directory=os.getcwd(),
+        **MODEL_CONFIGS[model_name].value,
+        agent_type=AGENT_TYPES[agent_type],
+        response_format=SimpleQAResponse,
+    )
+    result_file = (
+        search_config.working_directory / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
+    )
     return {
-        "search_config": SearchConfig(
-            working_directory=os.getcwd(),
-            **MODEL_CONFIGS[model_name].value,
-            agent_type=AGENT_TYPES[agent_type],
-            response_format=SimpleQAResponse,
-        ),
+        "search_config": search_config,
         "judge_config": LLMasJudgeConfig(
             **MODEL_CONFIGS["gpt-4.1"].value,  # We use gpt-4.1 as the judge model
         ),
@@ -105,9 +102,7 @@ def run_search_and_evaluate(
     )
     if hasattr(search_result, "error"):
         return {
-            "search_result": {
-                **search_result.model_dump(),
-            },
+            "search_result": search_result.to_dict(),
             "eval_result": None,
         }
 
@@ -121,11 +116,8 @@ def run_search_and_evaluate(
     )
     eval_result = evaluator.evaluate(eval_request)
     return {
-        "search_result": {
-            **search_result.model_dump(),
-            "token_usage": search_result.token_usage,
-        },
-        "eval_result": eval_result.model_dump(),
+        "search_result": search_result.to_dict(),
+        "eval_result": eval_result.to_dict(),
     }
 
 
@@ -135,6 +127,7 @@ def run_search_and_evaluate_multithreaded(
     judge_config: LLMasJudgeConfig,
     num_workers: int,
     result_file: Path,
+    logger: logging.Logger,
 ) -> list[dict]:
     """Run the search and evaluation for a list of test samples in parallel."""
 
@@ -191,6 +184,16 @@ def main(
     custom_idx_list: list[int],
     num_workers: int,
 ):
+    # Load the search config and judge config
+    config = set_up_config(agent_type, model_name)
+    search_config = config["search_config"]
+    judge_config = config["judge_config"]
+    result_file = config["result_file"]
+
+    set_log_file(search_config.working_directory / "simpleqa_eval.log")
+    set_log_level(logging.INFO)
+    logger = get_logger(__name__)
+
     # load the dataset
     dataset = list(SimpleQAEvaluator.load_dataset()["test"])
     test_samples = dataset[start_idx : start_idx + num_questions]
@@ -207,17 +210,13 @@ def main(
     for i, sample in enumerate(test_samples):
         sample["id"] = str(test_sample_ids[i])
 
-    # Load the search config and judge config
-    config = set_up_config(agent_type, model_name)
-    search_config = config["search_config"]
-    judge_config = config["judge_config"]
-    result_file = config["result_file"]
-
     logger.info(
         f"\n{'=' * 100}\n"
         "Starting SimpleQA Evaluation:\n"
         f"[Search Config]\n"
         f"{search_config.model_dump_json(indent=2, exclude={'toolkits', 'toolkits_to_register_agent', 'toolkits_to_cleanup', 'response_format'})}\n"
+        f"  toolkits: {[t.__class__.__name__ for t in getattr(search_config, 'toolkits', [])]}\n"
+        f"  response_format: {getattr(search_config.response_format, '__name__', str(search_config.response_format))}\n"
         f"[Judge Config]\n"
         f"{judge_config.model_dump_json(indent=2)}\n"
         f"\n{'=' * 100}\n"
@@ -231,6 +230,7 @@ def main(
         judge_config=judge_config,
         num_workers=num_workers,
         result_file=result_file,
+        logger=logger
     )
 
     # post summary
@@ -240,7 +240,7 @@ def main(
     for result in results:
         if "error" in result["search_result"]:
             error_ids.append(result["search_result"]["query_id"])
-        accuracy += result["eval_result"]["is_correct"]
+        accuracy += result["eval_result"]["score"]
         total_token_usage += result["search_result"]["token_usage"]
 
     accuracy /= len(results)

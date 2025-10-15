@@ -14,7 +14,6 @@
 
 from __future__ import annotations
 import asyncio
-from typing import Type
 
 from camel.logger import get_logger
 from camel.responses import ChatAgentResponse
@@ -25,6 +24,7 @@ import tenacity
 from .config import SearchConfig
 from .tool_trajectory import ToolTrajectory
 from .toolkit import EigentSearchToolkit, QueryProcessingToolkit
+from typing import Any, Type
 
 logger = get_logger(__name__)
 
@@ -51,6 +51,22 @@ class SearchResult(SearchRequest):
                 indent=2
             )
         return response
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary for JSON serialization, excluding non-serializable fields."""
+        return {
+            "query_id": self.query_id,
+            "input_query": self.input_query,
+            "formatted_response": self.formatted_response,
+            "token_usage": self.token_usage,
+            "tool_counts": self.tool_trajectory.tool_counts,
+            "trajectory_length": self.tool_trajectory.trajectory_length,
+            "tool_trajectory": self.tool_trajectory.to_dict(),
+            # "usage": self.response.info.get("usage", {}),
+            # "finish_reason": self.response.info.get("finish_reason"),
+            # "terminated": self.response.terminated,
+            # "model": self.response.info.get("model"),
+        }
 
 
 class ErrorSearchResult(SearchRequest):
