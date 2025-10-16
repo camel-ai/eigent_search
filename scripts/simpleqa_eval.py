@@ -21,7 +21,6 @@ from typing import Literal
 
 from camel.logger import get_logger, set_log_file, set_log_level
 import click
-from datasets.formatting import Dict
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from tqdm.auto import tqdm
@@ -35,16 +34,13 @@ from eigent_search import (
 )
 from eigent_search.evaluation import SimpleQAEvaluator
 
-
-WORKING_DIRECTORY = os.getcwd()
-set_log_file(WORKING_DIRECTORY / "simpleqa_eval.log")
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
 
 
 AGENT_TYPES = {
     "eigent_search": SearchAgentType.EIGENT_SEARCH,
-    "eigent_search_plus": SearchAgentType.EIGENT_SEARCH_PLUS,
+    "eigent_search_q+": SearchAgentType.EIGENT_SEARCH_Q_PLUS,
     "search_only": SearchAgentType.SEARCH_ONLY,
 }
 
@@ -60,7 +56,7 @@ MODEL_CONFIGS = {
 
 def set_up_config(
     agent_type: Literal[AGENT_TYPES.keys()], model_name: Literal[MODEL_CONFIGS.keys()]
-) -> Dict:
+) -> dict:
     """Set up the search config."""
 
     class SimpleQAResponse(BaseModel):
@@ -70,25 +66,26 @@ def set_up_config(
             description="The evidence from the search results that lead to the answer.",
         )
 
-    result_file = (
-        WORKING_DIRECTORY / f"simpleqa_eval_agent={agent_type}_model={model_name}.json"
-    )
-    tool_trajectory_dir = WORKING_DIRECTORY / "tool_trajectories"
-    os.makedirs(tool_trajectory_dir, exist_ok=True)
+    working_directory = Path(os.getcwd()) / "results" / f"simpleqa_eval_agent={agent_type}_model={model_name}"
+    working_directory.mkdir(parents=True, exist_ok=True)
+    result_file = working_directory / "results.json"
 
-    return {
+    config = {
         "search_config": SearchConfig(
-            working_directory=os.getcwd(),
-            **MODEL_CONFIGS[model_name],
+            working_directory=working_directory,
+            **MODEL_CONFIGS[model_name].value,
             agent_type=AGENT_TYPES[agent_type],
             response_format=SimpleQAResponse,
         ),
         "judge_config": LLMasJudgeConfig(
-            **MODEL_CONFIGS["gpt-4.1"],  # We use gpt-4.1 as the judge model
+            **MODEL_CONFIGS["gpt-4.1"].value,  # We use gpt-4.1 as the judge model
         ),
         "result_file": result_file,
-        "tool_trajectory_dir": tool_trajectory_dir,
     }
+
+    set_log_file(config["search_config"].working_directory / "simpleqa_eval.log")
+
+    return config
 
 
 def run_search_and_evaluate(
@@ -106,7 +103,7 @@ def run_search_and_evaluate(
     if hasattr(search_result, "error"):
         return {
             "search_result": {
-                **search_result.model_dump(),
+                "error": search_result.error,
             },
             "eval_result": None,
         }
@@ -115,17 +112,21 @@ def run_search_and_evaluate(
     judge_agent = judge_config.create_agent()
     evaluator = SimpleQAEvaluator(judge_agent)
     eval_request = evaluator.create_request(
-        problem=test_sample["problem"],
-        answer=test_sample["answer"],
-        prediction=search_result.formatted_response,
+        query=test_sample["problem"],
+        reference_answer=test_sample["answer"],
+        model_answer=search_result.formatted_response,
     )
     eval_result = evaluator.evaluate(eval_request)
     return {
         "search_result": {
-            **search_result.model_dump(),
+            "response": search_result.formatted_response,
+            "tool_trajectory": search_result.tool_trajectory.model_dump(),
             "token_usage": search_result.token_usage,
         },
-        "eval_result": eval_result.model_dump(),
+        "eval_result": {
+            "score": eval_result.score,
+            "metrics": eval_result.metrics,
+        }
     }
 
 
@@ -195,13 +196,16 @@ def main(
     dataset = list(SimpleQAEvaluator.load_dataset()["test"])
     test_samples = dataset[start_idx : start_idx + num_questions]
     test_sample_ids = list(range(start_idx, start_idx + num_questions))
+    test_samples = [
+        {"id": f"simpleqa_{idx}", **dataset[idx]} for idx in test_sample_ids
+    ]
     if custom_idx_list:
         logger.info(
             f"Overriding `start_idx` and `num_questions` with customized list of question IDs: {custom_idx_list}"
         )
         test_sample_ids = custom_idx_list
         test_samples = [dataset[idx] for idx in test_sample_ids]
-        num_questions = len(test_sample_ids)
+    num_questions = len(test_sample_ids)
 
     # Load the search config and judge config
     config = set_up_config(agent_type, model_name)
@@ -236,17 +240,17 @@ def main(
     for result in results:
         if "error" in result["search_result"]:
             error_ids.append(result["search_result"]["query_id"])
-        accuracy += result["eval_result"]["is_correct"]
+        accuracy += result["eval_result"]["score"]
         total_token_usage += result["search_result"]["token_usage"]
 
     accuracy /= len(results)
     logger.info(
-        f"{'=' * 100}\n"
+        f"\n{'=' * 50}\n"
         "Summary:\n"
-        f"Accuracy (Excluding Error Cases): {accuracy:.2f}\n"
+        f"Accuracy (Excluding Error Cases): {accuracy * 100:.2f}%\n"
         f"Total token usage: {total_token_usage}\n"
         f"Error IDs: {error_ids}\n"
-        f"{'=' * 100}\n"
+        f"{'=' * 50}\n"
     )
 
 

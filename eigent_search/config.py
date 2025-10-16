@@ -13,20 +13,20 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from __future__ import annotations
-import datetime
 from enum import Enum
 import itertools
+import json
 import os
 from pathlib import Path
 from typing import Type
 
 from camel.agents import ChatAgent
-from camel.utils import api_keys_required
 from camel.logger import get_logger
 from camel.models import BaseModelBackend, ModelFactory
 from camel.toolkits import BaseToolkit, RegisteredAgentToolkit
 from camel.types import ModelType
 from camel.types import ModelPlatformType
+from camel.utils import api_keys_required
 from pydantic import DirectoryPath, model_validator
 from pydantic import Field
 from pydantic import BaseModel
@@ -50,7 +50,7 @@ class SearchAgentType(Enum):
     # Default search agent from Eigent
     EIGENT_SEARCH = "eigent_search"
     # Eigent search agent enhanced with query processing tools
-    EIGENT_SEARCH_PLUS = "eigent_search_plus"
+    EIGENT_SEARCH_Q_PLUS = "eigent_search_q+"
     # Search agent only using search_google tool
     SEARCH_ONLY = "search_only"
 
@@ -125,11 +125,6 @@ class SearchConfig(BaseModel):
 
     @model_validator(mode="after")
     def _finalize(self) -> SearchConfig:
-        # Create a timestamped working directory for the search agent
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.working_directory = (
-            Path(self.working_directory) / f"eigent_search_{timestamp}"
-        )
         self.working_directory.mkdir(parents=True, exist_ok=True)
         if not self.agent_type == SearchAgentType.CUSTOMIZED:
             logger.info(
@@ -187,7 +182,7 @@ class SearchConfig(BaseModel):
             self.toolkits_to_register_agent = [eigent_search_toolkit.browser_toolkit]
             self.toolkits_to_cleanup = [eigent_search_toolkit]
 
-        if agent_type == SearchAgentType.EIGENT_SEARCH_PLUS:
+        if agent_type == SearchAgentType.EIGENT_SEARCH_Q_PLUS:
             query_processing_toolkit = QueryProcessingToolkit(
                 exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
             )
@@ -196,6 +191,45 @@ class SearchConfig(BaseModel):
             self.toolkits = [eigent_search_toolkit, query_processing_toolkit]
             self.toolkits_to_register_agent = [eigent_search_toolkit.browser_toolkit]
             self.toolkits_to_cleanup = [eigent_search_toolkit]
+
+    def _serialize_value(self, value):
+        """Recursively serialize values to make them JSON-compatible."""
+        if value is None:
+            return None
+        elif isinstance(value, (str, int, float, bool)):
+            return value
+        elif isinstance(value, (list, tuple)):
+            return [self._serialize_value(item) for item in value]
+        elif isinstance(value, dict):
+            return {k: self._serialize_value(v) for k, v in value.items()}
+        elif hasattr(value, "as_posix"):  # Path-like objects
+            return value.as_posix()
+        elif hasattr(value, "value"):  # Enum with value attribute
+            return value.value
+        elif hasattr(value, "__name__"):  # Type/class objects
+            return value.__name__
+        elif hasattr(value, "__class__"):  # Other objects
+            return value.__class__.__name__
+        else:
+            return str(value)
+
+    def model_dump_json(self, indent: int = 2, **kwargs) -> str:
+        """Override model_dump_json to handle unserializable attributes."""
+        # Get the default model dump
+        model_dict = self.model_dump(**kwargs)
+
+        # Serialize all values to make them JSON-compatible
+        serialized_dict = {}
+        for key, value in model_dict.items():
+            serialized_dict[key] = self._serialize_value(value)
+
+        # Convert to JSON string
+        return json.dumps(serialized_dict, indent=indent)
+
+    def to_json_dict(self) -> dict:
+        """Get a JSON-serializable dictionary representation of the config."""
+        model_dict = self.model_dump()
+        return {key: self._serialize_value(value) for key, value in model_dict.items()}
 
 
 class LLMasJudgeConfig(BaseModel):
