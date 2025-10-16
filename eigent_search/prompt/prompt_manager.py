@@ -62,7 +62,7 @@ class PromptManager:
         Returns:
             Rendered system prompt string
         """
-        template = self.env.get_template(f"{template_name}.j2")
+        template = self.env.get_template(f"{template_name}.md")
 
         # Default context
         context = {
@@ -83,8 +83,8 @@ class PromptManager:
             return self.get_system_prompt("search_only", working_directory)
         elif agent_type.value == "eigent_search":
             return self.get_system_prompt("eigent_search", working_directory)
-        elif agent_type.value == "eigent_search_plus":
-            return self.get_system_prompt("eigent_search_plus", working_directory)
+        elif agent_type.value == "eigent_search_q+":
+            return self.get_system_prompt("eigent_search_q+", working_directory)
 
 
 # Global instance for easy access
