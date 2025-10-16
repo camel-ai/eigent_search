@@ -25,7 +25,7 @@ from camel.toolkits.search_toolkit import SearchToolkit
 logger = get_logger(__name__)
 
 
-def fuzzy_contains(query: str, candidates: set[str], cutoff: float = 0.8) -> bool:
+def fuzzy_contains(query: str, candidates: set[str], cutoff: float = 0.7) -> bool:
     """Check if the query has a fuzzy match in the candidates set.
 
     Args:
