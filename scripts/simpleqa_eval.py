@@ -14,6 +14,7 @@
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
+from datetime import datetime
 import logging
 import os
 from pathlib import Path
@@ -66,7 +67,8 @@ def set_up_config(
             description="The evidence from the search results that lead to the answer.",
         )
 
-    working_directory = Path(os.getcwd()) / "results" / f"simpleqa_eval_agent={agent_type}_model={model_name}"
+    time_stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    working_directory = Path(os.getcwd()) / "results" / f"simpleqa_eval_agent={agent_type}_model={model_name}_{time_stamp}"
     working_directory.mkdir(parents=True, exist_ok=True)
     result_file = working_directory / "results.json"
 
@@ -179,7 +181,7 @@ def run_search_and_evaluate_multithreaded(
 @click.option(
     "--custom_idx_list",
     "-c",
-    type=list[int],
+    type=str,
     default=None,
     help="Customized list of question IDs to evaluate (e.g., '[1,2,3]') If provided, will override the `start_idx` and `num_questions`.",
 )
@@ -203,8 +205,8 @@ def main(
         logger.info(
             f"Overriding `start_idx` and `num_questions` with customized list of question IDs: {custom_idx_list}"
         )
-        test_sample_ids = custom_idx_list
-        test_samples = [dataset[idx] for idx in test_sample_ids]
+        test_sample_ids = eval(custom_idx_list)
+        test_samples = [{"id": f"simpleqa_{idx}", **dataset[idx]} for idx in test_sample_ids]
     num_questions = len(test_sample_ids)
 
     # Load the search config and judge config
@@ -222,6 +224,12 @@ def main(
         f"{judge_config.model_dump_json(indent=2)}\n"
         f"\n{'=' * 100}\n"
     )
+    saved_config = {
+        "search_config": json.loads(search_config.model_dump_json(indent=2)),
+        "judge_config": json.loads(judge_config.model_dump_json(indent=2)),
+    }
+    with open(search_config.working_directory / "config.json", "w") as f:
+        json.dump(saved_config, f, indent=2)
 
     # run the search and evaluation
     load_dotenv()  # load openai, google api, and search api keys
