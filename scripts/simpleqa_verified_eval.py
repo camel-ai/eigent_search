@@ -54,7 +54,7 @@ MODEL_CONFIGS = {
     "gpt-oss": BackendModelConfig.GPT_OSS,
 }
 
-DATASET_NAME = "simpleqa"
+DATASET_NAME = "simpleqa_verified"
 
 
 def set_up_config(
@@ -145,7 +145,7 @@ def run_search_and_evaluate_multithreaded(
 ) -> list[dict]:
     """Run the search and evaluation for a list of test samples in parallel."""
 
-    process_bar = tqdm(total=len(test_samples), desc=f"{DATASET_NAME} evaluation")
+    process_bar = tqdm(total=len(test_samples), desc=f"{DATASET_NAME} Evaluation")
 
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [
@@ -199,7 +199,7 @@ def main(
     num_workers: int,
 ):
     # load the dataset
-    dataset = list(SimpleQAEvaluator.load_dataset(verified=False))
+    dataset = list(SimpleQAEvaluator.load_dataset(verified=True))
     test_samples = dataset[start_idx : start_idx + num_questions]
     test_sample_ids = list(range(start_idx, start_idx + num_questions))
     test_samples = [

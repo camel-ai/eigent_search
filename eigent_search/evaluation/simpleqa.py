@@ -120,8 +120,11 @@ class SimpleQAEvaluator(BaseEvaluator):
         self.judge_agent = judge_agent
 
     @staticmethod
-    def load_dataset() -> Dataset:
-        return load_dataset("basicv8vc/SimpleQA")
+    def load_dataset(verified: bool = False) -> Dataset:
+        if not verified:
+            return load_dataset("basicv8vc/SimpleQA")["test"]
+        else:
+            return load_dataset("google/simpleqa-verified")["eval"]
 
     def create_request(
         self, query: str, reference_answer: str, model_answer: str
