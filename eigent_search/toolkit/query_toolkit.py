@@ -14,6 +14,7 @@
 
 from functools import wraps
 from textwrap import dedent
+import difflib
 
 from camel.logger import get_logger
 from camel.toolkits.function_tool import FunctionTool
@@ -22,6 +23,21 @@ from camel.toolkits.search_toolkit import SearchToolkit
 
 
 logger = get_logger(__name__)
+
+
+def fuzzy_contains(query: str, candidates: set[str], cutoff: float = 0.8) -> bool:
+    """Check if the query has a fuzzy match in the candidates set.
+
+    Args:
+        query (str): The query to check for similarity.
+        candidates (set[str]): The set of candidate queries to match against.
+        cutoff (float): The minimum similarity threshold (0.0 to 1.0).
+
+    Returns:
+        bool: True if a similar query is found, False otherwise.
+    """
+    matches = difflib.get_close_matches(query, candidates, n=1, cutoff=cutoff)
+    return len(matches) > 0
 
 
 def validate_input_query_in_frontier(func):
@@ -35,7 +51,7 @@ def validate_input_query_in_frontier(func):
     def wrapper(self, **kwargs):
         # Get the query parameter
         query = kwargs.get("query")
-        if query and query not in self.frontier:
+        if query and not fuzzy_contains(query, self.frontier):
             error_message = (
                 f"❌ Invalid operation: Candidate query '{query}' must be selected "
                 f"from the current frontier listed below.\n{self.get_frontier_str()}"
@@ -105,7 +121,11 @@ def validate_input_query_in_frontier_or_explored(func):
     def wrapper(self, **kwargs):
         # Get the query parameter - could be 'query' or 'current_query'
         query = kwargs.get("query") or kwargs.get("current_query")
-        if query and (query not in self.frontier and query not in self.explored):
+        if (
+            query
+            and not fuzzy_contains(query, self.frontier)
+            and query not in self.explored
+        ):
             error_message = (
                 f"❌ Invalid operation: Candidate query '{query}' must come from the current frontier "
                 f"OR have been explored already.\n{self.get_frontier_str()}"
@@ -146,7 +166,7 @@ class QueryProcessingToolkit(BaseToolkit):
 
     def get_frontier_str(self) -> str:
         """Display the current frontier as a string."""
-        return "📋 current frontier:\n  - " + "\n  - ".join(list(self.frontier))
+        return "Current Frontier:\n  - " + "\n  - ".join(list(self.frontier))
 
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
