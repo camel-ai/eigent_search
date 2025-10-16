@@ -13,8 +13,8 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import json
 from datetime import datetime
+import json
 import logging
 import os
 from pathlib import Path
@@ -70,7 +70,11 @@ def set_up_config(
         )
 
     time_stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    working_directory = Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_agent={agent_type}_model={model_name}_{time_stamp}"
+    working_directory = (
+        Path(os.getcwd())
+        / "results"
+        / f"{DATASET_NAME}_eval_agent={agent_type}_model={model_name}_{time_stamp}"
+    )
     working_directory.mkdir(parents=True, exist_ok=True)
     result_file = working_directory / "results.json"
 
@@ -132,7 +136,7 @@ def run_search_and_evaluate(
         "eval_result": {
             "score": eval_result.score,
             "metrics": eval_result.metrics,
-        }
+        },
     }
 
 
@@ -178,6 +182,7 @@ def run_search_and_evaluate_multithreaded(
     type=click.Choice(MODEL_CONFIGS.keys()),
     default="gpt-4.1-mini",
 )
+@click.option("--num_workers", "-w", type=int, default=10)
 @click.option("--num_questions", "-n", type=int, default=5)
 @click.option(
     "--start_idx", "-s", type=int, default=0, help="Start index for the test samples."
@@ -187,19 +192,32 @@ def run_search_and_evaluate_multithreaded(
     "-c",
     type=str,
     default=None,
-    help="Customized list of question IDs to evaluate (e.g., '[1,2,3]') If provided, will override the `start_idx` and `num_questions`.",
+    help="Customized list of question IDs to evaluate (e.g., '[1,2,3]') If provided, will ignore `num_questions` and `start_idx`.",
 )
-@click.option("--num_workers", "-w", type=int, default=10)
+@click.option(
+    "--test-all",
+    is_flag=True,
+    help="Test all questions in the dataset. If provided, will override the `num_questions`, `start_idx`, and `custom_idx_list`.",
+    default=False,
+)
 def main(
     agent_type: str,
     model_name: str,
+    num_workers: int,
     num_questions: int,
     start_idx: int,
     custom_idx_list: list[int],
-    num_workers: int,
+    test_all: bool,
 ):
     # load the dataset
     dataset = list(SimpleQAEvaluator.load_dataset(verified=True))
+    if test_all:
+        num_questions = len(dataset)
+        start_idx = 0
+        custom_idx_list = None
+    elif num_questions > len(dataset):
+        num_questions = len(dataset) - start_idx
+        custom_idx_list = None
     test_samples = dataset[start_idx : start_idx + num_questions]
     test_sample_ids = list(range(start_idx, start_idx + num_questions))
     test_samples = [
@@ -210,8 +228,10 @@ def main(
             f"Overriding `start_idx` and `num_questions` with customized list of question IDs: {custom_idx_list}"
         )
         test_sample_ids = eval(custom_idx_list)
-        test_samples = [{"id": f"{DATASET_NAME}_{idx}", **dataset[idx]} for idx in test_sample_ids]
-    num_questions = len(test_sample_ids)
+        test_samples = [
+            {"id": f"{DATASET_NAME}_{idx}", **dataset[idx]} for idx in test_sample_ids
+        ]
+        num_questions = len(test_sample_ids)
 
     # Load the search config and judge config
     config = set_up_config(agent_type, model_name)
