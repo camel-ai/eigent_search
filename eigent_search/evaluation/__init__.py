@@ -14,9 +14,11 @@
 
 from .base import EvaluationRequest, EvaluationResult
 from .simpleqa import SimpleQAEvaluator
+from .browsecomp import BrowseCompEvaluator
 
 __all__ = [
     "EvaluationRequest",
     "EvaluationResult",
     "SimpleQAEvaluator",
+    "BrowseCompEvaluator",
 ]
