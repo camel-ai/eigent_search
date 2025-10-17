@@ -35,7 +35,7 @@ from eigent_search import (
 )
 from eigent_search.evaluation import SimpleQAEvaluator
 
-set_log_level(logging.INFO)
+set_log_level(logging.DEBUG)
 logger = get_logger(__name__)
 
 
@@ -93,9 +93,25 @@ def set_up_config(
 
 
 def run_search_and_evaluate(
-    test_sample: dict, search_config: SearchConfig, judge_config: LLMasJudgeConfig
+    test_sample: dict,
+    agent_type: SearchAgentType,
+    model_config: dict,
+    base_working_directory: Path,
+    response_format: type,
+    judge_config: LLMasJudgeConfig,
 ) -> dict:
     """Run the search and evaluation for a single test sample."""
+
+    # Create independent SearchConfig for each task
+    task_working_directory = base_working_directory / test_sample["id"]
+    task_working_directory.mkdir(parents=True, exist_ok=True)
+
+    search_config = SearchConfig(
+        working_directory=task_working_directory,
+        **model_config,
+        agent_type=agent_type,
+        response_format=response_format,
+    )
 
     # run the search
     search_orchestrator = SearchOrchestrator(search_config)
@@ -138,7 +154,10 @@ def run_search_and_evaluate(
 
 def run_search_and_evaluate_multithreaded(
     test_samples: list[dict],
-    search_config: SearchConfig,
+    agent_type: SearchAgentType,
+    model_config: dict,
+    base_working_directory: Path,
+    response_format: type,
     judge_config: LLMasJudgeConfig,
     num_workers: int,
     result_file: Path,
@@ -150,7 +169,13 @@ def run_search_and_evaluate_multithreaded(
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [
             executor.submit(
-                run_search_and_evaluate, sample, search_config, judge_config
+                run_search_and_evaluate,
+                sample,
+                agent_type,
+                model_config,
+                base_working_directory,
+                response_format,
+                judge_config,
             )
             for sample in test_samples
         ]
@@ -255,7 +280,10 @@ def main(
     load_dotenv()  # load openai, google api, and search api keys
     results = run_search_and_evaluate_multithreaded(
         test_samples=test_samples,
-        search_config=search_config,
+        agent_type=AGENT_TYPES[agent_type],
+        model_config=MODEL_CONFIGS[model_name].value,
+        base_working_directory=search_config.working_directory,
+        response_format=search_config.response_format,
         judge_config=judge_config,
         num_workers=num_workers,
         result_file=result_file,
