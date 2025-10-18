@@ -12,6 +12,12 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from .agent import deep_search_agent_factory
+from .cleanup_toolkit import CleanupToolkit
+from .eigent_toolkit import EigentSearchToolkit
+from .query_toolkit import QueryProcessingToolkit
 
-__all__ = ["deep_search_agent_factory"]
+__all__ = [
+    "CleanupToolkit",
+    "EigentSearchToolkit",
+    "QueryProcessingToolkit",
+]

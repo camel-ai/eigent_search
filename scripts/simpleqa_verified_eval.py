@@ -13,8 +13,8 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import json
 from datetime import datetime
+import json
 import logging
 import os
 from pathlib import Path
@@ -54,7 +54,7 @@ MODEL_CONFIGS = {
     "gpt-oss": BackendModelConfig.GPT_OSS,
 }
 
-DATASET_NAME = "simpleqa"
+DATASET_NAME = "simpleqa_verified"
 
 
 def set_up_config(
@@ -70,7 +70,11 @@ def set_up_config(
         )
 
     time_stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    working_directory = Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_agent={agent_type}_model={model_name}_{time_stamp}"
+    working_directory = (
+        Path(os.getcwd())
+        / "results"
+        / f"{DATASET_NAME}_eval_agent={agent_type}_model={model_name}_{time_stamp}"
+    )
     working_directory.mkdir(parents=True, exist_ok=True)
     result_file = working_directory / "results.json"
 
@@ -132,7 +136,7 @@ def run_search_and_evaluate(
         "eval_result": {
             "score": eval_result.score,
             "metrics": eval_result.metrics,
-        }
+        },
     }
 
 
@@ -145,7 +149,7 @@ def run_search_and_evaluate_multithreaded(
 ) -> list[dict]:
     """Run the search and evaluation for a list of test samples in parallel."""
 
-    process_bar = tqdm(total=len(test_samples), desc=f"{DATASET_NAME} evaluation")
+    process_bar = tqdm(total=len(test_samples), desc=f"{DATASET_NAME} Evaluation")
 
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [

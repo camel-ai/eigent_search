@@ -1,11 +1,11 @@
-# CAMEL-AI DeepResearch
+# EigentSearch-Q+
+
+Eigent search agent enhanced with query processing toolkit.
 
 ## Development Logs
 
-- [X] Base module design.
-- [ ] Create evaluation guidelines.
-- [X] Establish base evaluation at `evaluation`; evaluators for SimpleQA and BrowseComp are both ready. 
-- [X] Create simple single agent baselines.
+- [X] Support search benchmarks on `SimpleQA`.
+- [X] Support three predefined agent types: (1) `eigent_search`: default eigent search agent, (2) `eigent_search_plus`: eigent search agent with enhanced query processing toolkit, (3) `search_only`: search agent with google search tool only.
 
 ## Get Started
 
@@ -30,12 +30,11 @@ export GOOGLE_API_KEY="your-google-api-key"
 export SEARCH_ENGINE_ID="your-search-engine-id"
 ```
 
-4. Run the evaluation script:
+4. Run the evaluation script (on the first five questions):
 ```bash
-# run first five SimpleQA examples, starting from the first question
-# Available agent types: simple_research, direct_answer, chain_of_thought, 
-# knowledge_then_reasoning, deep_search
-python scripts/simpleqa_eval.py -a deep_search -n 5 -s 0
+python scripts/simpleqa_eval.py 
+--agent_type eigent_search_q+ \ 
+-num_questions 5 \
 ```
 
 > Run `scripts/simpleqa_eval_wsl2.py` should you are on WSL2 platform.

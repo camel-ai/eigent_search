@@ -12,15 +12,8 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from .config import SearchAgentType, BackendModelConfig, SearchConfig, LLMasJudgeConfig
-from .orchestrator import SearchOrchestrator, SearchRequest, SearchResult
+from .prompt_manager import PromptManager
 
 __all__ = [
-    "SearchAgentType",
-    "BackendModelConfig",
-    "SearchConfig",
-    "LLMasJudgeConfig",
-    "SearchOrchestrator",
-    "SearchRequest",
-    "SearchResult",
+    "PromptManager",
 ]

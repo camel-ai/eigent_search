@@ -12,8 +12,13 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
+from .base import EvaluationRequest, EvaluationResult
 from .simpleqa import SimpleQAEvaluator
 from .browsecomp import BrowseCompEvaluator
 from .musique.musique import MusiQueEvaluator
 
-__all__ = ['SimpleQAEvaluator', 'MusiQueEvaluator', 'BrowseCompEvaluator']
+__all__ = [
+    "EvaluationRequest",
+    "EvaluationResult",
+    "SimpleQAEvaluator",
+]
