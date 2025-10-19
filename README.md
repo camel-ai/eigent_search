@@ -2,10 +2,22 @@
 
 Eigent search agent enhanced with query processing toolkit.
 
-## Development Logs
+## Supported Preset Agent Types
 
-- [X] Support search benchmarks on `SimpleQA`.
-- [X] Support three predefined agent types: (1) `eigent_search`: default eigent search agent, (2) `eigent_search_plus`: eigent search agent with enhanced query processing toolkit, (3) `search_only`: search agent with google search tool only.
+| Agent Type         | Description                                                                      |
+|--------------------|----------------------------------------------------------------------------------|
+| eigent_search_q+   | Eigent search agent with enhanced query processing toolkit                       |
+| eigent_search      | Default eigent search agent with search, browse, note-taking, and terminal tools |
+| search_only        | Search-only agent using Google Search tool                                       |
+
+## Supported Benchmarks
+
+| Benchmark Name         | HuggingFace Data Path                  |
+|------------------------|----------------------------------------|
+| SimpleQA               | basicv8vc/SimpleQA                     |
+| SimpleQA-Verified      | google/simpleqa-verified               |
+
+
 
 ## Get Started
 
@@ -22,13 +34,18 @@ source .venv/bin/activate
 uv sync
 ```
 
-3. Set up environment variables (required for some agent types):
+3. Set up environment variables:
+
+Either export:
+
 ```bash
-# For deep_search agent, you need OpenAI and Google API credentials:
-export OPENAI_API_KEY="your-openai-api-key"
-export GOOGLE_API_KEY="your-google-api-key"
-export SEARCH_ENGINE_ID="your-search-engine-id"
+export OPENAI_API_KEY="your-openai-api-key"  # if you're using OPENAI backend models
+export GOOGLE_API_KEY="your-google-api-key"  # for google search tool
+export SEARCH_ENGINE_ID="your-search-engine-id"  # for google search tool
 ```
+
+or save them in `.env`.
+
 
 4. Run the evaluation script (on the first five questions):
 ```bash
@@ -36,8 +53,6 @@ python scripts/simpleqa_eval.py
 --agent_type eigent_search_q+ \ 
 -num_questions 5 \
 ```
-
-> Run `scripts/simpleqa_eval_wsl2.py` should you are on WSL2 platform.
 
 Please see input parameters inside the script.
 
