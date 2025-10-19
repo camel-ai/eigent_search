@@ -182,6 +182,7 @@ cython_debug/
 
 # Results
 results/
+eigent_search*/
 
 # node_modules
 node_modules/
