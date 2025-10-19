@@ -70,7 +70,11 @@ def set_up_config(
         )
 
     time_stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    working_directory = Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_agent={agent_type}_model={model_name}_{time_stamp}"
+    working_directory = (
+        Path(os.getcwd())
+        / "results"
+        / f"{DATASET_NAME}_eval_agent={agent_type}_model={model_name}_{time_stamp}"
+    )
     working_directory.mkdir(parents=True, exist_ok=True)
     result_file = working_directory / "results.json"
 
@@ -132,7 +136,7 @@ def run_search_and_evaluate(
         "eval_result": {
             "score": eval_result.score,
             "metrics": eval_result.metrics,
-        }
+        },
     }
 
 
