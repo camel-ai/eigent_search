@@ -47,6 +47,7 @@ AGENT_TYPES = {
 
 
 MODEL_CONFIGS = {
+    "gpt-5-mini": BackendModelConfig.GPT_5_MINI,
     "gpt-4.1": BackendModelConfig.GPT_4_1,
     "gpt-4.1-mini": BackendModelConfig.GPT_4_1_MINI,
     "gpt-4o": BackendModelConfig.GPT_4O,
