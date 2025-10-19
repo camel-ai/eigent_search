@@ -192,6 +192,7 @@ package.json
 # Results
 eigent_search_results_*
 widesearch_eval_results_*
+results/
 
 # node_modules
 node_modules/

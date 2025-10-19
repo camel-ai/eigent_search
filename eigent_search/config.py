@@ -59,6 +59,12 @@ class SearchAgentType(Enum):
 
 
 class BackendModelConfig(Enum):
+    GPT_5_MINI = {
+        "model_type": ModelType.GPT_5_MINI,
+        "model_platform": ModelPlatformType.OPENAI,
+        "temperature": 0.0,
+        "self_host_url": None,
+    }
     GPT_4_1 = {
         "model_type": ModelType.GPT_4_1,
         "model_platform": ModelPlatformType.OPENAI,
