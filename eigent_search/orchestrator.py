@@ -154,3 +154,5 @@ class SearchOrchestrator:
             )
             self.reset()
             return ErrorSearchResult(error=str(e))
+        finally:
+            self.reset()
