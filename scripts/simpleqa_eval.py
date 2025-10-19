@@ -13,8 +13,8 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import json
 from datetime import datetime
+import json
 import logging
 import os
 from pathlib import Path
@@ -54,7 +54,11 @@ MODEL_CONFIGS = {
     "gpt-oss": BackendModelConfig.GPT_OSS,
 }
 
+# Define benchmark-specific constants
 DATASET_NAME = "simpleqa"
+TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
+WORKING_DIRECTORY = Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_{TIMESTAMP}"
+WORKING_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
 
 def set_up_config(
@@ -69,18 +73,9 @@ def set_up_config(
             description="The evidence from the search results that lead to the answer.",
         )
 
-    time_stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    working_directory = (
-        Path(os.getcwd())
-        / "results"
-        / f"{DATASET_NAME}_eval_agent={agent_type}_model={model_name}_{time_stamp}"
-    )
-    working_directory.mkdir(parents=True, exist_ok=True)
-    result_file = working_directory / "results.json"
-
     config = {
         "search_config": SearchConfig(
-            working_directory=working_directory,
+            working_directory=WORKING_DIRECTORY,
             **MODEL_CONFIGS[model_name].value,
             agent_type=AGENT_TYPES[agent_type],
             response_format=SimpleQAResponse,
@@ -88,7 +83,6 @@ def set_up_config(
         "judge_config": LLMasJudgeConfig(
             **MODEL_CONFIGS["gpt-4.1"].value,  # We use gpt-4.1 as the judge model
         ),
-        "result_file": result_file,
     }
 
     set_log_file(config["search_config"].working_directory / f"{DATASET_NAME}_eval.log")
@@ -142,22 +136,26 @@ def run_search_and_evaluate(
 
 def run_search_and_evaluate_multithreaded(
     test_samples: list[dict],
-    search_config: SearchConfig,
-    judge_config: LLMasJudgeConfig,
-    num_workers: int,
+    agent_type: Literal[AGENT_TYPES.keys()],
+    model_name: Literal[MODEL_CONFIGS.keys()],
     result_file: Path,
+    num_workers: int,
 ) -> list[dict]:
     """Run the search and evaluation for a list of test samples in parallel."""
 
     process_bar = tqdm(total=len(test_samples), desc=f"{DATASET_NAME} evaluation")
-
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
-        futures = [
-            executor.submit(
-                run_search_and_evaluate, sample, search_config, judge_config
+        futures = []
+        for sample in test_samples:
+            config = set_up_config(agent_type, model_name)
+            search_config = config["search_config"]
+            judge_config = config["judge_config"]
+
+            futures.append(
+                executor.submit(
+                    run_search_and_evaluate, sample, search_config, judge_config
+                )
             )
-            for sample in test_samples
-        ]
         results = []
 
         for i, future in enumerate(as_completed(futures)):
@@ -233,12 +231,11 @@ def main(
         ]
         num_questions = len(test_sample_ids)
 
-    # Load the search config and judge config
+    # Log the search and judge configs and save a copy to working directory for reference
+    # The configs will be re-created for each thread to avoid race conditions
     config = set_up_config(agent_type, model_name)
     search_config = config["search_config"]
     judge_config = config["judge_config"]
-    result_file = config["result_file"]
-
     logger.info(
         f"\n{'=' * 100}\n"
         f"Starting {DATASET_NAME} Evaluation:\n"
@@ -252,17 +249,17 @@ def main(
         "search_config": json.loads(search_config.model_dump_json(indent=2)),
         "judge_config": json.loads(judge_config.model_dump_json(indent=2)),
     }
-    with open(search_config.working_directory / "config.json", "w") as f:
+    with open(WORKING_DIRECTORY / "config.json", "w") as f:
         json.dump(saved_config, f, indent=2)
 
     # run the search and evaluation
     load_dotenv()  # load openai, google api, and search api keys
     results = run_search_and_evaluate_multithreaded(
         test_samples=test_samples,
-        search_config=search_config,
-        judge_config=judge_config,
+        agent_type=agent_type,
+        model_name=model_name,
+        result_file=WORKING_DIRECTORY / "results.json",
         num_workers=num_workers,
-        result_file=result_file,
     )
 
     # post summary
