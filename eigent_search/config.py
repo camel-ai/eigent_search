@@ -62,7 +62,7 @@ class BackendModelConfig(Enum):
     GPT_5_MINI = {
         "model_type": ModelType.GPT_5_MINI,
         "model_platform": ModelPlatformType.OPENAI,
-        "temperature": 0.0,
+        "temperature": 1.0,  # must be 1.0 for GPT-5-mini
         "self_host_url": None,
     }
     GPT_4_1 = {
