@@ -264,21 +264,28 @@ def main(
 
     # post summary
     error_ids = []
-    accuracy = 0.0
+    scores = []
+    scores_attempted = [] # scores of the questions that were not under Not Attempted grade
     total_token_usage = 0
     for result in results:
         if "error" in result["search_result"]:
             error_ids.append(result["search_result"]["query_id"])
-        accuracy += result["eval_result"]["score"]
+            continue  # skip error cases
+        scores.append(result["eval_result"]["score"])
+        if result["eval_result"]["metrics"]["grade"] != "NOT_ATTEMPTED":
+            scores_attempted.append(result["eval_result"]["score"])
         total_token_usage += result["search_result"]["token_usage"]
 
-    accuracy /= len(results)
+    accuracy = sum(scores) / len(scores)  # also means recall
+    accuracy_attempted = sum(scores_attempted) / len(scores_attempted)  # also means precision
+    f1_score = (2 * accuracy * accuracy_attempted) / (accuracy + accuracy_attempted)
     logger.info(
         f"\n{'=' * 50}\n"
-        "Summary:\n"
-        f"Accuracy (Excluding Error Cases): {accuracy * 100:.2f}%\n"
+        f"Processed {len(results)} questions, {len(error_ids)} of which are error cases with IDs: {error_ids}\n"
+        f"Accuracy: {accuracy * 100:.2f}% (n={len(scores)})\n"
+        f"Accuracy (excluding `grade=NOT_ATTEMPTED` cases): {accuracy_attempted * 100:.2f}% (n={len(scores_attempted)})\n"
+        f"F1 Score: {f1_score * 100:.2f}%\n"
         f"Total token usage: {total_token_usage}\n"
-        f"Error IDs: {error_ids}\n"
         f"{'=' * 50}\n"
     )
 
