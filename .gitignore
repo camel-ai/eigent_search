@@ -181,7 +181,7 @@ cython_debug/
 .DS_Store
 
 # Results
-eigent_search_results_*
+results/
 
 # node_modules
 node_modules/
