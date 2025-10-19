@@ -208,7 +208,7 @@ def main(
     test_all: bool,
 ):
     # load the dataset
-    dataset = list(SimpleQAEvaluator.load_dataset(verified=True))
+    dataset = list(SimpleQAEvaluator.load_dataset(verified=False))
     if test_all:
         num_questions = len(dataset)
         start_idx = 0
