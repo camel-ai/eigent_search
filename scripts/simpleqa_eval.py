@@ -58,11 +58,12 @@ MODEL_CONFIGS = {
 # Define benchmark-specific constants
 DATASET_NAME = "simpleqa"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
-WORKING_DIRECTORY = None
 
 
 def set_up_config(
-    agent_type: Literal[AGENT_TYPES.keys()], model_name: Literal[MODEL_CONFIGS.keys()]
+    agent_type: Literal[AGENT_TYPES.keys()],
+    model_name: Literal[MODEL_CONFIGS.keys()],
+    working_directory: Path | None,
 ) -> dict:
     """Set up the search config."""
 
@@ -75,7 +76,7 @@ def set_up_config(
 
     config = {
         "search_config": SearchConfig(
-            working_directory=WORKING_DIRECTORY,
+            working_directory=working_directory,
             **MODEL_CONFIGS[model_name].value,
             agent_type=AGENT_TYPES[agent_type],
             response_format=SimpleQAResponse,
@@ -138,8 +139,8 @@ def run_search_and_evaluate_multithreaded(
     test_samples: list[dict],
     agent_type: Literal[AGENT_TYPES.keys()],
     model_name: Literal[MODEL_CONFIGS.keys()],
-    result_file: Path,
     num_workers: int,
+    working_directory: Path | None,
 ) -> list[dict]:
     """Run the search and evaluation for a list of test samples in parallel."""
 
@@ -147,7 +148,7 @@ def run_search_and_evaluate_multithreaded(
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = []
         for sample in test_samples:
-            config = set_up_config(agent_type, model_name)
+            config = set_up_config(agent_type, model_name, working_directory)
             search_config = config["search_config"]
             judge_config = config["judge_config"]
 
@@ -162,9 +163,9 @@ def run_search_and_evaluate_multithreaded(
             result = future.result()
             results.append(result)
             if (i + 1) % 10 == 0 or i == len(test_samples) - 1:
-                with open(result_file, "w") as f:
+                with open(working_directory / "results.json", "w") as f:
                     json.dump(results, f, indent=2)
-                logger.info(f"Results saved to {result_file} ...")
+                logger.info(f"Results saved to {working_directory / 'results.json'} ...")
             process_bar.update(1)
 
         return results
@@ -222,14 +223,20 @@ def main(
         try:
             with open(WORKING_DIRECTORY / "results.json", "r") as f:
                 existing_results = json.load(f)
-                evaluated_question_ids = set([result["input_sample"]["id"] for result in existing_results])
+                evaluated_question_ids = set(
+                    [result["input_sample"]["id"] for result in existing_results]
+                )
         except Exception as e:
             logger.error(f"Error loading existing results: {e}")
             raise e
     else:
-        WORKING_DIRECTORY = Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_{TIMESTAMP}"
+        WORKING_DIRECTORY = (
+            Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_{TIMESTAMP}"
+        )
         WORKING_DIRECTORY.mkdir(parents=True, exist_ok=True)
-        logger.info(f"Starting new evaluation in working directory: {WORKING_DIRECTORY}")
+        logger.info(
+            f"Starting new evaluation in working directory: {WORKING_DIRECTORY}"
+        )
 
     # load the dataset
     dataset = list(SimpleQAEvaluator.load_dataset(verified=False))
@@ -245,7 +252,9 @@ def main(
     test_samples = [
         {"id": f"{DATASET_NAME}_{idx}", **dataset[idx]} for idx in test_sample_ids
     ]
-    test_samples = [sample for sample in test_samples if sample["id"] not in evaluated_question_ids]
+    test_samples = [
+        sample for sample in test_samples if sample["id"] not in evaluated_question_ids
+    ]
     if custom_idx_list:
         logger.info(
             f"Overriding `start_idx` and `num_questions` with customized list of question IDs: {custom_idx_list}"
@@ -258,7 +267,7 @@ def main(
 
     # Log the search and judge configs and save a copy to working directory for reference
     # The configs will be re-created for each thread to avoid race conditions
-    config = set_up_config(agent_type, model_name)
+    config = set_up_config(agent_type, model_name, WORKING_DIRECTORY)
     search_config = config["search_config"]
     judge_config = config["judge_config"]
     logger.info(
@@ -283,8 +292,8 @@ def main(
         test_samples=test_samples,
         agent_type=agent_type,
         model_name=model_name,
-        result_file=WORKING_DIRECTORY / "results.json",
         num_workers=num_workers,
+        working_directory=WORKING_DIRECTORY,
     )
 
     # post summary
