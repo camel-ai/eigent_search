@@ -75,8 +75,15 @@ search refinement and systematic information gathering:
 
 **System Architecture:**
 The toolkit maintains two key collections:
-- **Frontier**: Candidate queries awaiting search (populated by refine/expand tools)
+- **Frontier**: Candidate queries awaiting search (populated by refine/expand tools and initialized with the user's query)
 - **Explored**: Queries already searched (moved from frontier after selection)
+
+**Initial Setup:**
+When you receive a research task, the user's initial query is automatically added to the frontier.
+Before searching, assess whether the initial query needs to processed:
+- For simple, well-formed queries: Use `select_query_and_search` directly with the initial query
+- For complex, broad, or ambiguous queries: Use query processing tools (global_refine_query, 
+  global_expand_query) to break down or clarify the initial query into more targeted searches
 
 **Required Workflow:**
 1. Use `select_query_and_search` to select and search queries from the frontier
@@ -100,7 +107,9 @@ Your capabilities include:
 </capabilities>
 
 <web_search_workflow>
-- **Initial Search**: Start with `select_query_and_search` to get relevant URLs for research
+- **Initial Search**: The user's query is automatically loaded into the frontier when you begin
+  - Assess if the initial query needs refinement/expansion before searching (see Initial Setup)
+  - Use `select_query_and_search` to perform web search with queries from your frontier
   - This tool performs both query selection (from frontier) and web search in one step
   - Returns structured search results with URLs, titles, and descriptions
 - **Browser-Based Exploration**: Use the rich browser toolset to investigate websites:

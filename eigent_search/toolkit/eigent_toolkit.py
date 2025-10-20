@@ -83,15 +83,6 @@ class EigentSearchToolkit(CleanupToolkit):
             *self.note_taking_toolkit.get_tools(),
         ]
 
-    def update_note_taking_directory(self, new_directory: Path):
-        """Update the working directory for note-taking toolkit."""
-        if hasattr(self, "note_taking_toolkit"):
-            self.note_taking_toolkit.working_directory = new_directory
-            self.note_taking_toolkit.registry_file = new_directory / ".note_register"
-            self.note_taking_toolkit.registry = []
-            new_directory.mkdir(parents=True, exist_ok=True)
-            logger.info(f"Note-taking directory updated to: {new_directory}")
-
     def _construct_search_toolkit(self):
         """Construct a search toolkit for actions related to searching the web."""
 
@@ -132,11 +123,10 @@ class EigentSearchToolkit(CleanupToolkit):
     def _construct_terminal_toolkit(self):
         """Construct a terminal toolkit for actions related to terminal operations."""
         terminal_toolkit = TerminalToolkit(
+            working_directory=self.working_directory / "terminal_workspace",
             safe_mode=True,
             clone_current_env=False,
-            session_logs_dir=os.path.join(
-                self.working_directory.as_posix(), "terminal_logs"
-            ),
+            session_logs_dir=self.working_directory / "terminal_logs",
         )
 
         # Override get_tools method to only include specific tools
