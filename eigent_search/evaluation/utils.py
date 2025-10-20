@@ -17,7 +17,6 @@ import json
 from pathlib import Path
 from typing import Literal, Type
 
-from camel.logger import set_log_file
 from camel.logger import get_logger
 from pydantic import BaseModel
 from tqdm.auto import tqdm
@@ -52,7 +51,6 @@ MODEL_CONFIGS = {
 
 def set_up_search_and_judge_config(
     working_directory: Path,
-    benchmark_name: str,
     agent_type: Literal[AGENT_TYPES.keys()],
     model_name: Literal[MODEL_CONFIGS.keys()],
     response_format: Type[BaseModel] | None = None,
@@ -71,9 +69,12 @@ def set_up_search_and_judge_config(
         ),
     }
 
-    set_log_file(
-        config["search_config"].working_directory / f"{benchmark_name}_eval.log"
-    )
+    saved_config = {
+        "search_config": json.loads(config["search_config"].model_dump_json(indent=2)),
+        "judge_config": json.loads(config["judge_config"].model_dump_json(indent=2)),
+    }
+    with open(working_directory / "config.json", "w") as f:
+        json.dump(saved_config, f, indent=2)
 
     return config
 
@@ -127,7 +128,7 @@ def run_search_and_evaluate(
 
 def run_search_and_evaluate_multithreaded(
     test_samples: list[dict],
-    working_directory: Path | None,
+    working_directory: Path,
     benchmark_name: str,
     agent_type: Literal[AGENT_TYPES.keys()],
     model_name: Literal[MODEL_CONFIGS.keys()],
@@ -141,9 +142,10 @@ def run_search_and_evaluate_multithreaded(
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = []
         for test_sample in test_samples:
+            sample_wise_working_directory = working_directory / str(test_sample["id"])
+            sample_wise_working_directory.mkdir(exist_ok=True)
             config = set_up_search_and_judge_config(
-                working_directory=working_directory / test_sample["id"],
-                benchmark_name=benchmark_name,
+                working_directory=sample_wise_working_directory,
                 agent_type=agent_type,
                 model_name=model_name,
                 response_format=response_format,
