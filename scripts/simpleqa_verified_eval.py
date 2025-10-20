@@ -167,7 +167,7 @@ def run_search_and_evaluate_multithreaded(
                     for result in results:
                         f.write(json.dumps(result) + "\n")
                 logger.info(
-                    f"Results saved to {working_directory / 'results.jsonl'} ..."
+                    f"Progress: {i + 1}/{len(test_samples)} ({(i + 1) / len(test_samples) * 100:.1f}%) - Results saved to {working_directory / 'results.jsonl'} ..."
                 )
             process_bar.update(1)
 
