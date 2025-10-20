@@ -185,16 +185,18 @@ test/
 tmp/
 results/
 camel_terminal.txt
-scripts/musique_eval_schema.py
 node_modules
 package-lock.json
 package.json
 # Results
-eigent_search_results_*
-widesearch_eval_results_*
 results/
 
 # node_modules
 node_modules/
 package-lock.json
 package.json
+
+# temp files
+eigent_search/evaluation/widesearch
+scripts/widesearch_eval_temp.py
+scripts/widesearch_eval.py
