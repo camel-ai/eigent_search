@@ -12,13 +12,12 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from .base import EvaluationRequest, EvaluationResult
 from .simpleqa import SimpleQAEvaluator
-from .frames import FramesEvaluator
+from datasets import load_dataset, Dataset
 
-__all__ = [
-    "EvaluationRequest",
-    "EvaluationResult",
-    "SimpleQAEvaluator",
-    "FramesEvaluator",
-]
+class FramesEvaluator(SimpleQAEvaluator):
+    """Frames evaluator inheriting from SimpleQA with different dataset."""
+    
+    @staticmethod
+    def load_dataset() -> Dataset:
+        return load_dataset("google/frames-benchmark")["test"]

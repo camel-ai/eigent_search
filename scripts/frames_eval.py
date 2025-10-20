@@ -33,7 +33,7 @@ from eigent_search import (
     SearchConfig,
     SearchOrchestrator,
 )
-from eigent_search.evaluation import SimpleQAEvaluator
+from eigent_search.evaluation import FramesEvaluator
 
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
@@ -56,10 +56,12 @@ MODEL_CONFIGS = {
 }
 
 # Define benchmark-specific constants
-DATASET_NAME = "simpleqa_verified"
+DATASET_NAME = "frames"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 WORKING_DIRECTORY = Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_{TIMESTAMP}"
 WORKING_DIRECTORY.mkdir(parents=True, exist_ok=True)
+QUESTION_FIELD = "Prompt"
+ANSWER_FIELD = "Answer"
 
 
 
@@ -101,7 +103,7 @@ def run_search_and_evaluate(
     search_orchestrator = SearchOrchestrator(search_config)
     search_result = search_orchestrator.run_agent(
         search_orchestrator.create_search_request(
-            input_query=test_sample["problem"], query_id=test_sample["id"]
+            input_query=test_sample[QUESTION_FIELD], query_id=test_sample["id"]
         )
     )
     if hasattr(search_result, "error"):
@@ -115,10 +117,10 @@ def run_search_and_evaluate(
 
     # run the evaluation
     judge_agent = judge_config.create_agent()
-    evaluator = SimpleQAEvaluator(judge_agent)
+    evaluator = FramesEvaluator(judge_agent)
     eval_request = evaluator.create_request(
-        query=test_sample["problem"],
-        reference_answer=test_sample["answer"],
+        query=test_sample[QUESTION_FIELD],
+        reference_answer=test_sample[ANSWER_FIELD],
         model_answer=search_result.formatted_response,
     )
     eval_result = evaluator.evaluate(eval_request)
@@ -210,7 +212,7 @@ def main(
     test_all: bool,
 ):
     # load the dataset
-    dataset = list(SimpleQAEvaluator.load_dataset(verified=True))
+    dataset = list(FramesEvaluator.load_dataset())
     if test_all:
         num_questions = len(dataset)
         start_idx = 0
