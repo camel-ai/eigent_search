@@ -132,11 +132,10 @@ class EigentSearchToolkit(CleanupToolkit):
     def _construct_terminal_toolkit(self):
         """Construct a terminal toolkit for actions related to terminal operations."""
         terminal_toolkit = TerminalToolkit(
+            working_directory=self.working_directory / "terminal_workspace",
             safe_mode=True,
             clone_current_env=False,
-            session_logs_dir=os.path.join(
-                self.working_directory.as_posix(), "terminal_logs"
-            ),
+            session_logs_dir=self.working_directory / "terminal_logs",
         )
 
         # Override get_tools method to only include specific tools
