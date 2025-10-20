@@ -12,23 +12,12 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Literal
 
-from camel.agents import ChatAgent
-from datasets import Dataset, load_dataset
 from pydantic import BaseModel, Field
-
+from typing import Literal
+from camel.agents import ChatAgent
+from datasets import load_dataset, Dataset
 from .base import BaseEvaluator, EvaluationRequest, EvaluationResult
-
-# Not sure what to use but migrating from OpenAI's Simple Eval
-QUERY_TEMPLATE = """
-{query}
-
-Your response should be in the following format:
-Explanation: {{your explanation for your final answer}}
-Exact Answer: {{your succinct, final answer}}
-Confidence: {{your confidence score between 0% and 100% for your answer}}
-""".strip()
 
 
 # template imported from OpenAI's Simple Eval
@@ -76,8 +65,7 @@ class BrowseCompEvaluator(BaseEvaluator):
 
     @staticmethod
     def load_dataset() -> Dataset:
-        # TODO: add decription function to the dataset
-        return load_dataset("smolagents/browse_comp")
+        return load_dataset("smolagents/browse_comp")["test"]
 
     def create_request(
         self, query: str, reference_answer: str, model_answer: str
