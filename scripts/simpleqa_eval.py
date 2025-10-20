@@ -58,8 +58,7 @@ MODEL_CONFIGS = {
 # Define benchmark-specific constants
 DATASET_NAME = "simpleqa"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
-WORKING_DIRECTORY = Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_{TIMESTAMP}"
-WORKING_DIRECTORY.mkdir(parents=True, exist_ok=True)
+WORKING_DIRECTORY = None
 
 
 def set_up_config(
@@ -199,6 +198,12 @@ def run_search_and_evaluate_multithreaded(
     help="Test all questions in the dataset. If provided, will override the `num_questions`, `start_idx`, and `custom_idx_list`.",
     default=False,
 )
+@click.option(
+    "--resume-from",
+    type=str,
+    help="Resume from an existing working directory",
+    default=None,
+)
 def main(
     agent_type: str,
     model_name: str,
@@ -207,7 +212,25 @@ def main(
     start_idx: int,
     custom_idx_list: list[int],
     test_all: bool,
+    resume_from: str | None,
 ):
+    # Set the working directory
+    evaluated_question_ids = set()
+    if resume_from and os.path.exists(resume_from):
+        WORKING_DIRECTORY = Path(resume_from)
+        logger.info(f"Resuming from existing working directory: {WORKING_DIRECTORY}")
+        try:
+            with open(WORKING_DIRECTORY / "results.json", "r") as f:
+                existing_results = json.load(f)
+                evaluated_question_ids = set([result["input_sample"]["id"] for result in existing_results])
+        except Exception as e:
+            logger.error(f"Error loading existing results: {e}")
+            raise e
+    else:
+        WORKING_DIRECTORY = Path(os.getcwd()) / "results" / f"{DATASET_NAME}_eval_{TIMESTAMP}"
+        WORKING_DIRECTORY.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Starting new evaluation in working directory: {WORKING_DIRECTORY}")
+
     # load the dataset
     dataset = list(SimpleQAEvaluator.load_dataset(verified=False))
     if test_all:
@@ -222,6 +245,7 @@ def main(
     test_samples = [
         {"id": f"{DATASET_NAME}_{idx}", **dataset[idx]} for idx in test_sample_ids
     ]
+    test_samples = [sample for sample in test_samples if sample["id"] not in evaluated_question_ids]
     if custom_idx_list:
         logger.info(
             f"Overriding `start_idx` and `num_questions` with customized list of question IDs: {custom_idx_list}"
@@ -266,7 +290,7 @@ def main(
     # post summary
     error_ids = []
     scores = []
-    scores_attempted = [] # scores of the questions that were not under Not Attempted grade
+    scores_attempted = []  # scores of the questions that were not under Not Attempted grade
     total_token_usage = 0
     for result in results:
         if "error" in result["search_result"]:
@@ -278,7 +302,9 @@ def main(
         total_token_usage += result["search_result"]["token_usage"]
 
     accuracy = sum(scores) / len(scores)  # also means recall
-    accuracy_attempted = sum(scores_attempted) / len(scores_attempted)  # also means precision
+    accuracy_attempted = sum(scores_attempted) / len(
+        scores_attempted
+    )  # also means precision
     f1_score = (2 * accuracy * accuracy_attempted) / (accuracy + accuracy_attempted)
     logger.info(
         f"\n{'=' * 50}\n"
