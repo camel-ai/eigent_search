@@ -163,10 +163,11 @@ def run_search_and_evaluate_multithreaded(
             result = future.result()
             results.append(result)
             if (i + 1) % 10 == 0 or i == len(test_samples) - 1:
-                with open(working_directory / "results.json", "w") as f:
-                    json.dump(results, f, indent=2)
+                with open(working_directory / "results.jsonl", "w") as f:
+                    for result in results:
+                        f.write(json.dumps(result) + "\n")
                 logger.info(
-                    f"Results saved to {working_directory / 'results.json'} ..."
+                    f"Results saved to {working_directory / 'results.jsonl'} ..."
                 )
             process_bar.update(1)
 
@@ -224,11 +225,11 @@ def main(
         WORKING_DIRECTORY = Path(resume_from)
         logger.info(f"Resuming from existing working directory: {WORKING_DIRECTORY}")
         try:
-            with open(WORKING_DIRECTORY / "results.json", "r") as f:
-                existing_results = json.load(f)
-                evaluated_question_ids = set(
-                    [result["input_sample"]["id"] for result in existing_results]
-                )
+            with open(WORKING_DIRECTORY / "results.jsonl", "r") as f:
+                for line in f:
+                    result = json.loads(line)
+                    existing_results.append(result)
+                    evaluated_question_ids.add(result["input_sample"]["id"])
         except Exception as e:
             logger.error(f"Error loading existing results: {e}")
             raise e
