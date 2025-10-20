@@ -196,7 +196,6 @@ node_modules/
 package-lock.json
 package.json
 
-# temp files
-eigent_search/evaluation/widesearch
-scripts/widesearch_eval_temp.py
 scripts/widesearch_eval.py
+# temp files
+scripts/widesearch_eval_temp.py
