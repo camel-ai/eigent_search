@@ -15,10 +15,11 @@
 from .base import EvaluationRequest, EvaluationResult
 from .simpleqa import SimpleQAEvaluator
 from .browsecomp import BrowseCompEvaluator
-from .musique.musique import MusiQueEvaluator
+from .musique.musique_class import MusiQueEvaluator
 
 __all__ = [
     "EvaluationRequest",
     "EvaluationResult",
     "SimpleQAEvaluator",
+    "MusiQueEvaluator"
 ]
