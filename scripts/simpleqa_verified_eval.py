@@ -219,6 +219,7 @@ def main(
 ):
     # Set the working directory
     evaluated_question_ids = set()
+    existing_results = []
     if resume_from and os.path.exists(resume_from):
         WORKING_DIRECTORY = Path(resume_from)
         logger.info(f"Resuming from existing working directory: {WORKING_DIRECTORY}")
@@ -296,6 +297,7 @@ def main(
         num_workers=num_workers,
         working_directory=WORKING_DIRECTORY,
     )
+    results = existing_results + results
 
     # post summary
     error_ids = []
