@@ -53,9 +53,7 @@ or save them in `.env`.
 
 4. Run the evaluation script (on the first five questions):
 ```bash
-python scripts/simpleqa_eval.py 
---agent_type eigent_search_q+ \ 
--num_questions 5 \
+python scripts/simpleqa_eval.py -a eigent_search_q+ -n 5 
 ```
 
 Please see input parameters inside the script.
