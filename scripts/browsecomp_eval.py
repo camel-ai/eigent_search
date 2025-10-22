@@ -181,7 +181,7 @@ def main(
     total_token_usage = 0
     for result in results:
         if "error" in result["search_result"]:
-            error_ids.append(result["search_result"]["query_id"])
+            error_ids.append(result["input_sample"]["id"])
             continue  # skip error cases
         scores.append(result["eval_result"]["score"])
         total_token_usage += result["search_result"]["token_usage"]
