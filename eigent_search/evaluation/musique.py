@@ -28,12 +28,17 @@ class MusiQuePayload(BaseModel):
     """Single MuSiQue sample (only fields required for answer quality assessment, cause it also has retrieve quality assessment)"""
 
     qid: str = Field(..., description="The question id.")
-    reference_answer: str = Field(..., description="The ground truth answer.")
-    reference_answer_aliases: List[str] = Field(
-        default_factory=list, description="The ground truth answer aliases."
+    reference_answer: str = Field(
+        ..., description="The reference (ground truth) answer."
     )
-    answerable: bool = Field(True, description="is the ground truth answerable or not.")
-    model_answer: str = Field(..., description="The model predicted answer.")
+    reference_answer_aliases: List[str] = Field(
+        default_factory=list, description="The reference (ground truth) answer aliases."
+    )
+    answerable: bool = Field(
+        True,
+        description="Whether the reference (ground truth) answer is answerable or not.",
+    )
+    model_answer: str = Field(..., description="The model-predicted answer.")
 
 
 class MusiQueEvaluator(BaseEvaluator):
@@ -72,26 +77,25 @@ class MusiQueEvaluator(BaseEvaluator):
         model_answer_json = json.loads(p.model_answer)
         model_answer = model_answer_json["answer"]
         if p.answerable:
-            ground_truths = [p.reference_answer] + list(
+            reference_answers = [p.reference_answer] + list(
                 p.reference_answer_aliases or []
             )
-            ground_truths = [
-                gt for gt in ground_truths if gt and self.normalize_answer(gt).strip()
+            reference_answers = [
+                ref_answer
+                for ref_answer in reference_answers
+                if ref_answer and self.normalize_answer(ref_answer).strip()
             ]
-            em = self.compute_max_metrics(
-                self.compute_exact_match, model_answer, ground_truths
-            )
-            f1 = self.compute_max_metrics(self.compute_f1, model_answer, ground_truths)
-            acc = self.compute_max_metrics(
-                self.compute_accuracy, model_answer, ground_truths
-            )
+            max_metrics = self.compute_max_metrics(model_answer, reference_answers)
+            answer_em = max_metrics["answer_em"]
+            answer_f1 = max_metrics["answer_f1"]
+            answer_acc = max_metrics["answer_acc"]
         else:
-            em, f1, acc = 0.0, 0.0, 0.0
+            answer_em, answer_f1, answer_acc = 0.0, 0.0, 0.0
 
         metrics = {
-            "answer_em": round(float(em), 3),
-            "answer_f1": round(float(f1), 3),
-            "answer_acc": round(float(acc), 3),
+            "answer_em": round(float(answer_em), 3),
+            "answer_f1": round(float(answer_f1), 3),
+            "answer_acc": round(float(answer_acc), 3),
         }
         return EvaluationResult(**request.model_dump(), metrics=metrics)
 
@@ -123,16 +127,16 @@ class MusiQueEvaluator(BaseEvaluator):
         return cls.normalize_answer(answer).split()
 
     @classmethod
-    def compute_exact_match(cls, pred_answer: str, ref_answer: str) -> int:
+    def compute_exact_match(cls, model_answer: str, ref_answer: str) -> int:
         """Compute the exact match between the reference and predicted answers."""
         return int(
-            cls.normalize_answer(pred_answer) == cls.normalize_answer(ref_answer)
+            cls.normalize_answer(model_answer) == cls.normalize_answer(ref_answer)
         )
 
     @classmethod
-    def compute_f1(cls, pred_answer: str, ref_answer: str) -> float:
+    def compute_f1(cls, model_answer: str, ref_answer: str) -> float:
         """Compute the F1 score between the reference and predicted answers."""
-        pred_tokens = cls.get_normalized_tokens(pred_answer)
+        pred_tokens = cls.get_normalized_tokens(model_answer)
         ref_tokens = cls.get_normalized_tokens(ref_answer)
         common = collections.Counter(pred_tokens) & collections.Counter(ref_tokens)
         num_same = sum(common.values())
@@ -147,11 +151,11 @@ class MusiQueEvaluator(BaseEvaluator):
         return f1
 
     @classmethod
-    def compute_accuracy(cls, pred_answer: str, ref_answer: str) -> int:
+    def compute_accuracy(cls, model_answer: str, ref_answer: str) -> int:
         """
         Accuracy = 1 if prediction contains any ground truth or alias (after normalize).
         """
-        pred_norm = cls.normalize_answer(pred_answer)
+        pred_norm = cls.normalize_answer(model_answer)
         ref_norm = cls.normalize_answer(ref_answer)
         if not ref_norm:
             return 0
@@ -160,15 +164,19 @@ class MusiQueEvaluator(BaseEvaluator):
 
     @classmethod
     def compute_max_metrics(
-        cls, pred_answer: str, ref_answers: List[str]
+        cls, model_answer: str, ref_answers: List[str]
     ) -> dict[str, float]:
         """Compute the maximum metrics between the predicted answer and all possible reference answers."""
-        max_metrics = dict()
+        max_metrics = {
+            "answer_em": 0.0,
+            "answer_f1": 0.0,
+            "answer_acc": 0.0,
+        }
         for ref_answer in ref_answers:
-            em = cls.compute_exact_match(pred_answer, ref_answer)
-            f1 = cls.compute_f1(pred_answer, ref_answer)
-            acc = cls.compute_accuracy(pred_answer, ref_answer)
-            max_metrics["exact_match"] = max(max_metrics["exact_match"], em)
-            max_metrics["f1_score"] = max(max_metrics["f1_score"], f1)
-            max_metrics["accuracy"] = max(max_metrics["accuracy"], acc)
+            em = cls.compute_exact_match(model_answer, ref_answer)
+            f1 = cls.compute_f1(model_answer, ref_answer)
+            acc = cls.compute_accuracy(model_answer, ref_answer)
+            max_metrics["answer_em"] = max(max_metrics["answer_em"], em)
+            max_metrics["answer_f1"] = max(max_metrics["answer_f1"], f1)
+            max_metrics["answer_acc"] = max(max_metrics["answer_acc"], acc)
         return max_metrics
