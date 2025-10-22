@@ -17,34 +17,32 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Literal, Type
+from typing import Type
+
 from camel.logger import get_logger, set_log_file, set_log_level
 import click
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
-from eigent_search import (
-    BackendModelConfig,
-    LLMasJudgeConfig,
-    SearchAgentType,
-    SearchConfig,
-    SearchOrchestrator,
-)
+
+from eigent_search.config import LLMasJudgeConfig, SearchConfig
+from eigent_search.evaluation import MusiQueEvaluator
+from eigent_search.evaluation import utils as run_apated
 from eigent_search.evaluation.base import BaseEvaluator
-from eigent_search.evaluation.musique.musique_class import MusiQueEvaluator
 from eigent_search.evaluation.utils import (
     AGENT_TYPES,
     MODEL_CONFIGS,
     run_search_and_evaluate_multithreaded,
 )
-from eigent_search.evaluation import utils as run_apated
+from eigent_search.orchestrator import SearchOrchestrator
 
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
 
 # Define benchmark-specific constants
 BENCHMARK_NAME = "musique"
-FORMAT_STRING = f"In the final response format \"answer\", return ONLY the final short answer (entity/number/date/short noun phrase). No sentences, no prefixes, no quotes, no extra text. "
+FORMAT_STRING = "In the final response format 'answer', return ONLY the final short answer (entity/number/date/short noun phrase). No sentences, no prefixes, no quotes, no extra text. "
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
+
 
 def run_search_and_evaluate(
     test_sample: dict,
@@ -58,7 +56,8 @@ def run_search_and_evaluate(
     search_orchestrator = SearchOrchestrator(search_config)
     search_result = search_orchestrator.run_agent(
         search_orchestrator.create_search_request(
-            input_query= FORMAT_STRING + test_sample["question"], query_id=test_sample["id"]
+            input_query=FORMAT_STRING + test_sample["question"],
+            query_id=test_sample["id"],
         )
     )
     if hasattr(search_result, "error"):
@@ -91,6 +90,7 @@ def run_search_and_evaluate(
             "metrics": eval_result.metrics,
         },
     }
+
 
 class MusiQueResponse(BaseModel):
     answer: str = Field(..., description="The answer to the research question.")
@@ -232,7 +232,11 @@ def main(
         if "error" in result["search_result"]:
             error_ids.append(result["search_result"]["query_id"])
             continue  # skip error cases
-        em, f1, acc = result["eval_result"]["metrics"]["answer_em"], result["eval_result"]["metrics"]["answer_f1"], result["eval_result"]["metrics"]["answer_acc"] 
+        em, f1, acc = (
+            result["eval_result"]["metrics"]["answer_em"],
+            result["eval_result"]["metrics"]["answer_f1"],
+            result["eval_result"]["metrics"]["answer_acc"],
+        )
         per_em_list.append(em)
         per_f1_list.append(f1)
         per_acc_list.append(acc)
@@ -241,7 +245,7 @@ def main(
     em = round(sum(per_em_list) / len(per_em_list), 3) if per_em_list else 0.0
     f1_score = round(sum(per_f1_list) / len(per_f1_list), 3) if per_f1_list else 0.0
     acc = round(sum(per_acc_list) / len(per_acc_list), 3) if per_acc_list else 0.0
-    
+
     logger.info(
         f"\n{'=' * 50}\n"
         f"Processed {len(results)} questions, {len(error_ids)} of which are error cases with IDs: {error_ids}\n"
