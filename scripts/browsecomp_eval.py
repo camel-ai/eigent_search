@@ -174,6 +174,7 @@ def main(
         evaluator_class=BrowseCompEvaluator,
         response_format=BrowseCompResponse,
         num_workers=num_workers,
+        existing_results=existing_results,
     )
     results = existing_results + results
 

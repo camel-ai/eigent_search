@@ -169,6 +169,7 @@ def main(
         evaluator_class=SimpleQAEvaluator,
         response_format=SimpleQAResponse,
         num_workers=num_workers,
+        existing_results=existing_results,
     )
     results = existing_results + results
 

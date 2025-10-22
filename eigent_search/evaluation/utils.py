@@ -135,6 +135,7 @@ def run_search_and_evaluate_multithreaded(
     evaluator_class: Type[BaseEvaluator],
     response_format: Type[BaseModel] | None = None,
     num_workers: int = 10,
+    existing_results: list[dict] = [],
 ) -> list[dict]:
     """Run the search and evaluation for a list of test samples in parallel."""
 
@@ -169,7 +170,7 @@ def run_search_and_evaluate_multithreaded(
             results.append(result)
             if (i + 1) % 10 == 0 or i == len(test_samples) - 1:
                 with open(working_directory / "results.jsonl", "w") as f:
-                    for result in results:
+                    for result in existing_results + results:
                         f.write(json.dumps(result) + "\n")
                 logger.info(
                     f"Progress: {i + 1}/{len(test_samples)} ({(i + 1) / len(test_samples) * 100:.1f}%) - Results saved to {working_directory / 'results.jsonl'} ..."

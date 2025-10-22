@@ -171,6 +171,7 @@ def main(
         evaluator_class=WebWalkerEvaluator,
         response_format=WebWalkerResponse,
         num_workers=num_workers,
+        existing_results=existing_results,
     )
     results = existing_results + results
 

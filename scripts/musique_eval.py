@@ -223,6 +223,7 @@ def main(
         evaluator_class=MusiQueEvaluator,
         response_format=MusiQueResponse,
         num_workers=num_workers,
+        existing_results=existing_results,
     )
     results = existing_results + results
 
