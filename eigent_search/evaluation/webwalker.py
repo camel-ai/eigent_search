@@ -20,44 +20,34 @@ from datasets import load_dataset, Dataset
 from .base import BaseEvaluator, EvaluationRequest, EvaluationResult
 
 
-# template imported from OpenAI's Simple Eval
-GRADER_TEMPLATE = """
-Judge whether the following [response] to [question] is correct or not based on the precise and unambiguous [correct_answer] below.
+# template imported from WebWalkerQA official code
+GRADER_TEMPLATE = """You are an evaluation assistant. Please determine if the predicted answer is equivalent to the labeled answer.
 
-[question]: {query}
+Question: {question}
 
-[response]: {model_answer}
+Labeled Answer: {correct_answer}
 
-Your judgement must be in the format and criteria specified below:
+Predicted Answer: {response}
 
-extracted_final_answer: The final exact answer extracted from the [response]. Put the extracted answer as 'None' if there is no exact, final answer to extract from the response.
-
-[correct_answer]: {reference_answer}
-
-reasoning: Explain why the extracted_final_answer is correct or incorrect based on [correct_answer], focusing only on if there are meaningful differences between [correct_answer] and the extracted_final_answer. Do not comment on any background to the problem, do not attempt to solve the problem, do not argue for any answer different than [correct_answer], focus only on whether the answers match.
-
-correct: Answer 'yes' if extracted_final_answer matches the [correct_answer] given above, or is within a small margin of error for numerical problems. Answer 'no' otherwise, i.e. if there if there is any inconsistency, ambiguity, non-equivalency, or if the extracted answer is incorrect.
-
-
-confidence: The extracted confidence score between 0|\%| and 100|\%| from [response]. Put 100 if there is no confidence score available.
+Did the model give an answer **equivalent** to the labeled answer? Please respond with "Correct" if they are equivalent, or "Incorrect" if they are not equivalent. Do not include any other text.
 """.strip()
 
 
-class BrowseCompPayload(BaseModel):
+class WebWalkerPayload(BaseModel):
     query: str = Field(..., description="The question to evaluate.")
     reference_answer: str = Field(..., description="The ground truth answer.")
     model_answer: str = Field(..., description="The predicted answer.")
 
 
-class BrowseCompGrade(BaseModel):
+class WebWalkerGrade(BaseModel):
     """The grade of the predicted answer for BrowseComp."""
 
-    grade: Literal["yes", "no"] = Field(
+    grade: Literal["Correct", "Incorrect"] = Field(
         ..., description="The grade of the predicted answer."
     )
 
 
-class BrowseCompEvaluator(BaseEvaluator):
+class WebWalkerEvaluator(BaseEvaluator):
     """A chat agent-based class for evaluating the quality of predicted answers for BrowseComp."""
 
     def __init__(self, judge_agent: ChatAgent):
@@ -65,13 +55,13 @@ class BrowseCompEvaluator(BaseEvaluator):
 
     @staticmethod
     def load_dataset() -> Dataset:
-        return load_dataset("smolagents/browse_comp")["test"]
+        return load_dataset("callanwu/WebWalkerQA")["main"]
 
     def create_request(
         self, query: str, reference_answer: str, model_answer: str
-    ) -> EvaluationRequest[BrowseCompPayload]:
+    ) -> EvaluationRequest[WebWalkerPayload]:
         return EvaluationRequest(
-            payload=BrowseCompPayload(
+            payload=WebWalkerPayload(
                 query=query,
                 reference_answer=reference_answer,
                 model_answer=model_answer,
@@ -79,20 +69,20 @@ class BrowseCompEvaluator(BaseEvaluator):
         )
 
     def evaluate(
-        self, request: EvaluationRequest[BrowseCompPayload]
+        self, request: EvaluationRequest[WebWalkerPayload]
     ) -> EvaluationResult:
         self.judge_agent.reset()
         response = self.judge_agent.step(
             GRADER_TEMPLATE.format(
-                query=request.payload.query,
-                reference_answer=request.payload.reference_answer,
-                model_answer=request.payload.model_answer,
+                question=request.payload.query,
+                correct_answer=request.payload.reference_answer,
+                response=request.payload.model_answer,
             ),
-            response_format=BrowseCompGrade,
+            response_format=WebWalkerGrade,
         )
         grade = eval(response.msgs[0].content.strip())["grade"]
         return EvaluationResult(
             **request.model_dump(),
-            score=1.0 if grade == "yes" else 0.0,
+            score=1.0 if grade == "Correct" else 0.0,
             metrics={"grade": grade},
         )
