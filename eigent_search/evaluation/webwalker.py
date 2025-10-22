@@ -49,7 +49,7 @@ class WebWalkerGrade(BaseModel):
 
 
 class WebWalkerEvaluator(BaseEvaluator):
-    """A chat agent-based class for evaluating the quality of predicted answers for BrowseComp."""
+    """A chat agent-based class for evaluating the quality of predicted answers for WebWalkerQA."""
 
     def __init__(self, judge_agent: ChatAgent):
         self.judge_agent = judge_agent
