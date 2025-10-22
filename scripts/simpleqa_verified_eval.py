@@ -100,6 +100,8 @@ def main(
             with open(WORKING_DIRECTORY / "results.jsonl", "r") as f:
                 for line in f:
                     result = json.loads(line)
+                    if "error" in result["search_result"]:
+                        continue
                     existing_results.append(result)
                     evaluated_question_ids.add(result["input_sample"]["id"])
         except Exception as e:
