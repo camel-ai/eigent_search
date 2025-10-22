@@ -12,13 +12,19 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-
-from pydantic import BaseModel, Field
+from __future__ import annotations
+import base64
+import hashlib
 from typing import Literal
+
+from camel.logger import get_logger
 from camel.agents import ChatAgent
-from datasets import load_dataset, Dataset
+from datasets import Dataset, load_dataset
+from pydantic import BaseModel, Field
+
 from .base import BaseEvaluator, EvaluationRequest, EvaluationResult
 
+logger = get_logger(__name__)
 
 QUERY_TEMPLATE = """
 {query}
@@ -75,7 +81,17 @@ class BrowseCompEvaluator(BaseEvaluator):
 
     @staticmethod
     def load_dataset() -> Dataset:
-        return load_dataset("smolagents/browse_comp")["test"]
+        test_samples = load_dataset("smolagents/browse_comp")["test"]
+        decoded_samples = []
+        for test_sample in test_samples:
+            # There shouldn't be any missing canary, and decrypt should never fail
+            canary = test_sample["canary"]
+            problem = test_sample["problem"]
+            answer = test_sample["answer"]
+            test_sample["problem"] = BrowseCompEvaluator.decrypt(problem, canary)
+            test_sample["answer"] = BrowseCompEvaluator.decrypt(answer, canary)
+            decoded_samples.append(test_sample)
+        return Dataset.from_list(decoded_samples)
 
     def create_request(
         self, query: str, reference_answer: str, model_answer: str
@@ -106,3 +122,19 @@ class BrowseCompEvaluator(BaseEvaluator):
             score=1.0 if grade == "yes" else 0.0,
             metrics={"grade": grade},
         )
+
+    @staticmethod
+    def derive_key(password: str, length: int) -> bytes:
+        """Derive a fixed-length key from the password using SHA256."""
+        hasher = hashlib.sha256()
+        hasher.update(password.encode())
+        key = hasher.digest()
+        return key * (length // len(key)) + key[: length % len(key)]
+
+    @staticmethod
+    def decrypt(ciphertext_b64: str, password: str) -> str:
+        """Decrypt base64-encoded ciphertext with XOR."""
+        encrypted = base64.b64decode(ciphertext_b64)
+        key = BrowseCompEvaluator.derive_key(password, len(encrypted))
+        decrypted = bytes(a ^ b for a, b in zip(encrypted, key))
+        return decrypted.decode()

@@ -17,7 +17,7 @@ import json
 import logging
 import os
 from pathlib import Path
-import base64, hashlib
+
 from camel.logger import get_logger, set_log_file, set_log_level
 import click
 from dotenv import load_dotenv
@@ -37,26 +37,18 @@ logger = get_logger(__name__)
 BENCHMARK_NAME = "browsecomp"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-# decode function
-def _derive_key(password: str, length: int) -> bytes:
-    h = hashlib.sha256()
-    h.update(password.encode())
-    key = h.digest()
-    return key * (length // len(key)) + key[: length % len(key)]
-
-
-def _decrypt(ciphertext_b64: str, password: str) -> str:
-    encrypted = base64.b64decode(ciphertext_b64)
-    key = _derive_key(password, len(encrypted))
-    decrypted = bytes(a ^ b for a, b in zip(encrypted, key))
-    return decrypted.decode()
-
 
 class BrowseCompResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    evidence: list[str] = Field(
+    answer: str = Field(
+        ..., description="The succinct, final answer extracted from the response."
+    )
+    explanation: str = Field(
         ...,
-        description="The evidence from the search results that lead to the answer.",
+        description="The explanation for the final answer extracted from the response.",
+    )
+    confidence: float = Field(
+        ...,
+        description="The extracted confidence score between 0% and 100% from the response.",
     )
 
 
@@ -171,22 +163,8 @@ def main(
 
     # run the search and evaluation
     load_dotenv()  # load openai, google api, and search api keys
-    decoded_samples = []
-    for s in test_samples:
-        canary = s.get("canary")
-        if not canary:
-            print(f"[skip] sample {s.get('id')} missing canary")
-            continue
-        try:
-            s["problem"] = _decrypt(s["problem"], canary)
-            s["answer"] = _decrypt(s["answer"], canary)
-        except Exception as e:
-            print(f"[skip] sample {s.get('id')} decrypt failed: {e}")
-            continue
-        decoded_samples.append(s)
-        
     results = run_search_and_evaluate_multithreaded(
-        test_samples=decoded_samples,
+        test_samples=test_samples,
         working_directory=WORKING_DIRECTORY,
         benchmark_name=BENCHMARK_NAME,
         agent_type=agent_type,
