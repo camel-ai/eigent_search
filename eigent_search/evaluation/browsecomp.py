@@ -20,6 +20,16 @@ from datasets import load_dataset, Dataset
 from .base import BaseEvaluator, EvaluationRequest, EvaluationResult
 
 
+QUERY_TEMPLATE = """
+{query}
+
+Your response should be in the following format:
+Explanation: {{your explanation for your final answer}}
+Exact Answer: {{your succinct, final answer}}
+Confidence: {{your confidence score between 0% and 100% for your answer}}
+""".strip()
+
+
 # template imported from OpenAI's Simple Eval
 GRADER_TEMPLATE = """
 Judge whether the following [response] to [question] is correct or not based on the precise and unambiguous [correct_answer] below.
@@ -84,7 +94,7 @@ class BrowseCompEvaluator(BaseEvaluator):
         self.judge_agent.reset()
         response = self.judge_agent.step(
             GRADER_TEMPLATE.format(
-                query=request.payload.query,
+                query=QUERY_TEMPLATE.format(query=request.payload.query),
                 reference_answer=request.payload.reference_answer,
                 model_answer=request.payload.model_answer,
             ),
