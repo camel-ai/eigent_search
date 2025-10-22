@@ -67,6 +67,7 @@ class SimpleQAResponse(BaseModel):
     type=str,
     default=None,
     help="Customized list of question IDs to evaluate (e.g., '[1,2,3]') If provided, will ignore `num_questions` and `start_idx`.",
+    # Hard-to-answer question IDs for quick testing: [4, 7, 21, 26, 32, 40, 72, 75, 83, 84, 91, 93, 108, 133, 143, 158, 169]
 )
 @click.option(
     "--test-all",
