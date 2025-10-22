@@ -97,7 +97,11 @@ class MusiQueEvaluator(BaseEvaluator):
             "answer_f1": round(float(answer_f1), 3),
             "answer_acc": round(float(answer_acc), 3),
         }
-        return EvaluationResult(**request.model_dump(), metrics=metrics)
+        return EvaluationResult(
+            **request.model_dump(),
+            score=answer_acc,
+            metrics=metrics,
+        )
 
     @staticmethod
     def normalize_answer(answer: str) -> str:
