@@ -16,7 +16,11 @@ Eigent search agent enhanced with query processing toolkit.
 |------------------------|----------------------------------------|
 | SimpleQA               | basicv8vc/SimpleQA                     |
 | SimpleQA-Verified      | google/simpleqa-verified               |
-
+| BrowseComp             | smolagents/browse_comp                 |
+| WebWalker              | callanwu/WebWalkerQA                   |
+| Musique                | dgslibisey/MuSiQue                     |
+| Frames                 | ...                                    |
+| WideSearch             | ...                                    |
 
 
 ## Get Started
