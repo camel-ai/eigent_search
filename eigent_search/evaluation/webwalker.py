@@ -21,7 +21,8 @@ from .base import BaseEvaluator, EvaluationRequest, EvaluationResult
 
 
 # template imported from WebWalkerQA official code
-GRADER_TEMPLATE = """You are an evaluation assistant. Please determine if the predicted answer is equivalent to the labeled answer.
+GRADER_TEMPLATE = """
+You are an evaluation assistant. Please determine if the predicted answer is equivalent to the labeled answer.
 
 Question: {question}
 
