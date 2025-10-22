@@ -41,7 +41,7 @@ class WebWalkerPayload(BaseModel):
 
 
 class WebWalkerGrade(BaseModel):
-    """The grade of the predicted answer for BrowseComp."""
+    """The grade of the predicted answer for WebWalker."""
 
     grade: Literal["Correct", "Incorrect"] = Field(
         ..., description="The grade of the predicted answer."
