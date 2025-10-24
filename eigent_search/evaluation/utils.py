@@ -40,11 +40,17 @@ AGENT_TYPES = {
 
 
 MODEL_CONFIGS = {
+    # Azure models
+    "azure-gpt-5-mini": BackendModelConfig.AZURE_GPT_5_MINI,
+    "azure-gpt-4.1": BackendModelConfig.AZURE_GPT_4_1,
+    "azure-gpt-4.1-mini": BackendModelConfig.AZURE_GPT_4_1_MINI,
+    # OpenAI models
     "gpt-5-mini": BackendModelConfig.GPT_5_MINI,
     "gpt-4.1": BackendModelConfig.GPT_4_1,
     "gpt-4.1-mini": BackendModelConfig.GPT_4_1_MINI,
     "gpt-4o": BackendModelConfig.GPT_4O,
     "gpt-4o-mini": BackendModelConfig.GPT_4O_MINI,
+    # Ollama models
     "gpt-oss": BackendModelConfig.GPT_OSS,
 }
 
@@ -65,7 +71,7 @@ def set_up_search_and_judge_config(
             response_format=response_format,
         ),
         "judge_config": LLMasJudgeConfig(
-            **MODEL_CONFIGS["gpt-4.1"].value,  # We use gpt-4.1 as the judge model
+            **MODEL_CONFIGS["azure-gpt-4.1"].value,  # We use gpt-4.1 as the judge model
         ),
     }
 

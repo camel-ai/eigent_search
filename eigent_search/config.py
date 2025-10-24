@@ -59,6 +59,29 @@ class SearchAgentType(Enum):
 
 
 class BackendModelConfig(Enum):
+    """Backend model configurations for different models."""
+
+    # Azure models
+    AZURE_GPT_5_MINI = {
+        "model_type": ModelType.GPT_5_MINI,
+        "model_platform": ModelPlatformType.AZURE,
+        "temperature": 1.0,  # must be 1.0 for GPT-5-mini
+        "self_host_url": None,
+    }
+    AZURE_GPT_4_1 = {
+        "model_type": ModelType.GPT_4_1,
+        "model_platform": ModelPlatformType.AZURE,
+        "temperature": 0.0,
+        "self_host_url": None,
+    }
+    AZURE_GPT_4_1_MINI = {
+        "model_type": ModelType.GPT_4_1_MINI,
+        "model_platform": ModelPlatformType.AZURE,
+        "temperature": 0.0,
+        "self_host_url": None,
+    }
+
+    # OpenAI models
     GPT_5_MINI = {
         "model_type": ModelType.GPT_5_MINI,
         "model_platform": ModelPlatformType.OPENAI,
@@ -90,6 +113,7 @@ class BackendModelConfig(Enum):
         "self_host_url": None,
     }
 
+    # Ollama models
     GPT_OSS = {
         "model_type": "gpt-oss:120b",
         "model_platform": ModelPlatformType.OLLAMA,
@@ -97,7 +121,17 @@ class BackendModelConfig(Enum):
         "self_host_url": "http://129.212.188.6:7861/v1",  # need to changed by @wendong when needed
     }
 
-    ALL = [GPT_4_1, GPT_4_1_MINI, GPT_4O, GPT_4O_MINI, GPT_OSS]
+    ALL = [
+        AZURE_GPT_5_MINI,
+        AZURE_GPT_4_1,
+        AZURE_GPT_4_1_MINI,
+        GPT_5_MINI,
+        GPT_4_1,
+        GPT_4_1_MINI,
+        GPT_4O,
+        GPT_4O_MINI,
+        GPT_OSS,
+    ]
 
 
 class SearchConfig(BaseModel):
