@@ -108,7 +108,7 @@ class MusiQueResponse(BaseModel):
     "--model_name",
     "-m",
     type=click.Choice(MODEL_CONFIGS.keys()),
-    default="gpt-4.1-mini",
+    default="azure-gpt-4.1-mini",
 )
 @click.option("--num_workers", "-w", type=int, default=10)
 @click.option("--num_questions", "-n", type=int, default=5)
