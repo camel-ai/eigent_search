@@ -89,7 +89,7 @@ class SearchOrchestrator:
     async def astep(self, input_query: str) -> ChatAgentResponse:
         # Load initial query into query processing toolkit
         if self.query_processing_toolkit:
-            self.query_processing_toolkit.load_initial_query(input_query)
+            input_query = self.query_processing_toolkit.load_initial_query(input_query)
 
         response = await self.agent.astep(
             input_query,

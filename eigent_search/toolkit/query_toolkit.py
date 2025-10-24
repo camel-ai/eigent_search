@@ -127,8 +127,9 @@ def validate_input_query_in_frontier_or_explored(func):
             and query not in self.explored
         ):
             error_message = (
-                f"❌ Invalid operation: Candidate query '{query}' must come from the current frontier "
-                f"OR have been explored already.\n{self.get_frontier_str()}"
+                f"❌ Invalid operation: Candidate query '{query}' must be selected "
+                f"from the current frontier listed below.\n{self.get_frontier_str()}"
+                f"OR from the explored queries listed below.\n{self.get_explored_str()}"
             )
             logger.error(f"[{func.__name__}] {error_message}")
             return error_message
@@ -163,10 +164,15 @@ class QueryProcessingToolkit(BaseToolkit):
         self.initial_query = initial_query
         self.frontier = {initial_query}
         self.explored = set()
+        return f"Initial query: {initial_query}\nCurrent Frontier:\n  - " + "\n  - ".join(list(self.frontier))
 
     def get_frontier_str(self) -> str:
         """Display the current frontier as a string."""
         return "Current Frontier:\n  - " + "\n  - ".join(list(self.frontier))
+
+    def get_explored_str(self) -> str:
+        """Display the explored queries as a string."""
+        return "Explored Queries:\n  - " + "\n  - ".join(list(self.explored))
 
     @validate_input_query_in_frontier
     @validate_output_query_not_explored
@@ -186,8 +192,8 @@ class QueryProcessingToolkit(BaseToolkit):
         """
         # Update frontier and explored sets; the search will be conducted anyway
         if query in self.frontier:
-            self.explored.add(query)
             self.frontier.remove(query)
+        self.explored.add(query) # for fuzzy contain
 
         # Helper function to perform search and handle results
         def search_and_record(query_str: str):
