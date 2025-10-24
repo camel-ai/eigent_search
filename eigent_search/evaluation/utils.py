@@ -174,7 +174,7 @@ def run_search_and_evaluate_multithreaded(
         for i, future in enumerate(as_completed(futures)):
             result = future.result()
             results.append(result)
-            if (i + 1) % 10 == 0 or i == len(test_samples) - 1:
+            if (i + 1) % 5 == 0 or i == len(test_samples) - 1:
                 with open(working_directory / "results.jsonl", "w") as f:
                     for result in existing_results + results:
                         f.write(json.dumps(result) + "\n")
