@@ -50,6 +50,16 @@ export SEARCH_ENGINE_ID="your-search-engine-id"  # for google search tool
 
 or save them in `.env`.
 
+If you are using Azure, you need the following env variables:
+
+```bash
+export AZURE_OPENAI_BASE_URL="your-azure-url"
+export AZURE_API_VERSION="your-azure-api-version"
+export AZURE_OPENAI_API_KEY="your-azure-api-key"
+export AZURE_DEPLOYMENT_NAME="your-azure-dev-name"
+```
+
+
 
 4. Run the evaluation script (on the first five questions):
 ```bash
