@@ -15,10 +15,16 @@
 from .base import EvaluationRequest, EvaluationResult
 from .simpleqa import SimpleQAEvaluator
 from .frames import FramesEvaluator
+from .browsecomp import BrowseCompEvaluator
+from .musique import MusiQueEvaluator
+from .webwalker import WebWalkerEvaluator
 
 __all__ = [
     "EvaluationRequest",
     "EvaluationResult",
     "SimpleQAEvaluator",
     "FramesEvaluator",
+    "MusiQueEvaluator",
+    "BrowseCompEvaluator",
+    "WebWalkerEvaluator"
 ]

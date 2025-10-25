@@ -16,7 +16,11 @@ Eigent search agent enhanced with query processing toolkit.
 |------------------------|----------------------------------------|
 | SimpleQA               | basicv8vc/SimpleQA                     |
 | SimpleQA-Verified      | google/simpleqa-verified               |
-
+| BrowseComp             | smolagents/browse_comp                 |
+| WebWalker              | callanwu/WebWalkerQA                   |
+| Musique                | dgslibisey/MuSiQue                     |
+| Frames                 | ...                                    |
+| WideSearch             | ...                                    |
 
 
 ## Get Started
@@ -46,12 +50,20 @@ export SEARCH_ENGINE_ID="your-search-engine-id"  # for google search tool
 
 or save them in `.env`.
 
+If you are using Azure, you need the following env variables:
+
+```bash
+export AZURE_OPENAI_BASE_URL="your-azure-url"
+export AZURE_API_VERSION="your-azure-api-version"
+export AZURE_OPENAI_API_KEY="your-azure-api-key"
+export AZURE_DEPLOYMENT_NAME="your-azure-dev-name"
+```
+
+
 
 4. Run the evaluation script (on the first five questions):
 ```bash
-python scripts/simpleqa_eval.py 
---agent_type eigent_search_q+ \ 
--num_questions 5 \
+python scripts/simpleqa_eval.py -a eigent_search_q+ -n 5 
 ```
 
 Please see input parameters inside the script.

@@ -23,7 +23,7 @@ import click
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
-from eigent_search.evaluation import SimpleQAEvaluator
+from eigent_search.evaluation import BrowseCompEvaluator
 from eigent_search.evaluation.utils import (
     AGENT_TYPES,
     MODEL_CONFIGS,
@@ -34,15 +34,21 @@ set_log_level(logging.INFO)
 logger = get_logger(__name__)
 
 # Define benchmark-specific constants
-BENCHMARK_NAME = "simpleqa_verified"
+BENCHMARK_NAME = "browsecomp"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
-class SimpleQAResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    evidence: list[str] = Field(
+class BrowseCompResponse(BaseModel):
+    answer: str = Field(
+        ..., description="The succinct, final answer extracted from the response."
+    )
+    explanation: str = Field(
         ...,
-        description="The evidence from the search results that lead to the answer.",
+        description="The explanation for the final answer extracted from the response.",
+    )
+    confidence: float = Field(
+        ...,
+        description="The extracted confidence score between 0% and 100% from the response.",
     )
 
 
@@ -120,7 +126,7 @@ def main(
     set_log_file(WORKING_DIRECTORY / f"{BENCHMARK_NAME}_eval.log")
 
     # load the dataset
-    dataset = list(SimpleQAEvaluator.load_dataset(verified=True))
+    dataset = list(BrowseCompEvaluator.load_dataset())
     if test_all:
         num_questions = len(dataset)
         start_idx = 0
@@ -165,8 +171,8 @@ def main(
         benchmark_name=BENCHMARK_NAME,
         agent_type=agent_type,
         model_name=model_name,
-        evaluator_class=SimpleQAEvaluator,
-        response_format=SimpleQAResponse,
+        evaluator_class=BrowseCompEvaluator,
+        response_format=BrowseCompResponse,
         num_workers=num_workers,
         existing_results=existing_results,
     )
@@ -175,28 +181,19 @@ def main(
     # post summary
     error_ids = []
     scores = []
-    scores_attempted = []  # scores of the questions that were not under Not Attempted grade
     total_token_usage = 0
     for result in results:
         if "error" in result["search_result"]:
             error_ids.append(result["input_sample"]["id"])
             continue  # skip error cases
         scores.append(result["eval_result"]["score"])
-        if result["eval_result"]["metrics"]["grade"] != "NOT_ATTEMPTED":
-            scores_attempted.append(result["eval_result"]["score"])
         total_token_usage += result["search_result"]["token_usage"]
 
     accuracy = sum(scores) / len(scores)  # also means recall
-    accuracy_attempted = sum(scores_attempted) / len(
-        scores_attempted
-    )  # also means precision
-    f1_score = (2 * accuracy * accuracy_attempted) / (accuracy + accuracy_attempted)
     logger.info(
         f"\n{'=' * 50}\n"
         f"Processed {len(results)} questions, {len(error_ids)} of which are error cases with IDs: {error_ids}\n"
         f"Accuracy: {accuracy * 100:.2f}% (n={len(scores)})\n"
-        f"Accuracy (excluding `grade=NOT_ATTEMPTED` cases): {accuracy_attempted * 100:.2f}% (n={len(scores_attempted)})\n"
-        f"F1 Score: {f1_score * 100:.2f}%\n"
         f"Total token usage: {total_token_usage}\n"
         f"{'=' * 50}\n"
     )

@@ -83,15 +83,6 @@ class EigentSearchToolkit(CleanupToolkit):
             *self.note_taking_toolkit.get_tools(),
         ]
 
-    def update_note_taking_directory(self, new_directory: Path):
-        """Update the working directory for note-taking toolkit."""
-        if hasattr(self, "note_taking_toolkit"):
-            self.note_taking_toolkit.working_directory = new_directory
-            self.note_taking_toolkit.registry_file = new_directory / ".note_register"
-            self.note_taking_toolkit.registry = []
-            new_directory.mkdir(parents=True, exist_ok=True)
-            logger.info(f"Note-taking directory updated to: {new_directory}")
-
     def _construct_search_toolkit(self):
         """Construct a search toolkit for actions related to searching the web."""
 

@@ -180,11 +180,22 @@ cython_debug/
 
 .DS_Store
 
+# test and tmp file
+test/
+tmp/
+results/
+camel_terminal.txt
+node_modules
+package-lock.json
+package.json
 # Results
 results/
-eigent_search*/
 
 # node_modules
 node_modules/
 package-lock.json
 package.json
+
+scripts/widesearch_eval.py
+# temp files
+scripts/widesearch_eval_temp.py
