@@ -109,7 +109,7 @@ class SearchOrchestrator:
 
         def _handle_retry(retry_state: tenacity.RetryCallState):
             logger.error(
-                f"[{search_input.query_id}] Attempt {retry_state.attempt_number} failed: {retry_state.outcome.exception()}. Reset agent, cleanup resources and retry..."
+                f"[{search_input.query_id}] Attempt {retry_state.attempt_number} failed: {retry_state.outcome._exception}. Reset agent, cleanup resources and retry..."
             )
             self.reset()
 
@@ -144,5 +144,7 @@ class SearchOrchestrator:
             )
             return ErrorSearchResult(**search_input.model_dump(), error=str(e))
         finally:
-            logger.info(f"[{search_input.query_id}] Reset agent and cleaning up resources...")
+            logger.info(
+                f"[{search_input.query_id}] Reset agent and cleaning up resources..."
+            )
             self.reset()
