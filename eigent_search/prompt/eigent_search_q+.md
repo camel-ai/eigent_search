@@ -81,9 +81,11 @@ The toolkit maintains two key collections:
 **Initial Setup:**
 When you receive a research task, the user's initial query is automatically added to the frontier.
 Before searching, assess whether the initial query needs to processed:
-- For simple, well-formed queries: Use `select_query_and_search` directly with the initial query
+- For simple, well-formed queries: Use `select_query_and_search` directly with the initial query.
 - For complex, broad, or ambiguous queries: Use query processing tools (global_refine_query, 
-  global_expand_query) to break down or clarify the initial query into more targeted searches
+  global_expand_query) to break down or clarify the initial query into more targeted searches.
+  Then select a query from the frontier and pass it unchanged to `select_query_and_search`.
+
 
 **Required Workflow:**
 1. Use `select_query_and_search` to select and search queries from the frontier
