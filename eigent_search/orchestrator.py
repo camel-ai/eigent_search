@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 import asyncio
+import traceback
 from typing import Type
 
 from camel.logger import get_logger
@@ -108,8 +109,12 @@ class SearchOrchestrator:
         """Run the agent with retry logic, timeout and error handling."""
 
         def _handle_retry(retry_state: tenacity.RetryCallState):
+            exc = retry_state.outcome._exception
             logger.error(
-                f"[{search_input.query_id}] Attempt {retry_state.attempt_number} failed: {retry_state.outcome._exception}. Reset agent, cleanup resources and retry..."
+                f"[{search_input.query_id}] Attempt {retry_state.attempt_number} failed: {type(exc).__name__}: {repr(exc)}\n"
+                f"Reset agent, cleanup resources and retry...\n"
+                f"Detailed error traceback:\n{''.join(traceback.format_exception(type(exc), exc, exc.__traceback__))}\n"
+                f"\nEnd of traceback.\n"
             )
             self.reset()
 
