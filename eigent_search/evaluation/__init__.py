@@ -18,6 +18,7 @@ from .frames import FramesEvaluator
 from .browsecomp import BrowseCompEvaluator
 from .musique import MusiQueEvaluator
 from .webwalker import WebWalkerEvaluator
+from .xbench import XbenchEvaluator
 
 __all__ = [
     "EvaluationRequest",
@@ -26,5 +27,6 @@ __all__ = [
     "FramesEvaluator",
     "MusiQueEvaluator",
     "BrowseCompEvaluator",
-    "WebWalkerEvaluator"
+    "WebWalkerEvaluator",
+    "XbenchEvaluator",
 ]
