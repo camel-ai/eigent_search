@@ -67,18 +67,21 @@ class BackendModelConfig(Enum):
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 1.0,  # must be 1.0 for GPT-5-mini
         "self_host_url": None,
+        "azure_deployment_name": "gpt-5-mini",
     }
     AZURE_GPT_4_1 = {
         "model_type": ModelType.GPT_4_1,
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
         "self_host_url": None,
+        "azure_deployment_name": "gpt-4.1",
     }
     AZURE_GPT_4_1_MINI = {
         "model_type": ModelType.GPT_4_1_MINI,
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
         "self_host_url": None,
+        "azure_deployment_name": "gpt-4.1-mini",
     }
 
     # OpenAI models
@@ -146,6 +149,7 @@ class SearchConfig(BaseModel):
     model_platform: ModelPlatformType = ModelPlatformType.OPENAI
     temperature: float = 0.0
     self_host_url: str | None = None
+    azure_deployment_name: str | None = None
 
     # Tool Config
     toolkits: list[BaseToolkit] = Field(default_factory=list)
@@ -181,6 +185,7 @@ class SearchConfig(BaseModel):
             model_type=self.model_type,
             model_config_dict={"temperature": self.temperature},
             url=self.self_host_url,
+            azure_deployment_name=self.azure_deployment_name if self.model_platform == ModelPlatformType.AZURE else None,
         )
 
     @api_keys_required(
@@ -277,6 +282,7 @@ class LLMasJudgeConfig(BaseModel):
     model_platform: ModelPlatformType = ModelPlatformType.OPENAI
     temperature: float = 0.0
     self_host_url: str | None = None
+    azure_deployment_name: str | None = None
 
     def create_model(self) -> BaseModelBackend:
         return ModelFactory.create(
@@ -284,6 +290,7 @@ class LLMasJudgeConfig(BaseModel):
             model_type=self.model_type,
             model_config_dict={"temperature": self.temperature},
             url=self.self_host_url,
+            azure_deployment_name=self.azure_deployment_name if self.model_platform == ModelPlatformType.AZURE else None,
         )
 
     def create_agent(self) -> ChatAgent:
