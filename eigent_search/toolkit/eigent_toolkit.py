@@ -141,7 +141,7 @@ class EigentSearchToolkit(CleanupToolkit):
             return [
                 FunctionTool(terminal_toolkit.shell_exec),
                 FunctionTool(terminal_toolkit.shell_view),
-                FunctionTool(terminal_toolkit.shell_wait),
+                # FunctionTool(terminal_toolkit.shell_wait),
                 FunctionTool(terminal_toolkit.shell_write_to_process),
                 FunctionTool(terminal_toolkit.shell_kill_process),
                 # FunctionTool(terminal_toolkit.ask_user_for_help),
