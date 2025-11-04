@@ -63,19 +63,22 @@ class BackendModelConfig(Enum):
 
     # Azure models
     AZURE_GPT_5_MINI = {
-        "model_type": ModelType.GPT_5_MINI,
+        # "model_type": ModelType.GPT_5_MINI,
+        "model_type": "gpt-5-mini",
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 1.0,  # must be 1.0 for GPT-5-mini
         "self_host_url": None,
     }
     AZURE_GPT_4_1 = {
-        "model_type": ModelType.GPT_4_1,
+        # "model_type": ModelType.GPT_4_1,
+        "model_type": "gpt-4.1", 
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
         "self_host_url": None,
     }
     AZURE_GPT_4_1_MINI = {
-        "model_type": ModelType.GPT_4_1_MINI,
+        # "model_type": ModelType.GPT_4_1_MINI,
+        "model_type": "gpt-4.1-mini",
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
         "self_host_url": None,

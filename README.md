@@ -56,7 +56,6 @@ If you are using Azure, you need the following env variables:
 export AZURE_OPENAI_BASE_URL="your-azure-url"
 export AZURE_API_VERSION="your-azure-api-version"
 export AZURE_OPENAI_API_KEY="your-azure-api-key"
-export AZURE_DEPLOYMENT_NAME="your-azure-dev-name"
 ```
 
 
