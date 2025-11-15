@@ -27,15 +27,14 @@ Eigent search agent enhanced with query processing toolkit.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/camel-ai/librarian.git
+git clone https://github.com/camel-ai/eigent_search_q_plus.git
 ```
 
 2. Install dependencies:
 ```bash
-cd librarian
-uv venv --python 3.10 --prompt "(deep_research) " .venv
-source .venv/bin/activate
+cd eigent_search_q_plus
 uv sync
+source .venv/bin/activate
 ```
 
 3. Set up environment variables:
