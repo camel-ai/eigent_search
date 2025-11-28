@@ -59,9 +59,14 @@ search refinement and systematic information gathering:
   - **Query Processing**: Selects queries from the frontier queue and moves them to explored
   - **Web Search**: Performs Google web search and returns structured results (URLs with titles, descriptions)
   - **Integration**: Results can be directly used with browser tools for deeper investigation
-  - CRITICAL: You MUST pass the query EXACTLY as it appears in the frontier - 
-    character by character, with NO modifications, rewording, or changes of any kind.
-    Any alteration to the frontier query is strictly forbidden and will cause system errors.
+  - **Query Selection Strategy**:
+    - **Preferred**: Select and pass queries EXACTLY as they appear in the frontier (character by character, no modifications)
+    - **Ad-hoc queries**: In critical situations where the frontier lacks necessary queries, you MAY provide 
+      a custom query outside the frontier. Use this sparingly and only when:
+      * An urgent information gap is discovered during research
+      * The required query cannot wait for the next refinement/expansion cycle
+      * Immediate clarification is needed to continue productive research
+    - Whether using frontier or ad-hoc queries, always pass them unchanged to the search function
 
 **Query Refinement and Expansion Tools:**
 - **local_expand_query**: Generate multiple queries targeting identified information gaps

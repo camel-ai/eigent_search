@@ -164,7 +164,10 @@ class QueryProcessingToolkit(BaseToolkit):
         self.initial_query = initial_query
         self.frontier = {initial_query}
         self.explored = set()
-        return f"Initial query: {initial_query}\nCurrent Frontier:\n  - " + "\n  - ".join(list(self.frontier))
+        return (
+            f"Initial query: {initial_query}\nCurrent Frontier:\n  - "
+            + "\n  - ".join(list(self.frontier))
+        )
 
     def get_frontier_str(self) -> str:
         """Display the current frontier as a string."""
@@ -174,7 +177,6 @@ class QueryProcessingToolkit(BaseToolkit):
         """Display the explored queries as a string."""
         return "Explored Queries:\n  - " + "\n  - ".join(list(self.explored))
 
-    @validate_input_query_in_frontier
     @validate_output_query_not_explored
     def select_query_and_search(self, query: str) -> dict[str, dict[str, str]]:
         r"""Select the best query from the current frontier and perform web search.
@@ -193,7 +195,7 @@ class QueryProcessingToolkit(BaseToolkit):
         # Update frontier and explored sets; the search will be conducted anyway
         if query in self.frontier:
             self.frontier.remove(query)
-        self.explored.add(query) # for fuzzy contain
+        self.explored.add(query)  # for fuzzy contain
 
         # Helper function to perform search and handle results
         def search_and_record(query_str: str):
@@ -295,7 +297,6 @@ class QueryProcessingToolkit(BaseToolkit):
         logger.info(f"[analyze_search_progress] Query: '{current_query}'")
         return f"Analysis recorded:\n\n{your_analysis}"
 
-    @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
     def local_expand_query(
         self,
@@ -344,7 +345,6 @@ class QueryProcessingToolkit(BaseToolkit):
             """
         ).strip()
 
-    @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
     def local_refine_query(
         self,
@@ -393,7 +393,6 @@ class QueryProcessingToolkit(BaseToolkit):
             """
         ).strip()
 
-    @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
     def global_refine_query(
         self,
@@ -438,9 +437,8 @@ class QueryProcessingToolkit(BaseToolkit):
             Current Frontier: {list(self.frontier)}
             Use these globally refined queries in your next searches.
             """
-        ).strip()
+        ).strip
 
-    @validate_input_query_in_frontier_or_explored
     @validate_output_query_not_explored
     def global_expand_query(
         self,
