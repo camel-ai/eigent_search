@@ -437,7 +437,7 @@ class QueryProcessingToolkit(BaseToolkit):
             Current Frontier: {list(self.frontier)}
             Use these globally refined queries in your next searches.
             """
-        ).strip
+        ).strip()
 
     @validate_output_query_not_explored
     def global_expand_query(
