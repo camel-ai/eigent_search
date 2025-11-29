@@ -66,7 +66,7 @@ search refinement and systematic information gathering:
       * An urgent information gap is discovered during research
       * The required query cannot wait for the next refinement/expansion cycle
       * Immediate clarification is needed to continue productive research
-    - Whether using frontier or ad-hoc queries, always pass them unchanged to the search function
+
 
 **Query Refinement and Expansion Tools:**
 - **local_expand_query**: Generate multiple queries targeting identified information gaps

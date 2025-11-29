@@ -179,8 +179,8 @@ class QueryProcessingToolkit(BaseToolkit):
 
     @validate_output_query_not_explored
     def select_query_and_search(self, query: str) -> dict[str, dict[str, str]]:
-        r"""Select the best query from the current frontier and perform web search.
-        The agent should choose based on specificity, clarity, and search potential,
+        r"""Select the best query from the current frontier, or create a new ad-hoc query if necessary, and perform web search.
+        The agent should select or generate query based on specificity, clarity, and search potential,
         in order to minimize the number of searches and the cost of the search.
         If the search results are not sufficient to answer the user's initial query,
         the agent should process and select another query from the current frontier
