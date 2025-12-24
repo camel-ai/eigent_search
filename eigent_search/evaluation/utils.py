@@ -22,6 +22,7 @@ from pydantic import BaseModel
 from tqdm.auto import tqdm
 
 from eigent_search.config import (
+    AblationType,
     BackendModelConfig,
     LLMasJudgeConfig,
     SearchAgentType,
@@ -36,6 +37,15 @@ AGENT_TYPES = {
     "eigent_search": SearchAgentType.EIGENT_SEARCH,
     "eigent_search_q+": SearchAgentType.EIGENT_SEARCH_Q_PLUS,
     "search_only": SearchAgentType.SEARCH_ONLY,
+}
+
+ABLATION_TYPES = {
+    "none": AblationType.NONE,
+    "fixed_10_results": AblationType.FIXED_10_RESULTS,
+    "fixed_10_results_eigent_prompt": AblationType.FIXED_10_RESULTS_EIGENT_PROMPT,
+    "no_query_tools": AblationType.NO_QUERY_TOOLS,
+    "query_tools_only": AblationType.QUERY_TOOLS_ONLY,
+    "fixed_10_search": AblationType.FIXED_10_SEARCH,
 }
 
 
@@ -60,7 +70,21 @@ def set_up_search_and_judge_config(
     agent_type: Literal[AGENT_TYPES.keys()],
     model_name: Literal[MODEL_CONFIGS.keys()],
     response_format: Type[BaseModel] | None = None,
+    ablation_type: Literal[ABLATION_TYPES.keys()] = "none",
 ) -> dict:
+    """Set up the search config and judge config.
+
+    Args:
+        working_directory: The working directory for the search agent.
+        agent_type: The type of search agent to use.
+        model_name: The name of the model to use.
+        response_format: Optional response format for structured output.
+            Note: For baseline agent, response_format is ignored (plain text output).
+        ablation_type: The ablation type for experiments (default: "none").
+
+    Returns:
+        A dictionary containing the search_config and judge_config.
+    """
     """Set up the search config and judge config."""
 
     config = {
@@ -68,6 +92,7 @@ def set_up_search_and_judge_config(
             working_directory=working_directory,
             **MODEL_CONFIGS[model_name].value,
             agent_type=AGENT_TYPES[agent_type],
+            ablation_type=ABLATION_TYPES[ablation_type],
             response_format=response_format,
         ),
         "judge_config": LLMasJudgeConfig(
@@ -142,8 +167,25 @@ def run_search_and_evaluate_multithreaded(
     response_format: Type[BaseModel] | None = None,
     num_workers: int = 10,
     existing_results: list[dict] = [],
+    ablation_type: Literal[ABLATION_TYPES.keys()] = "none",
 ) -> list[dict]:
-    """Run the search and evaluation for a list of test samples in parallel."""
+    """Run the search and evaluation for a list of test samples in parallel.
+
+    Args:
+        test_samples: List of test samples to evaluate.
+        working_directory: The working directory for results.
+        benchmark_name: Name of the benchmark for progress display.
+        agent_type: The type of search agent to use.
+        model_name: The name of the model to use.
+        evaluator_class: The evaluator class to use for judging.
+        response_format: Optional response format for structured output.
+        num_workers: Number of parallel workers.
+        existing_results: List of existing results to append to.
+        ablation_type: The ablation type for experiments (default: "none").
+
+    Returns:
+        List of evaluation results.
+    """
 
     process_bar = tqdm(total=len(test_samples), desc=f"{benchmark_name} evaluation")
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -156,6 +198,7 @@ def run_search_and_evaluate_multithreaded(
                 agent_type=agent_type,
                 model_name=model_name,
                 response_format=response_format,
+                ablation_type=ablation_type,
             )
             search_config = config["search_config"]
             judge_config = config["judge_config"]

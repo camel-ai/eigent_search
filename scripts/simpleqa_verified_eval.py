@@ -25,6 +25,7 @@ from pydantic import BaseModel, Field
 
 from eigent_search.evaluation import SimpleQAEvaluator
 from eigent_search.evaluation.utils import (
+    ABLATION_TYPES,
     AGENT_TYPES,
     MODEL_CONFIGS,
     run_search_and_evaluate_multithreaded,
@@ -80,6 +81,13 @@ class SimpleQAResponse(BaseModel):
     help="Resume from an existing working directory",
     default=None,
 )
+@click.option(
+    "--ablation",
+    "-ab",
+    type=click.Choice(ABLATION_TYPES.keys()),
+    default="none",
+    help="Ablation type for experiments",
+)
 def main(
     agent_type: str,
     model_name: str,
@@ -89,6 +97,7 @@ def main(
     custom_idx_list: list[int],
     test_all: bool,
     resume_from: str | None,
+    ablation: str,
 ):
     # Set the working directory
     evaluated_question_ids = set()
@@ -101,6 +110,14 @@ def main(
                 for line in f:
                     result = json.loads(line)
                     if "error" in result["search_result"]:
+                        continue
+                    # Skip results with Google search errors in trajectory
+                    trajectory = (
+                        result["search_result"]
+                        .get("tool_trajectory", {})
+                        .get("trajectory", [])
+                    )
+                    if has_google_search_error(trajectory):
                         continue
                     existing_results.append(result)
                     evaluated_question_ids.add(result["input_sample"]["id"])
@@ -169,6 +186,7 @@ def main(
         response_format=SimpleQAResponse,
         num_workers=num_workers,
         existing_results=existing_results,
+        ablation_type=ablation,
     )
     results = existing_results + results
 

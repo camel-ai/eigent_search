@@ -12,13 +12,13 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
+import difflib
 from functools import wraps
 from textwrap import dedent
-import difflib
 
 from camel.logger import get_logger
-from camel.toolkits.function_tool import FunctionTool
 from camel.toolkits.base import BaseToolkit
+from camel.toolkits.function_tool import FunctionTool
 from camel.toolkits.search_toolkit import SearchToolkit
 
 

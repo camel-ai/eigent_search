@@ -25,6 +25,7 @@ from dotenv import load_dotenv
 
 from eigent_search.evaluation import FramesEvaluator
 from eigent_search.evaluation.utils import (
+    ABLATION_TYPES,
     AGENT_TYPES,
     MODEL_CONFIGS,
     run_search_and_evaluate_multithreaded,
@@ -85,6 +86,13 @@ class SimpleQAResponse(BaseModel):
     help="Resume from an existing working directory",
     default=None,
 )
+@click.option(
+    "--ablation",
+    "-ab",
+    type=click.Choice(ABLATION_TYPES.keys()),
+    default="none",
+    help="Ablation type for experiments",
+)
 def main(
     agent_type: str,
     model_name: str,
@@ -94,6 +102,7 @@ def main(
     custom_idx_list: list[int],
     test_all: bool,
     resume_from: str | None,
+    ablation: str,
 ):
     # Set the working directory
     evaluated_question_ids = set()
@@ -185,6 +194,7 @@ def main(
         response_format=SimpleQAResponse,
         num_workers=num_workers,
         existing_results=existing_results,
+        ablation_type=ablation,
     )
     results = existing_results + results
 

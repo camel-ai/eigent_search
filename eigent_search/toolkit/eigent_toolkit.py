@@ -13,8 +13,9 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from pathlib import Path
 import uuid
+from pathlib import Path
+from typing import Any, Dict, List
 
 from camel.logger import get_logger
 from camel.toolkits import (
@@ -38,12 +39,14 @@ class EigentSearchToolkit(CleanupToolkit):
         self,
         working_directory: Path,
         exclude_search_domains: list[str] = ["huggingface.co", "hf.co", "oxen.ai"],
+        use_customized_search_google: bool = False,
     ):
         super().__init__()
         # Basic session information
         self.working_directory = working_directory
         self.session_id = str(uuid.uuid4())[:8]
         self.exclude_search_domains = exclude_search_domains
+        self.use_customized_search_google = use_customized_search_google
 
         # Construct toolkits
         self.search_toolkit = self._construct_search_toolkit()
@@ -87,6 +90,248 @@ class EigentSearchToolkit(CleanupToolkit):
         """Construct a search toolkit for actions related to searching the web."""
 
         search_toolkit = SearchToolkit(exclude_domains=self.exclude_search_domains)
+        use_customized = self.use_customized_search_google
+        # Capture exclude_domains via closure
+        exclude_domains = search_toolkit.exclude_domains
+
+        def search_google(
+            query: str,
+            search_type: str = "web",
+            number_of_result_pages: int = 10,
+            start_page: int = 1,
+        ) -> List[Dict[str, Any]]:
+            r"""Use Google search engine to search information for the given query.
+
+            Args:
+                query (str): The query to be searched.
+                search_type (str): The type of search to perform. Must be either
+                    "web" for web pages or "image" for image search. Any other
+                    value will raise a ValueError. (default: "web")
+                number_of_result_pages (int): The number of result pages to
+                    retrieve. Must be a positive integer between 1 and 10.
+                    Google Custom Search API limits results to 10 per request.
+                    If a value greater than 10 is provided, it will be capped
+                    at 10 with a warning. Adjust this based on your task - use
+                    fewer results for focused searches and more for comprehensive
+                    searches. (default: :obj:`10`)
+                start_page (int): The result page to start from. Must be a
+                    positive integer (>= 1). Use this for pagination - e.g.,
+                    start_page=1 for results 1-10, start_page=11 for results
+                    11-20, etc. This allows agents to check initial results
+                    and continue searching if needed. (default: :obj:`1`)
+
+            Returns:
+                List[Dict[str, Any]]: A list of dictionaries where each dictionary
+                represents a search result.
+
+                    For web search, each dictionary contains:
+                    - 'result_id': A number in order.
+                    - 'title': The title of the website.
+                    - 'description': A brief description of the website.
+                    - 'long_description': More detail of the website.
+                    - 'url': The URL of the website.
+
+                    For image search, each dictionary contains:
+                    - 'result_id': A number in order.
+                    - 'title': The title of the image.
+                    - 'image_url': The URL of the image.
+                    - 'display_link': The website hosting the image.
+                    - 'context_url': The URL of the page containing the image.
+                    - 'width': Image width in pixels (if available).
+                    - 'height': Image height in pixels (if available).
+
+                    Example web result:
+                    {
+                        'result_id': 1,
+                        'title': 'OpenAI',
+                        'description': 'An organization focused on ensuring that
+                        artificial general intelligence benefits all of humanity.',
+                        'long_description': 'OpenAI is a non-profit artificial
+                        intelligence research company. Our goal is to advance
+                        digital intelligence in the way that is most likely to
+                        benefit humanity as a whole',
+                        'url': 'https://www.openai.com'
+                    }
+
+                    Example image result:
+                    {
+                        'result_id': 1,
+                        'title': 'Beautiful Sunset',
+                        'image_url': 'https://example.com/image.jpg',
+                        'display_link': 'example.com',
+                        'context_url': 'https://example.com/page.html',
+                        'width': 800,
+                        'height': 600
+                    }
+            """
+            from urllib.parse import quote
+
+            import requests
+
+            # Override parameters with fixed values if customized search is enabled
+            if use_customized:
+                search_type = "web"
+                number_of_result_pages = 10
+                start_page = 1
+
+            # Validate input parameters
+            if not isinstance(start_page, int) or start_page < 1:
+                raise ValueError("start_page must be a positive integer")
+
+            if (
+                not isinstance(number_of_result_pages, int)
+                or number_of_result_pages < 1
+            ):
+                raise ValueError("number_of_result_pages must be a positive integer")
+
+            # Google Custom Search API has a limit of 10 results per request
+            if number_of_result_pages > 10:
+                logger.warning(
+                    f"Google API limits results to 10 per request. "
+                    f"Requested {number_of_result_pages}, using 10 instead."
+                )
+                number_of_result_pages = 10
+
+            if search_type not in ["web", "image"]:
+                raise ValueError("search_type must be either 'web' or 'image'")
+
+            # https://developers.google.com/custom-search/v1/overview
+            GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+            # https://cse.google.com/cse/all
+            SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
+
+            # Using the specified start page
+            start_page_idx = start_page
+            # Different language may get different result
+            search_language = "en"
+
+            modified_query = query
+            if exclude_domains:
+                # Use Google's -site: operator to exclude domains
+                exclusion_terms = " ".join(
+                    [f"-site:{domain}" for domain in exclude_domains]
+                )
+                modified_query = f"{exclusion_terms} {query}"
+                logger.debug(f"Excluded domains, modified query: {modified_query}")
+
+            encoded_query = quote(modified_query)
+            # encoded_query = modified_query
+            # Constructing the URL
+            # Doc: https://developers.google.com/custom-search/v1/using_rest
+            base_url = (
+                f"https://www.googleapis.com/customsearch/v1?"
+                f"key={GOOGLE_API_KEY}&cx={SEARCH_ENGINE_ID}&q={encoded_query}&start="
+                f"{start_page_idx}&lr={search_language}&num={number_of_result_pages}"
+            )
+
+            # Add searchType parameter for image search
+            if search_type == "image":
+                url = base_url + "&searchType=image"
+            else:
+                url = base_url
+
+            responses = []
+            # Fetch the results given the URL
+            try:
+                # Make the get
+                result = requests.get(url)
+                data = result.json()
+
+                # Get the result items
+                if "items" in data:
+                    search_items = data.get("items")
+
+                    # Iterate over results found
+                    for i, search_item in enumerate(search_items, start=1):
+                        if search_type == "image":
+                            # Process image search results
+                            title = search_item.get("title")
+                            image_url = search_item.get("link")
+                            display_link = search_item.get("displayLink")
+
+                            # Get context URL (page containing the image)
+                            image_info = search_item.get("image", {})
+                            context_url = image_info.get("contextLink", "")
+
+                            # Get image dimensions if available
+                            width = image_info.get("width")
+                            height = image_info.get("height")
+
+                            response = {
+                                "result_id": i,
+                                "title": title,
+                                "image_url": image_url,
+                                "display_link": display_link,
+                                "context_url": context_url,
+                            }
+
+                            if width:
+                                response["width"] = int(width)
+                            if height:
+                                response["height"] = int(height)
+
+                            responses.append(response)
+                        else:
+                            if "pagemap" not in search_item:
+                                continue
+                            if "metatags" not in search_item["pagemap"]:
+                                continue
+                            if (
+                                "og:description"
+                                in search_item["pagemap"]["metatags"][0]
+                            ):
+                                long_description = search_item["pagemap"]["metatags"][
+                                    0
+                                ]["og:description"]
+                            else:
+                                long_description = "N/A"
+                            title = search_item.get("title")
+                            snippet = search_item.get("snippet")
+
+                            link = search_item.get("link")
+                            response = {
+                                "result_id": i,
+                                "title": title,
+                                "description": snippet,
+                                "long_description": long_description,
+                                "url": link,
+                            }
+                            responses.append(response)
+                else:
+                    if "error" in data:
+                        error_info = data.get("error", {})
+                        logger.error(
+                            f"Google search failed - API response: {error_info}"
+                        )
+                        responses.append(
+                            {
+                                "error": f"Google search failed - "
+                                f"API response: {error_info}"
+                            }
+                        )
+                    elif "searchInformation" in data:
+                        search_info = data.get("searchInformation", {})
+                        total_results = search_info.get("totalResults", "0")
+                        if total_results == "0":
+                            logger.info(f"No results found for query: {query}")
+                            # Return empty list to indicate no results (not an error)
+                            responses = []
+                        else:
+                            logger.warning(
+                                f"Google search returned no items but claims {total_results} results"
+                            )
+                            responses = []
+                    else:
+                        logger.error(f"Unexpected Google API response format: {data}")
+                        responses.append(
+                            {"error": "Unexpected response format from Google API"}
+                        )
+
+            except Exception as e:
+                responses.append({"error": f"google search failed: {e!s}"})
+            return responses
+
+        search_toolkit.search_google = search_google
         # Only search_google is needed, so we override the get_tools method
         search_toolkit.get_tools = lambda: [FunctionTool(search_toolkit.search_google)]
         return search_toolkit

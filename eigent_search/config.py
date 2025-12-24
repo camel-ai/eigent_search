@@ -35,7 +35,10 @@ from eigent_search.prompt.prompt_manager import prompt_manager
 from eigent_search.toolkit import (
     CleanupToolkit,
     EigentSearchToolkit,
+    Fixed10ResultsToolkit,
+    NoQueryToolsToolkit,
     QueryProcessingToolkit,
+    QueryToolsOnlyToolkit,
 )
 
 logger = get_logger(__name__)
@@ -56,6 +59,21 @@ class SearchAgentType(Enum):
 
     # Customized agent (no preset system prompt or tools)
     CUSTOMIZED = "customized"
+
+
+class AblationType(Enum):
+    """Ablation configurations for experiments."""
+
+    NONE = "none"  # Full Q+ (default, no ablation)
+    FIXED_10_RESULTS = "fixed_10_results"  # Only select_query_and_search
+    FIXED_10_RESULTS_EIGENT_PROMPT = (
+        "fixed_10_results_eigent_prompt"  # Fixed 10 results with eigent prompt
+    )
+    NO_QUERY_TOOLS = (
+        "no_query_tools"  # search + analyze + extract (no query refinement)
+    )
+    QUERY_TOOLS_ONLY = "query_tools_only"  # search + query tools (no analyze/extract)
+    FIXED_10_SEARCH = "fixed_10_search"  # For eigent_search: fixed search params (web, 10 results, start_page=1)
 
 
 class BackendModelConfig(Enum):
@@ -160,6 +178,7 @@ class SearchConfig(BaseModel):
 
     # Orchestrator Config
     agent_type: SearchAgentType = SearchAgentType.CUSTOMIZED
+    ablation_type: AblationType = AblationType.NONE
     max_orchestrator_retries: int = DEFAULT_MAX_ORCHESTRATOR_RETRIES
     timeout_minutes_per_orchestrator_step: int = (
         DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP
@@ -174,8 +193,8 @@ class SearchConfig(BaseModel):
                 f"Overriding system prompt and tools for {self.agent_type} with preset; "
                 "if not desired, please use `SearchAgentType.CUSTOMIZED` to create a customized agent."
             )
-            self.set_preset_system_prompt(self.agent_type)
-            self.set_preset_tools(self.agent_type)
+            self.set_preset_system_prompt(self.agent_type, self.ablation_type)
+            self.set_preset_tools(self.agent_type, self.ablation_type)
         return self
 
     def create_model(self) -> BaseModelBackend:
@@ -205,12 +224,27 @@ class SearchConfig(BaseModel):
             prune_tool_calls_from_memory=self.prune_tool_calls_from_memory,
         )
 
-    def set_preset_system_prompt(self, agent_type: SearchAgentType):
+    def set_preset_system_prompt(
+        self,
+        agent_type: SearchAgentType,
+        ablation_type: AblationType = AblationType.NONE,
+    ):
         self.system_prompt = prompt_manager.get_preset_system_prompt(
-            self.working_directory.as_posix(), agent_type
+            self.working_directory.as_posix(), agent_type, ablation_type
         )
 
-    def set_preset_tools(self, agent_type: SearchAgentType):
+    def set_preset_tools(
+        self,
+        agent_type: SearchAgentType,
+        ablation_type: AblationType = AblationType.NONE,
+    ):
+        # Baseline agent has no tools
+        if agent_type == SearchAgentType.BASELINE:
+            self.toolkits = []
+            self.toolkits_to_register_agent = []
+            self.toolkits_to_cleanup = []
+            return
+
         eigent_search_toolkit = EigentSearchToolkit(
             working_directory=self.working_directory,
             exclude_search_domains=["huggingface.co", "hf.co", "oxen.ai"],
@@ -221,14 +255,40 @@ class SearchConfig(BaseModel):
             self.toolkits_to_register_agent = []
 
         if agent_type == SearchAgentType.EIGENT_SEARCH:
+            # Check if fixed_10_search ablation is enabled
+            use_customized_search = ablation_type == AblationType.FIXED_10_SEARCH
+            eigent_search_toolkit = EigentSearchToolkit(
+                working_directory=self.working_directory,
+                exclude_search_domains=["huggingface.co", "hf.co", "oxen.ai"],
+                use_customized_search_google=use_customized_search,
+            )
             self.toolkits = [eigent_search_toolkit]
             self.toolkits_to_register_agent = [eigent_search_toolkit.browser_toolkit]
             self.toolkits_to_cleanup = [eigent_search_toolkit]
+            return
 
         if agent_type == SearchAgentType.EIGENT_SEARCH_Q_PLUS:
-            query_processing_toolkit = QueryProcessingToolkit(
-                exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
-            )
+            # Select toolkit based on ablation type
+            if ablation_type == AblationType.FIXED_10_RESULTS:
+                query_processing_toolkit = Fixed10ResultsToolkit(
+                    exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
+                )
+            elif ablation_type == AblationType.FIXED_10_RESULTS_EIGENT_PROMPT:
+                query_processing_toolkit = Fixed10ResultsToolkit(
+                    exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
+                )
+            elif ablation_type == AblationType.NO_QUERY_TOOLS:
+                query_processing_toolkit = NoQueryToolsToolkit(
+                    exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
+                )
+            elif ablation_type == AblationType.QUERY_TOOLS_ONLY:
+                query_processing_toolkit = QueryToolsOnlyToolkit(
+                    exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
+                )
+            else:
+                query_processing_toolkit = QueryProcessingToolkit(
+                    exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
+                )
             eigent_search_toolkit.register(query_processing_toolkit)
             eigent_search_toolkit.search_toolkit.get_tools = lambda: []
             self.toolkits = [eigent_search_toolkit, query_processing_toolkit]
