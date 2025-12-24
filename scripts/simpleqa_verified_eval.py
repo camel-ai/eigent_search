@@ -37,6 +37,70 @@ logger = get_logger(__name__)
 BENCHMARK_NAME = "simpleqa_verified"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+# Helper function for catching previous results with search errors. This is used for experiments with `--resume-from` arguments.
+# Todo: This helper function is used for multiple benchmarks. We should extract it into a `utils.py` file to reduce repeated code.
+def has_google_search_error(trajectory: list[dict]) -> bool:
+    """Check if trajectory contains Google search errors that should trigger a retry."""
+    for step in trajectory:
+        tool_name = step.get("tool_name", "")
+
+        # Check both search_google and select_query_and_search
+        if tool_name in ["search_google", "select_query_and_search"]:
+            result_data = step.get("result", [])
+
+            # Handle dict results with search_results
+            if isinstance(result_data, dict):
+                # Check if error in result directly
+                if "error" in result_data:
+                    error_msg = result_data.get("error", "")
+                    error_msg_lower = error_msg.lower()
+                    if (
+                        any(
+                            pattern in error_msg_lower
+                            for pattern in ["google search failed", "quota exceeded"]
+                        )
+                        or "Google search failed " in error_msg
+                    ):
+                        return True
+
+                # Check search_results for "None" key with error
+                search_results = result_data.get("search_results", {})
+                if isinstance(search_results, dict):
+                    none_value = search_results.get("None", "")
+                    if isinstance(none_value, str):
+                        none_value_lower = none_value.lower()
+                        if (
+                            any(
+                                pattern in none_value_lower
+                                for pattern in [
+                                    "google search failed",
+                                    "quota exceeded",
+                                ]
+                            )
+                            or "Google search failed " in none_value
+                        ):
+                            return True
+
+            # Handle list results
+            if isinstance(result_data, list):
+                for item in result_data:
+                    if isinstance(item, dict) and "error" in item:
+                        error_msg = item.get("error", "")
+                        error_msg_lower = error_msg.lower()
+                        if (
+                            any(
+                                pattern in error_msg_lower
+                                for pattern in [
+                                    "google search failed",
+                                    "quota exceeded",
+                                ]
+                            )
+                            or "Google search failed " in error_msg
+                        ):
+                            return True
+
+    return False
+
 
 class SimpleQAResponse(BaseModel):
     answer: str = Field(..., description="The answer to the research question.")
@@ -180,17 +244,27 @@ def main(
     for result in results:
         if "error" in result["search_result"]:
             error_ids.append(result["input_sample"]["id"])
-            continue  # skip error cases
+            continue  # skip search error cases
+        # Skip evaluation error cases (when eval_result has error or score is None)
+        if result["eval_result"] is None or result["eval_result"].get("score") is None:
+            error_ids.append(result["input_sample"]["id"])
+            continue
         scores.append(result["eval_result"]["score"])
         if result["eval_result"]["metrics"]["grade"] != "NOT_ATTEMPTED":
             scores_attempted.append(result["eval_result"]["score"])
         total_token_usage += result["search_result"]["token_usage"]
 
     accuracy = sum(scores) / len(scores)  # also means recall
-    accuracy_attempted = sum(scores_attempted) / len(
-        scores_attempted
-    )  # also means precision
-    f1_score = (2 * accuracy * accuracy_attempted) / (accuracy + accuracy_attempted)
+    accuracy_attempted = (
+        sum(scores_attempted) / len(scores_attempted) if scores_attempted else 0.0
+    )
+    #In rare cases, both accuracy and accuracy_attempted can be 0.
+    if accuracy + accuracy_attempted > 0:
+        f1_score = (2 * accuracy * accuracy_attempted) / (
+            accuracy + accuracy_attempted
+        )
+    else:
+        f1_score = 0.0
     logger.info(
         f"\n{'=' * 50}\n"
         f"Processed {len(results)} questions, {len(error_ids)} of which are error cases with IDs: {error_ids}\n"

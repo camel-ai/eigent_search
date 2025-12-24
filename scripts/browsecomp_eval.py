@@ -51,6 +51,70 @@ class BrowseCompResponse(BaseModel):
         description="The extracted confidence score between 0% and 100% from the response.",
     )
 
+# Helper function for catching previous results with search errors. This is used for experiments with `--resume-from` arguments.
+# Todo: This helper function is used for multiple benchmarks. We should extract it into a `utils.py` file to reduce repeated code.
+def has_search_error(result):
+    """
+    Check if a result contains a Google search error in its trajectory.
+
+    Args:
+        result: A dictionary containing the result data
+
+    Returns:
+        True if the result contains a search error, False otherwise
+    """
+    search_result = result.get("search_result", {})
+
+    # Check for error in search_result (original error check)
+    if "error" in search_result:
+        return True
+
+    tool_trajectory = search_result.get("tool_trajectory", {})
+    trajectory = tool_trajectory.get("trajectory", [])
+
+    for step in trajectory:
+        tool_name = step.get("tool_name", "")
+
+        # Check both search_google and select_query_and_search
+        if tool_name in ["search_google", "select_query_and_search"]:
+            result_data = step.get("result", [])
+
+            # Handle dict results with search_results
+            if isinstance(result_data, dict):
+                # Check if error in result directly
+                if "error" in result_data:
+                    error_msg = result_data.get("error", "").lower()
+                    if any(
+                        pattern in error_msg
+                        for pattern in ["google search failed", "quota exceeded"]
+                    ):
+                        return True
+
+                # Check search_results for "None" key with error
+                search_results = result_data.get("search_results", {})
+                if isinstance(search_results, dict):
+                    none_value = search_results.get("None", "")
+                    if isinstance(none_value, str):
+                        none_value_lower = none_value.lower()
+                        if any(
+                            pattern in none_value_lower
+                            for pattern in ["google search failed", "quota exceeded"]
+                        ):
+                            return True
+
+            # Handle list results
+            if isinstance(result_data, list):
+                for item in result_data:
+                    if isinstance(item, dict) and "error" in item:
+                        error_msg = item.get("error", "").lower()
+                        if any(
+                            pattern in error_msg
+                            for pattern in ["google search failed", "quota exceeded"]
+                        ):
+                            return True
+
+    return False
+
 
 @click.command()
 @click.option(
@@ -102,14 +166,20 @@ def main(
     if resume_from and os.path.exists(resume_from):
         WORKING_DIRECTORY = Path(resume_from)
         logger.info(f"Resuming from existing working directory: {WORKING_DIRECTORY}")
+        skipped_count = 0
         try:
             with open(WORKING_DIRECTORY / "results.jsonl", "r") as f:
                 for line in f:
                     result = json.loads(line)
-                    if "error" in result["search_result"]:
+                    # Skip results with search errors - they will be re-evaluated
+                    if has_search_error(result):
+                        skipped_count += 1
                         continue
                     existing_results.append(result)
                     evaluated_question_ids.add(result["input_sample"]["id"])
+            logger.info(
+                f"Loaded {len(existing_results)} existing results (skipped {skipped_count} with search errors)"
+            )
         except Exception as e:
             logger.error(f"Error loading existing results: {e}")
             raise e
@@ -185,7 +255,11 @@ def main(
     for result in results:
         if "error" in result["search_result"]:
             error_ids.append(result["input_sample"]["id"])
-            continue  # skip error cases
+            continue  # skip search error cases
+        # Skip evaluation error cases (when eval_result has error or score is None)
+        if result["eval_result"] is None or result["eval_result"].get("score") is None:
+            error_ids.append(result["input_sample"]["id"])
+            continue
         scores.append(result["eval_result"]["score"])
         total_token_usage += result["search_result"]["token_usage"]
 
