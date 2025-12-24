@@ -46,6 +46,9 @@ class SearchResult(SearchRequest):
 
     @property
     def formatted_response(self) -> str:
+        # Handle empty response (can happen with API errors, rate limiting, etc.)
+        if not self.response.msgs:
+            return "[Error: Model returned empty response]"
         response = self.response.msgs[0].content.strip()
         if self.response_format:
             return self.response_format.model_validate_json(response).model_dump_json(

@@ -13,10 +13,11 @@
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from __future__ import annotations
-from enum import Enum
+
 import itertools
 import json
 import os
+from enum import Enum
 from pathlib import Path
 from typing import Type
 
@@ -24,12 +25,7 @@ from camel.agents import ChatAgent
 from camel.logger import get_logger
 from camel.models import BaseModelBackend, ModelFactory
 from camel.toolkits import BaseToolkit, RegisteredAgentToolkit
-from camel.types import ModelType
-from camel.types import ModelPlatformType
-from camel.utils import api_keys_required
-from pydantic import DirectoryPath, model_validator
-from pydantic import Field
-from pydantic import BaseModel
+from camel.types import ModelPlatformType, ModelType
 
 from eigent_search.prompt.prompt_manager import prompt_manager
 from eigent_search.toolkit import (
@@ -37,6 +33,7 @@ from eigent_search.toolkit import (
     EigentSearchToolkit,
     QueryProcessingToolkit,
 )
+from pydantic import BaseModel, DirectoryPath, Field, model_validator
 
 logger = get_logger(__name__)
 
@@ -53,6 +50,8 @@ class SearchAgentType(Enum):
     EIGENT_SEARCH_Q_PLUS = "eigent_search_q+"
     # Search agent only using search_google tool
     SEARCH_ONLY = "search_only"
+    # Baseline agent (no tools, no system prompt, direct answer only)
+    BASELINE = "baseline"
 
     # Customized agent (no preset system prompt or tools)
     CUSTOMIZED = "customized"
@@ -71,7 +70,7 @@ class BackendModelConfig(Enum):
     }
     AZURE_GPT_4_1 = {
         # "model_type": ModelType.GPT_4_1,
-        "model_type": "gpt-4.1", 
+        "model_type": "gpt-4.1",
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
         "self_host_url": None,
@@ -186,13 +185,22 @@ class SearchConfig(BaseModel):
             url=self.self_host_url,
         )
 
-    @api_keys_required(
-        [
-            (None, "GOOGLE_API_KEY"),
-            (None, "SEARCH_ENGINE_ID"),
-        ]
-    )
     def create_agent(self) -> ChatAgent:
+        # Only check for Google Search API keys if we have tools (not baseline)
+        if self.agent_type != SearchAgentType.BASELINE:
+            from camel.utils import api_keys_required
+
+            @api_keys_required(
+                [
+                    (None, "GOOGLE_API_KEY"),
+                    (None, "SEARCH_ENGINE_ID"),
+                ]
+            )
+            def _check_keys():
+                pass
+
+            _check_keys()
+
         return ChatAgent(
             system_message=self.system_prompt,
             model=self.create_model(),

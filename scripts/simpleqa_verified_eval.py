@@ -12,16 +12,16 @@
 # limitations under the License.
 # ========= Copyright 2025 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from datetime import datetime
 import json
 import logging
 import os
+from datetime import datetime
 from pathlib import Path
 
-from camel.logger import get_logger, set_log_file, set_log_level
 import click
+
+from camel.logger import get_logger, set_log_file, set_log_level
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field
 
 from eigent_search.evaluation import SimpleQAEvaluator
 from eigent_search.evaluation.utils import (
@@ -29,6 +29,7 @@ from eigent_search.evaluation.utils import (
     MODEL_CONFIGS,
     run_search_and_evaluate_multithreaded,
 )
+from pydantic import BaseModel, Field
 
 set_log_level(logging.INFO)
 logger = get_logger(__name__)

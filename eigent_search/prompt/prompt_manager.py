@@ -78,8 +78,10 @@ class PromptManager:
     def get_preset_system_prompt(
         self, working_directory: str | Path, agent_type: SearchAgentType
     ) -> str:
-        """Get the preset system prompt for the given agent type."""
-        if agent_type.value == "search_only":
+        if agent_type.value == "baseline":
+            # Baseline has no system prompt - return None
+            return None
+        elif agent_type.value == "search_only":
             return self.get_system_prompt("search_only", working_directory)
         elif agent_type.value == "eigent_search":
             return self.get_system_prompt("eigent_search", working_directory)
