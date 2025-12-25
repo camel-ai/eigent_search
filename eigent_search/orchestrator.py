@@ -46,7 +46,13 @@ class SearchResult(SearchRequest):
 
     @property
     def formatted_response(self) -> str:
-        response = self.response.msgs[0].content.strip()
+
+        try:
+            response = self.response.msgs[0].content.strip()
+        except IndexError:
+            logger.error(f"Empty response: {self.response}")
+            return ""
+
         if self.response_format:
             return self.response_format.model_validate_json(response).model_dump_json(
                 indent=2
