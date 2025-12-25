@@ -87,6 +87,13 @@ class EigentSearchToolkit(CleanupToolkit):
         """Construct a search toolkit for actions related to searching the web."""
 
         search_toolkit = SearchToolkit(exclude_domains=self.exclude_search_domains)
+
+        # ad-hoc patch for fixed search number
+        def search_google(query: str, search_type: str = "web", start_page: int = 1):
+            return search_toolkit.search_google(query=query, search_type=search_type, start_page=start_page, number_of_result_pages=10)
+        search_google.__doc__ = search_toolkit.search_google.__doc__
+        search_toolkit.search_google = search_google
+        
         # Only search_google is needed, so we override the get_tools method
         search_toolkit.get_tools = lambda: [FunctionTool(search_toolkit.search_google)]
         return search_toolkit
