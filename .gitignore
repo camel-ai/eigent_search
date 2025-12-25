@@ -196,7 +196,5 @@ node_modules/
 package-lock.json
 package.json
 
-scripts/widesearch_eval.py
-# temp files
-scripts/widesearch_eval_temp.py
-eigent_search/evaluation/widesearch.py
+# uv lock file
+uv.lock
