@@ -62,12 +62,14 @@ DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP = 5
 class SearchAgentType(Enum):
     """Predefined agent types for using different tools in the search environment."""
 
+    # Base agent with no tools (model only)
+    BASE = "base"
+    # Search agent only using search_google tool
+    SEARCH_ONLY = "search_only"
     # Default search agent from Eigent
     EIGENT_SEARCH = "eigent_search"
     # Eigent search agent enhanced with query processing tools
     EIGENT_SEARCH_Q_PLUS = "eigent_search_q+"
-    # Search agent only using search_google tool
-    SEARCH_ONLY = "search_only"
 
     # Customized agent (no preset system prompt or tools)
     CUSTOMIZED = "customized"
@@ -215,24 +217,31 @@ class SearchConfig(BaseModel):
         )
 
     def set_preset_tools(self, agent_type: SearchAgentType):
+        # Base agent: no tools, no required env vars
+        if agent_type == SearchAgentType.BASE:
+            self.toolkits = []
+            self.toolkits_to_register_agent = []
+            self.toolkits_to_cleanup = []
+            self.required_env_vars = []
+            return
+
+        # All other preset agent types require Google Search API keys
         eigent_search_toolkit = EigentSearchToolkit(
             working_directory=self.working_directory,
             exclude_search_domains=["huggingface.co", "hf.co", "oxen.ai"],
         )
-
-        # All preset agent types require Google Search API keys
         self.required_env_vars = ["GOOGLE_API_KEY", "SEARCH_ENGINE_ID"]
 
         if agent_type == SearchAgentType.SEARCH_ONLY:
             self.toolkits = [eigent_search_toolkit.search_toolkit]
             self.toolkits_to_register_agent = []
 
-        if agent_type == SearchAgentType.EIGENT_SEARCH:
+        elif agent_type == SearchAgentType.EIGENT_SEARCH:
             self.toolkits = [eigent_search_toolkit]
             self.toolkits_to_register_agent = [eigent_search_toolkit.browser_toolkit]
             self.toolkits_to_cleanup = [eigent_search_toolkit]
 
-        if agent_type == SearchAgentType.EIGENT_SEARCH_Q_PLUS:
+        elif agent_type == SearchAgentType.EIGENT_SEARCH_Q_PLUS:
             query_processing_toolkit = QueryProcessingToolkit(
                 exclude_domains=["huggingface.co", "hf.co", "oxen.ai"],
             )

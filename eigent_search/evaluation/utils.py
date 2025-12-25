@@ -33,9 +33,10 @@ from eigent_search.orchestrator import SearchOrchestrator
 logger = get_logger(__name__)
 
 AGENT_TYPES = {
+    "base": SearchAgentType.BASE,
+    "search_only": SearchAgentType.SEARCH_ONLY,
     "eigent_search": SearchAgentType.EIGENT_SEARCH,
     "eigent_search_q+": SearchAgentType.EIGENT_SEARCH_Q_PLUS,
-    "search_only": SearchAgentType.SEARCH_ONLY,
 }
 
 
