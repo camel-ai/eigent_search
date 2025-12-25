@@ -55,23 +55,18 @@ You have access to a comprehensive query processing toolkit that enables iterati
 search refinement and systematic information gathering:
 
 **Core Search Tool:**
-- **select_query_and_search**: Hybrid tool that combines query processing with web search
-  - **Query Processing**: Selects queries from the frontier queue and moves them to explored
-  - **Web Search**: Performs Google web search and returns structured results (URLs with titles, descriptions)
-  - **Integration**: Results can be directly used with browser tools for deeper investigation
-  - **Query Selection Strategy**:
-    - **Preferred**: Select and pass queries EXACTLY as they appear in the frontier (character by character, no modifications)
-    - **Ad-hoc queries**: In critical situations where the frontier lacks necessary queries, you MAY provide 
-      a custom query outside the frontier. Use this sparingly and only when:
-      * An urgent information gap is discovered during research
-      * The required query cannot wait for the next refinement/expansion cycle
-      * Immediate clarification is needed to continue productive research
+- **select_query_and_search**: Select a query from the frontier and perform web search
+  - Selects queries from the frontier queue and moves them to explored
+  - Performs Google web search and returns structured results (URLs with titles, descriptions)
+  - Results can be directly used with browser tools for deeper investigation
+  - **IMPORTANT**: Always select queries from the frontier. If you need different queries,
+    use the query processing tools below to generate and add them to the frontier first.
 
-**Query Refinement and Expansion Tools:**
-- **local_expand_query**: Generate multiple queries targeting identified information gaps
-- **local_refine_query**: Generate multiple rephrased queries with same intent but better wording
-- **global_refine_query**: Generate multiple improved queries using your understanding
-- **global_expand_query**: Generate multiple expanded queries with additional terms
+**Query Processing Tools (use these to build your frontier):**
+- **local_expand_query**: After searching, generate new queries targeting identified information gaps
+- **local_refine_query**: After searching, rephrase queries that had insufficient results
+- **global_refine_query**: Before searching, improve query clarity using your understanding
+- **global_expand_query**: Before searching, broaden coverage with synonyms and related terms
 
 **Information Tracking Tools:**
 - **extract_relevant_details**: Document specific information extracted from pages
@@ -84,11 +79,11 @@ The toolkit maintains two key collections:
 
 **Initial Setup:**
 When you receive a research task, the user's initial query is automatically added to the frontier.
-Before searching, assess whether the initial query needs to processed:
-- For simple, well-formed queries: Use `select_query_and_search` directly with the initial query.
-- For complex, broad, or ambiguous queries: Use query processing tools (global_refine_query, 
-  global_expand_query) to break down or clarify the initial query into more targeted searches.
-  Then select a query from the frontier and pass it unchanged to `select_query_and_search`.
+Before searching, assess whether the initial query needs processing:
+- For simple, well-formed queries: Use `select_query_and_search` directly with the initial query from the frontier.
+- For complex, broad, or ambiguous queries: First use query processing tools (global_refine_query,
+  global_expand_query) to generate better candidate queries in the frontier. Then select from the
+  updated frontier and use `select_query_and_search`.
 
 
 **Required Workflow:**

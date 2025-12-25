@@ -14,7 +14,6 @@
 
 from functools import wraps
 from textwrap import dedent
-import difflib
 
 from camel.logger import get_logger
 from camel.toolkits.function_tool import FunctionTool
@@ -23,44 +22,6 @@ from camel.toolkits.search_toolkit import SearchToolkit
 
 
 logger = get_logger(__name__)
-
-
-def fuzzy_contains(query: str, candidates: set[str], cutoff: float = 0.7) -> bool:
-    """Check if the query has a fuzzy match in the candidates set.
-
-    Args:
-        query (str): The query to check for similarity.
-        candidates (set[str]): The set of candidate queries to match against.
-        cutoff (float): The minimum similarity threshold (0.0 to 1.0).
-
-    Returns:
-        bool: True if a similar query is found, False otherwise.
-    """
-    matches = difflib.get_close_matches(query, candidates, n=1, cutoff=cutoff)
-    return len(matches) > 0
-
-
-def validate_input_query_in_frontier(func):
-    """Decorator to validate that the input query is in the current frontier.
-
-    This decorator should be applied to methods that take a query parameter
-    and need to ensure it exists in the current frontier before processing.
-    """
-
-    @wraps(func)
-    def wrapper(self, **kwargs):
-        # Get the query parameter
-        query = kwargs.get("query")
-        if query and not fuzzy_contains(query, self.frontier):
-            error_message = (
-                f"❌ Invalid operation: Candidate query '{query}' must be selected "
-                f"from the current frontier listed below.\n{self.get_frontier_str()}"
-            )
-            logger.error(f"[{func.__name__}] {error_message}")
-            return error_message
-        return func(self, **kwargs)
-
-    return wrapper
 
 
 def validate_output_query_not_explored(func):
@@ -110,34 +71,6 @@ def validate_output_query_not_explored(func):
     return wrapper
 
 
-def validate_input_query_in_frontier_or_explored(func):
-    """Decorator to validate that the input query is in the current frontier or already explored.
-
-    This decorator should be applied to methods that take a query parameter
-    and need to ensure it exists in the current frontier OR has been previously explored.
-    """
-
-    @wraps(func)
-    def wrapper(self, **kwargs):
-        # Get the query parameter - could be 'query' or 'current_query'
-        query = kwargs.get("query") or kwargs.get("current_query")
-        if (
-            query
-            and not fuzzy_contains(query, self.frontier)
-            and query not in self.explored
-        ):
-            error_message = (
-                f"❌ Invalid operation: Candidate query '{query}' must be selected "
-                f"from the current frontier listed below.\n{self.get_frontier_str()}"
-                f"OR from the explored queries listed below.\n{self.get_explored_str()}"
-            )
-            logger.error(f"[{func.__name__}] {error_message}")
-            return error_message
-        return func(self, **kwargs)
-
-    return wrapper
-
-
 class QueryProcessingToolkit(BaseToolkit):
     r"""A comprehensive toolkit for query processing and relevance feedback in web search.
 
@@ -179,23 +112,25 @@ class QueryProcessingToolkit(BaseToolkit):
 
     @validate_output_query_not_explored
     def select_query_and_search(self, query: str) -> dict[str, dict[str, str]]:
-        r"""Select the best query from the current frontier, or create a new ad-hoc query if necessary, and perform web search.
-        The agent should select or generate query based on specificity, clarity, and search potential,
-        in order to minimize the number of searches and the cost of the search.
-        If the search results are not sufficient to answer the user's initial query,
-        the agent should process and select another query from the current frontier
-        and perform web search again, or generate new queries based on the search results.
+        r"""Select a query from the frontier and perform web search.
+
+        Choose the best candidate query from the current frontier based on specificity,
+        clarity, and search potential to minimize the number of searches needed.
+
+        If the search results are insufficient to answer the user's question, use
+        query processing tools (local_expand_query, local_refine_query, global_refine_query,
+        global_expand_query) to generate better candidate queries, then select from the
+        updated frontier and search again.
 
         Args:
-            query (str): The input query from the current frontier that is selected
-                for web search.
+            query (str): The query to search, selected from the current frontier.
         Returns:
             dict[str, dict[str, str]]: The search results from the web search. The key is "search_results" and the value is a dict where each key is a URL and each value is the string of the title, description, and long description of the result. If the search fails, the key is "None" and the value is the error message.
         """
-        # Update frontier and explored sets; the search will be conducted anyway
+        # Update frontier and explored sets
         if query in self.frontier:
             self.frontier.remove(query)
-        self.explored.add(query)  # for fuzzy contain
+        self.explored.add(query)
 
         # Helper function to perform search and handle results
         def search_and_record(query_str: str):
@@ -306,21 +241,18 @@ class QueryProcessingToolkit(BaseToolkit):
         what_exactly_missing: str,
         expanded_queries: list[str],
     ) -> str:
-        r"""Call this to create refined search queries based on identified gaps (LOCAL EXPAND).
+        r"""Create new search queries based on identified gaps (LOCAL EXPAND).
 
-        Use the parameters to build your expanded_queries:
-        - Look at what_you_know to avoid searching for information you already have
-        - Focus each query in expanded_queries specifically on what_exactly_missing
-        - Make queries more targeted than current_query to fill precise gaps
-        - Generate multiple query variations to explore different angles
-        Your expanded_queries should target the specific missing pieces from different
-        perspectives.
-
-        'current_query' must be an existing query (either in frontier or explored).
+        Use this after analyzing search results to target specific missing information.
+        Build your expanded_queries by:
+        - Looking at what_you_know to avoid searching for information you already have
+        - Focusing each query specifically on what_exactly_missing
+        - Making queries more targeted than current_query to fill precise gaps
+        - Generating multiple query variations to explore different angles
 
         Args:
             question (str): The original research question (for context)
-            current_query (str): The search query you last used
+            current_query (str): The query that led to the current findings
             what_you_know (str): Summary of information you've already found
             what_exactly_missing (str): The specific information gap you identified
             expanded_queries (List[str]): Multiple NEW search queries targeting
@@ -353,19 +285,17 @@ class QueryProcessingToolkit(BaseToolkit):
         search_results_summary: str,
         refined_queries: list[str],
     ) -> str:
-        r"""Refine the current query based on search results without changing core
-        meaning (LOCAL REFINE).
+        r"""Rephrase the query based on search results without changing core meaning (LOCAL REFINE).
 
-        This tool helps you rephrase the query for better results while maintaining
-        the same search intent. Generate multiple reformulations to try different
-        phrasings, synonyms, or alternative formulations.
+        Use this when search results were insufficient due to phrasing issues.
+        Generate multiple reformulations with different phrasings, synonyms, or
+        alternative formulations while maintaining the same search intent.
 
         Key differences from local_expand_query:
         - local_refine: Same meaning, different phrasings
           (e.g., "CEO of Apple" → ["Apple chief executive", "Apple CEO name"])
         - local_expand_query: Different scope/focus based on gaps
           (e.g., "CEO of Apple" → ["Tim Cook leadership", "Apple executive team"])
-        'current_query' must be an existing query (either in frontier or explored).
 
         Args:
             question (str): The original research question
@@ -401,11 +331,10 @@ class QueryProcessingToolkit(BaseToolkit):
         refinement_reason: str,
         refined_queries: list[str],
     ) -> str:
-        r"""Refine the query based on your understanding without using search results (GLOBAL REFINE).
+        r"""Improve query clarity or fix issues using your own knowledge (GLOBAL REFINE).
 
-        This tool helps you improve query clarity, remove ambiguity, or fix issues
-        through your own analysis. Generate multiple refined versions to try different
-        improvements.
+        Use this to refine a query before searching, based on your analysis rather
+        than search results. Generate multiple refined versions with different improvements.
 
         Common use cases:
         - Remove ambiguous terms
@@ -413,11 +342,10 @@ class QueryProcessingToolkit(BaseToolkit):
         - Fix grammatical issues
         - Use more standard terminology
         - Clarify temporal aspects (add year, "current", etc.)
-        'current_query' must be an existing query (either in frontier or explored).
 
         Args:
             question (str): The original research question
-            current_query (str): The current search query
+            current_query (str): The query to refine
             refinement_reason (str): Why you think the query needs refinement
             refined_queries (List[str]): Multiple improved queries with same core meaning
         Returns:
@@ -447,11 +375,11 @@ class QueryProcessingToolkit(BaseToolkit):
         expansion_strategy: str,
         expanded_queries: list[str],
     ) -> str:
-        r"""Expand the query with additional terms without using search results (GLOBAL EXPAND).
+        r"""Expand the query with additional terms using your own knowledge (GLOBAL EXPAND).
 
-        This tool helps you add synonyms, related terms, morphological variants, or
-        context to improve search coverage. Generate multiple expanded versions using
-        different strategies.
+        Use this to broaden search coverage by adding synonyms, related terms,
+        morphological variants, or context. Generate multiple expanded versions
+        using different strategies.
 
         Expansion strategies:
         - Add synonyms or alternative terms
@@ -460,11 +388,10 @@ class QueryProcessingToolkit(BaseToolkit):
         - Include morphological variants
         - Add context from your knowledge
         - Include related entities or organizations
-        'current_query' must be an existing query (either in frontier or explored).
 
         Args:
             question (str): The original research question
-            current_query (str): The current search query
+            current_query (str): The query to expand
             expansion_strategy (str): What type of expansion you're applying and why
             expanded_queries (List[str]): Multiple expanded queries with additional
                 relevant terms
