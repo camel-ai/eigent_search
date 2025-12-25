@@ -21,7 +21,6 @@ from typing import Type
 
 from camel.logger import get_logger, set_log_file, set_log_level
 import click
-from pydantic import BaseModel, Field
 
 from eigent_search.config import LLMasJudgeConfig, SearchConfig
 from eigent_search.evaluation import MusiQueEvaluator
@@ -89,14 +88,6 @@ def run_search_and_evaluate(
             "metrics": eval_result.metrics,
         },
     }
-
-
-class MusiQueResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    evidence: list[str] = Field(
-        ...,
-        description="The evidence from the search results that lead to the answer.",
-    )
 
 
 @click.command()
@@ -219,7 +210,6 @@ def main(
         agent_type=agent_type,
         model_name=model_name,
         evaluator_class=MusiQueEvaluator,
-        response_format=MusiQueResponse,
         num_workers=num_workers,
         existing_results=existing_results,
     )
