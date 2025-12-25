@@ -27,6 +27,7 @@ from camel.toolkits import BaseToolkit, RegisteredAgentToolkit
 from camel.types import ModelType
 from camel.types import ModelPlatformType
 from camel.utils import api_keys_required
+from dotenv import load_dotenv
 from pydantic import DirectoryPath, model_validator
 from pydantic import Field
 from pydantic import BaseModel
@@ -39,6 +40,21 @@ from eigent_search.toolkit import (
 )
 
 logger = get_logger(__name__)
+
+# Load environment variables from .env file
+load_dotenv()
+
+
+def get_required_env(key: str) -> str:
+    """Get environment variable or raise an exception if not set."""
+    value = os.getenv(key)
+    if value is None:
+        raise ValueError(
+            f"Missing required environment variable: {key}. "
+            f"Please set it in your .env file or environment."
+        )
+    return value
+
 
 DEFAULT_MAX_ORCHESTRATOR_RETRIES = 5
 DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP = 5
@@ -59,29 +75,35 @@ class SearchAgentType(Enum):
 
 
 class BackendModelConfig(Enum):
-    """Backend model configurations for different models."""
+    """Backend model configurations for different models.
+
+    For Azure models:
+        - url: reads from AZURE_OPENAI_BASE_URL env var
+        - api_key: reads from AZURE_OPENAI_API_KEY env var
+        - api_version: Azure API version (e.g., "2024-12-01-preview")
+
+    For OpenAI models:
+        - api_key: reads from OPENAI_API_KEY env var (handled by CAMEL internally)
+    """
 
     # Azure models
     AZURE_GPT_5_MINI = {
-        # "model_type": ModelType.GPT_5_MINI,
         "model_type": "gpt-5-mini",
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 1.0,  # must be 1.0 for GPT-5-mini
-        "self_host_url": None,
+        "api_version": "2024-12-01-preview",
     }
     AZURE_GPT_4_1 = {
-        # "model_type": ModelType.GPT_4_1,
-        "model_type": "gpt-4.1", 
+        "model_type": "gpt-4.1",
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
-        "self_host_url": None,
+        "api_version": "2024-12-01-preview",
     }
     AZURE_GPT_4_1_MINI = {
-        # "model_type": ModelType.GPT_4_1_MINI,
         "model_type": "gpt-4.1-mini",
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
-        "self_host_url": None,
+        "api_version": "2024-12-01-preview",
     }
 
     # OpenAI models
@@ -89,52 +111,27 @@ class BackendModelConfig(Enum):
         "model_type": ModelType.GPT_5_MINI,
         "model_platform": ModelPlatformType.OPENAI,
         "temperature": 1.0,  # must be 1.0 for GPT-5-mini
-        "self_host_url": None,
     }
     GPT_4_1 = {
         "model_type": ModelType.GPT_4_1,
         "model_platform": ModelPlatformType.OPENAI,
         "temperature": 0.0,
-        "self_host_url": None,
     }
     GPT_4_1_MINI = {
         "model_type": ModelType.GPT_4_1_MINI,
         "model_platform": ModelPlatformType.OPENAI,
         "temperature": 0.0,
-        "self_host_url": None,
     }
     GPT_4O = {
         "model_type": ModelType.GPT_4O,
         "model_platform": ModelPlatformType.OPENAI,
         "temperature": 0.0,
-        "self_host_url": None,
     }
     GPT_4O_MINI = {
         "model_type": ModelType.GPT_4O_MINI,
         "model_platform": ModelPlatformType.OPENAI,
         "temperature": 0.0,
-        "self_host_url": None,
     }
-
-    # Ollama models
-    GPT_OSS = {
-        "model_type": "gpt-oss:120b",
-        "model_platform": ModelPlatformType.OLLAMA,
-        "temperature": 0.0,
-        "self_host_url": "http://129.212.188.6:7861/v1",  # need to changed by @wendong when needed
-    }
-
-    ALL = [
-        AZURE_GPT_5_MINI,
-        AZURE_GPT_4_1,
-        AZURE_GPT_4_1_MINI,
-        GPT_5_MINI,
-        GPT_4_1,
-        GPT_4_1_MINI,
-        GPT_4O,
-        GPT_4O_MINI,
-        GPT_OSS,
-    ]
 
 
 class SearchConfig(BaseModel):
@@ -148,7 +145,8 @@ class SearchConfig(BaseModel):
     model_type: str | ModelType = ModelType.GPT_4_1_MINI
     model_platform: ModelPlatformType = ModelPlatformType.OPENAI
     temperature: float = 0.0
-    self_host_url: str | None = None
+    # Azure-specific: API version (e.g., "2024-12-01-preview")
+    api_version: str | None = None
 
     # Tool Config
     toolkits: list[BaseToolkit] = Field(default_factory=list)
@@ -156,7 +154,6 @@ class SearchConfig(BaseModel):
         default_factory=list
     )
     toolkits_to_cleanup: list[CleanupToolkit] = Field(default_factory=list)
-    prune_tool_calls_from_memory: bool = True
 
     # Orchestrator Config
     agent_type: SearchAgentType = SearchAgentType.CUSTOMIZED
@@ -179,12 +176,21 @@ class SearchConfig(BaseModel):
         return self
 
     def create_model(self) -> BaseModelBackend:
-        return ModelFactory.create(
-            model_platform=self.model_platform,
-            model_type=self.model_type,
-            model_config_dict={"temperature": self.temperature},
-            url=self.self_host_url,
-        )
+        # Build kwargs for ModelFactory.create
+        kwargs = {
+            "model_platform": self.model_platform,
+            "model_type": self.model_type,
+            "model_config_dict": {"temperature": self.temperature},
+        }
+
+        if self.model_platform == ModelPlatformType.AZURE:
+            kwargs["url"] = get_required_env("AZURE_OPENAI_BASE_URL")
+            kwargs["api_key"] = get_required_env("AZURE_OPENAI_API_KEY")
+            kwargs["api_version"] = self.api_version
+        elif self.model_platform == ModelPlatformType.OPENAI:
+            kwargs["api_key"] = get_required_env("OPENAI_API_KEY")
+
+        return ModelFactory.create(**kwargs)
 
     @api_keys_required(
         [
@@ -202,7 +208,6 @@ class SearchConfig(BaseModel):
                 )
             ),
             toolkits_to_register_agent=self.toolkits_to_register_agent,
-            prune_tool_calls_from_memory=self.prune_tool_calls_from_memory,
         )
 
     def set_preset_system_prompt(self, agent_type: SearchAgentType):
@@ -279,15 +284,25 @@ class LLMasJudgeConfig(BaseModel):
     model_type: str | ModelType = ModelType.GPT_4_1
     model_platform: ModelPlatformType = ModelPlatformType.OPENAI
     temperature: float = 0.0
-    self_host_url: str | None = None
+    # Azure-specific: API version (e.g., "2024-12-01-preview")
+    api_version: str | None = None
 
     def create_model(self) -> BaseModelBackend:
-        return ModelFactory.create(
-            model_platform=self.model_platform,
-            model_type=self.model_type,
-            model_config_dict={"temperature": self.temperature},
-            url=self.self_host_url,
-        )
+        # Build kwargs for ModelFactory.create
+        kwargs = {
+            "model_platform": self.model_platform,
+            "model_type": self.model_type,
+            "model_config_dict": {"temperature": self.temperature},
+        }
+
+        if self.model_platform == ModelPlatformType.AZURE:
+            kwargs["url"] = get_required_env("AZURE_OPENAI_BASE_URL")
+            kwargs["api_key"] = get_required_env("AZURE_OPENAI_API_KEY")
+            kwargs["api_version"] = self.api_version
+        elif self.model_platform == ModelPlatformType.OPENAI:
+            kwargs["api_key"] = get_required_env("OPENAI_API_KEY")
+
+        return ModelFactory.create(**kwargs)
 
     def create_agent(self) -> ChatAgent:
         return ChatAgent(model=self.create_model())

@@ -50,8 +50,6 @@ MODEL_CONFIGS = {
     "gpt-4.1-mini": BackendModelConfig.GPT_4_1_MINI,
     "gpt-4o": BackendModelConfig.GPT_4O,
     "gpt-4o-mini": BackendModelConfig.GPT_4O_MINI,
-    # Ollama models
-    "gpt-oss": BackendModelConfig.GPT_OSS,
 }
 
 

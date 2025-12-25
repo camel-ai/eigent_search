@@ -21,7 +21,6 @@ from pathlib import Path
 import click
 
 from camel.logger import get_logger, set_log_file, set_log_level
-from dotenv import load_dotenv
 
 from eigent_search.evaluation import FramesEvaluator
 from eigent_search.evaluation.utils import (
@@ -174,7 +173,6 @@ def main(
     )
 
     # run the search and evaluation
-    load_dotenv()  # load openai, google api, and search api keys
     results = run_search_and_evaluate_multithreaded(
         test_samples=test_samples,
         working_directory=WORKING_DIRECTORY,

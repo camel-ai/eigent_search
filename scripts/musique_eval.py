@@ -21,7 +21,6 @@ from typing import Type
 
 from camel.logger import get_logger, set_log_file, set_log_level
 import click
-from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
 from eigent_search.config import LLMasJudgeConfig, SearchConfig
@@ -212,7 +211,6 @@ def main(
     )
 
     # run the search and evaluation
-    load_dotenv()  # load openai, google api, and search api keys
     run_apated.run_search_and_evaluate = run_search_and_evaluate
     results = run_search_and_evaluate_multithreaded(
         test_samples=test_samples,

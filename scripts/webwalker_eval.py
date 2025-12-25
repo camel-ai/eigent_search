@@ -19,7 +19,6 @@ import os
 from pathlib import Path
 from camel.logger import get_logger, set_log_file, set_log_level
 import click
-from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
 from eigent_search.evaluation import WebWalkerEvaluator
@@ -156,7 +155,6 @@ def main(
     )
 
     # run the search and evaluation
-    load_dotenv()  # load openai, google api, and search api keys
     map_samples = []
     for s in test_samples:
         s["problem"] = s["question"]
