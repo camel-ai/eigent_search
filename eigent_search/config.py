@@ -26,7 +26,6 @@ from camel.models import BaseModelBackend, ModelFactory
 from camel.toolkits import BaseToolkit, RegisteredAgentToolkit
 from camel.types import ModelType
 from camel.types import ModelPlatformType
-from camel.utils import api_keys_required
 from dotenv import load_dotenv
 from pydantic import DirectoryPath, model_validator
 from pydantic import Field
@@ -154,6 +153,8 @@ class SearchConfig(BaseModel):
         default_factory=list
     )
     toolkits_to_cleanup: list[CleanupToolkit] = Field(default_factory=list)
+    # Required environment variables for toolkits (validated in create_agent)
+    required_env_vars: list[str] = Field(default_factory=list)
 
     # Orchestrator Config
     agent_type: SearchAgentType = SearchAgentType.CUSTOMIZED
@@ -192,13 +193,11 @@ class SearchConfig(BaseModel):
 
         return ModelFactory.create(**kwargs)
 
-    @api_keys_required(
-        [
-            (None, "GOOGLE_API_KEY"),
-            (None, "SEARCH_ENGINE_ID"),
-        ]
-    )
     def create_agent(self) -> ChatAgent:
+        # Validate required environment variables for toolkits
+        for env_var in self.required_env_vars:
+            get_required_env(env_var)
+
         return ChatAgent(
             system_message=self.system_prompt,
             model=self.create_model(),
@@ -220,6 +219,9 @@ class SearchConfig(BaseModel):
             working_directory=self.working_directory,
             exclude_search_domains=["huggingface.co", "hf.co", "oxen.ai"],
         )
+
+        # All preset agent types require Google Search API keys
+        self.required_env_vars = ["GOOGLE_API_KEY", "SEARCH_ENGINE_ID"]
 
         if agent_type == SearchAgentType.SEARCH_ONLY:
             self.toolkits = [eigent_search_toolkit.search_toolkit]
