@@ -160,74 +160,78 @@ class QueryProcessingToolkit(BaseToolkit):
 
     def extract_relevant_details(
         self,
-        snapshot: str,
-        query: str,
-        question: str,
+        current_query: str,
+        initial_query: str,
         relevant_information: str,
+        selected_snapshot: str,  
         page_url: str = "",
     ) -> str:
-        r"""Use this tool to extract relevant information from the page that answers
-        the question.
+        r"""Use this tool to extract relevant information from web page snapshots captured by browser tools (e.g. `browser_visit_page`) to better answer the user's initial query.
 
-        When extracting, carefully read the ENTIRE snapshot including:
+        WORKFLOW: First, thoroughly analyze the complete snapshot from your browser visit. Then use this tool to record your findings, providing the most relevant snapshot excerpts in selected_snapshot.
+
+        When analyzing the complete snapshot, carefully examine:
         - Structured sections like tables, info boxes, and labeled fields (these often
-          contain direct answers)
+        contain direct answers)
         - Main article text and paragraphs
         - All sections that might contain relevant facts
+        
         CRITICAL - Precision Requirements:
-        - Extract information that EXACTLY matches what the question asks for, not just
-          related information
-        - If the question asks for specific terms (e.g., "Gold"), don't substitute with
-          related terms (e.g., "Platinum")
-        - If the question asks for complete details (e.g., "day, month, and year"),
-          ensure you capture all components
+        - Extract information that EXACTLY matches what the initial query asks for, not just
+        related information
+        - If the initial query asks for specific terms (e.g., "Gold"), don't substitute with
+        related terms (e.g., "Platinum")
+        - If the initial query asks for complete details (e.g., "day, month, and year"),
+        ensure you capture all components
         - If you find information that's close but not exact, note what's missing and
-          mark it as incomplete
+        mark it as incomplete
 
         Extraction guidelines:
         - Look for explicit, direct answers first (especially in tables/info boxes with
-          structured data)
+        structured data)
         - If you find conflicting or multiple pieces of information, include ALL of them
-        - Be thorough - don't stop at the first relevant snippet; scan the entire page
-        - If the exact information requested is NOT on this page, explicitly state
-          what's missing
+        - Be thorough - scan the entire page content during analysis
+        - If the exact information requested is NOT found anywhere on the page, explicitly state
+        what's missing
 
         Args:
-            snapshot (str): The complete page content from browser_visit_page
-            query (str): The search query you used to find this page
-            question (str): The original question - what EXACTLY does it ask for?
-            relevant_information (str): Information you extract (must precisely match
-                question requirements)
+            current_query (str): The current search query that led to this web page
+            initial_query (str): The user's initial query - what EXACTLY does it ask for?
+            relevant_information (str): Information you extracted (must precisely match
+                initial query's requirements)
+            selected_snapshot (str): Only the most relevant excerpts from the complete page 
+                content that support your findings. Keep this concise while including key evidence.
             page_url (str): The URL of the page
         Returns:
             str: Confirmation that your extracted information has been recorded
-        """
+        """        
+        logger.info(f"[extract_relevant_details] Query: '{current_query}'")
         logger.info(f"[extract_relevant_details] From: {page_url}")
         return f"Relevant details recorded:\n\n{relevant_information}"
 
     def analyze_search_progress(
         self,
-        question: str,
+        initial_query: str,
         current_query: str,
         findings_so_far: str,
         your_analysis: str,
     ) -> str:
-        r"""Call this to analyse whether you have enough information to answer the question.
+        r"""Analyze the current search progress and think about whether you have enough information to answer the user's initial query.
 
         In your_analysis parameter, write your evaluation by:
-        1. Comparing your findings_so_far against what the question asks
+        1. Comparing your findings_so_far against what the user's initial query asks for
         2. Identifying any gaps or missing details
-        3. Determining if you need to refine your search
+        3. Determining if you need to continue searching or if you have sufficient information
 
-        Your analysis should explain what you have vs what you still need.
+        Your analysis should clearly explain what you have versus what you still need.
 
         Args:
-            question (str): The original research question
-            current_query (str): The search query you last used
-            findings_so_far (str): All relevant details you've extracted from visited pages
-            your_analysis (str): Your written evaluation - do findings answer the question completely?
+            initial_query (str): The user's initial query
+            current_query (str): The search query that was last used
+            findings_so_far (str): All relevant information you've gathered up to now that can help answer the initial query
+            your_analysis (str): Your written evaluation - do your findings answer the initial query completely?
         Returns:
-            str: Your analysis, recorded
+            str: Your analysis, recorded for progress tracking
         """
         logger.info(f"[analyze_search_progress] Query: '{current_query}'")
         return f"Analysis recorded:\n\n{your_analysis}"
