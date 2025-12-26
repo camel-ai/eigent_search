@@ -28,7 +28,6 @@ from eigent_search.evaluation.utils import (
     MODEL_CONFIGS,
     run_search_and_evaluate_multithreaded,
 )
-from pydantic import BaseModel, Field
 
 set_log_level(logging.INFO)
 logger = get_logger(__name__)
@@ -39,15 +38,6 @@ BENCHMARK_NAME = "frames"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 QUESTION_FIELD = "Prompt"
 ANSWER_FIELD = "Answer"
-
-
-# Directly borrow simpleqa's response format
-class SimpleQAResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    evidence: list[str] = Field(
-        ...,
-        description="The evidence from the search results that lead to the answer.",
-    )
 
 
 @click.command()
@@ -180,7 +170,6 @@ def main(
         agent_type=agent_type,
         model_name=model_name,
         evaluator_class=FramesEvaluator,
-        response_format=SimpleQAResponse,
         num_workers=num_workers,
         existing_results=existing_results,
     )

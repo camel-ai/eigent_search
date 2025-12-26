@@ -1,14 +1,15 @@
-# EigentSearch-Q+
+# Eigent Search (Q+)
 
-Eigent search agent enhanced with query processing toolkit.
+Benchmarking [Eigent](https://github.com/eigent-ai/eigent)'s search agent and enhancing it with query processing toolkit.
 
 ## Supported Preset Agent Types
 
 | Agent Type         | Description                                                                      |
 |--------------------|----------------------------------------------------------------------------------|
-| eigent_search_q+   | Eigent search agent with enhanced query processing toolkit                       |
-| eigent_search      | Default eigent search agent with search, browse, note-taking, and terminal tools |
+| base               | Base chat agent with no tools  |
 | search_only        | Search-only agent using Google Search tool                                       |
+| eigent_search      | Default eigent search agent with search, browse, note-taking, and terminal tools |
+| eigent_search_q+   | Eigent search agent with enhanced query processing toolkit                       |
 
 ## Supported Benchmarks
 
@@ -19,8 +20,7 @@ Eigent search agent enhanced with query processing toolkit.
 | BrowseComp             | smolagents/browse_comp                 |
 | WebWalker              | callanwu/WebWalkerQA                   |
 | Musique                | dgslibisey/MuSiQue                     |
-| Frames                 | ...                                    |
-| WideSearch             | ...                                    |
+| Frames                 | google/frames-benchmark                |
 
 
 ## Get Started
@@ -53,7 +53,6 @@ If you are using Azure, you need the following env variables:
 
 ```bash
 export AZURE_OPENAI_BASE_URL="your-azure-url"
-export AZURE_API_VERSION="your-azure-api-version"
 export AZURE_OPENAI_API_KEY="your-azure-api-key"
 ```
 

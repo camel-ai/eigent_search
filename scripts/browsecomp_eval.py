@@ -20,7 +20,6 @@ from pathlib import Path
 
 from camel.logger import get_logger, set_log_file, set_log_level
 import click
-from pydantic import BaseModel, Field
 
 from eigent_search.evaluation import BrowseCompEvaluator
 from eigent_search.evaluation.utils import (
@@ -35,20 +34,6 @@ logger = get_logger(__name__)
 # Define benchmark-specific constants
 BENCHMARK_NAME = "browsecomp"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-
-class BrowseCompResponse(BaseModel):
-    answer: str = Field(
-        ..., description="The succinct, final answer extracted from the response."
-    )
-    explanation: str = Field(
-        ...,
-        description="The explanation for the final answer extracted from the response.",
-    )
-    confidence: float = Field(
-        ...,
-        description="The extracted confidence score between 0% and 100% from the response.",
-    )
 
 
 @click.command()
@@ -170,7 +155,6 @@ def main(
         agent_type=agent_type,
         model_name=model_name,
         evaluator_class=BrowseCompEvaluator,
-        response_format=BrowseCompResponse,
         num_workers=num_workers,
         existing_results=existing_results,
     )

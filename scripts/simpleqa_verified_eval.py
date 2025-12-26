@@ -20,7 +20,6 @@ from pathlib import Path
 
 from camel.logger import get_logger, set_log_file, set_log_level
 import click
-from pydantic import BaseModel, Field
 
 from eigent_search.evaluation import SimpleQAEvaluator
 from eigent_search.evaluation.utils import (
@@ -35,14 +34,6 @@ logger = get_logger(__name__)
 # Define benchmark-specific constants
 BENCHMARK_NAME = "simpleqa_verified"
 TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-
-class SimpleQAResponse(BaseModel):
-    answer: str = Field(..., description="The answer to the research question.")
-    evidence: list[str] = Field(
-        ...,
-        description="The evidence from the search results that lead to the answer.",
-    )
 
 
 @click.command()
@@ -164,7 +155,6 @@ def main(
         agent_type=agent_type,
         model_name=model_name,
         evaluator_class=SimpleQAEvaluator,
-        response_format=SimpleQAResponse,
         num_workers=num_workers,
         existing_results=existing_results,
     )

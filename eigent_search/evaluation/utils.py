@@ -116,7 +116,7 @@ def run_search_and_evaluate(
         reference_answer=test_sample["answer"],
         model_answer=search_result.formatted_response,
     )
-    eval_result = evaluator.evaluate(eval_request)
+    eval_result = evaluator.evaluate_with_retry(eval_request)
     return {
         "input_sample": test_sample,
         "search_result": {

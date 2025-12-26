@@ -16,8 +16,12 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Generic, TypeVar, Union
 
+from camel.logger import get_logger
 from datasets import Dataset, DatasetDict, IterableDataset, IterableDatasetDict
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
+import tenacity
+
+logger = get_logger(__name__)
 
 
 BenchmarkPayload = TypeVar("T", bound=BaseModel)
@@ -40,12 +44,16 @@ class EvaluationResult(EvaluationRequest[BenchmarkPayload]):
     )
 
 
+DEFAULT_MAX_EVALUATE_RETRIES = 10
+
+
 class BaseEvaluator(ABC):
     """Abstract interface for scoring agent responses."""
 
+    @staticmethod
     @abstractmethod
     def load_dataset(
-        self, *args, **kwargs
+        *args, **kwargs
     ) -> Union[DatasetDict, Dataset, IterableDatasetDict, IterableDataset]:
         """Load the dataset for this benchmark."""
         ...
@@ -61,3 +69,33 @@ class BaseEvaluator(ABC):
     ) -> EvaluationResult:
         """Compute a scalar score and per-metric breakdown for a given :obj:`EvaluationRequest`."""
         ...
+
+    def evaluate_with_retry(
+        self,
+        request: EvaluationRequest[BenchmarkPayload],
+        max_retries: int = DEFAULT_MAX_EVALUATE_RETRIES,
+    ) -> EvaluationResult:
+        """Evaluate with retry logic for transient failures (e.g., API errors, validation errors).
+
+        Args:
+            request: The evaluation request to process.
+            max_retries: Maximum number of retry attempts. Defaults to 3.
+
+        Returns:
+            EvaluationResult from the evaluate() method.
+        """
+
+        @tenacity.retry(
+            stop=tenacity.stop_after_attempt(max_retries),
+            wait=tenacity.wait_exponential(multiplier=1, min=2, max=10),
+            retry=tenacity.retry_if_exception_type((ValidationError, ValueError)),
+            before_sleep=lambda retry_state: logger.warning(
+                f"Evaluation attempt {retry_state.attempt_number} failed: "
+                f"{retry_state.outcome.exception()}, retrying..."
+            ),
+            reraise=True,
+        )
+        def _evaluate_with_retry():
+            return self.evaluate(request)
+
+        return _evaluate_with_retry()
