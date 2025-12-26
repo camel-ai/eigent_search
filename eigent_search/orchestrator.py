@@ -20,6 +20,7 @@ from typing import Type
 from camel.logger import get_logger
 from camel.responses import ChatAgentResponse
 import nest_asyncio
+from openai import BadRequestError
 from pydantic import BaseModel
 import tenacity
 
@@ -28,6 +29,15 @@ from .tool_trajectory import ToolTrajectory
 from .toolkit import EigentSearchToolkit, QueryProcessingToolkit
 
 logger = get_logger(__name__)
+
+
+def is_content_filter_error(exc: Exception) -> bool:
+    """Check if an exception is an Azure content filter error."""
+    if isinstance(exc, BadRequestError):
+        error_body = getattr(exc, "body", {}) or {}
+        error_info = error_body.get("error", {}) if isinstance(error_body, dict) else {}
+        return error_info.get("code") == "content_filter"
+    return False
 
 
 class SearchRequest(BaseModel):
@@ -46,7 +56,13 @@ class SearchResult(SearchRequest):
 
     @property
     def formatted_response(self) -> str:
-        response = self.response.msgs[0].content.strip()
+
+        try:
+            response = self.response.msgs[0].content.strip()
+        except IndexError:
+            logger.error(f"Empty response: {self.response}")
+            return ""
+
         if self.response_format:
             return self.response_format.model_validate_json(response).model_dump_json(
                 indent=2
@@ -108,6 +124,16 @@ class SearchOrchestrator:
     ) -> SearchResult | ErrorSearchResult:
         """Run the agent with retry logic, timeout and error handling."""
 
+        def _should_retry(retry_state: tenacity.RetryCallState) -> bool:
+            """Don't retry content filter errors - they're permanent failures."""
+            exc = retry_state.outcome.exception()
+            if is_content_filter_error(exc):
+                logger.warning(
+                    f"[{search_input.query_id}] Content filter triggered, skipping retry: {exc}"
+                )
+                return False
+            return True
+
         def _handle_retry(retry_state: tenacity.RetryCallState):
             exc = retry_state.outcome._exception
             logger.error(
@@ -121,6 +147,8 @@ class SearchOrchestrator:
         @tenacity.retry(
             stop=tenacity.stop_after_attempt(self.config.max_orchestrator_retries),
             wait=tenacity.wait_exponential(multiplier=1, min=4, max=10),
+            retry=tenacity.retry_if_result(lambda _: False)
+            | tenacity.retry_if_exception(_should_retry),
             reraise=True,
             before_sleep=_handle_retry,
         )
@@ -144,9 +172,14 @@ class SearchOrchestrator:
             result = _run_with_retry()
             return result
         except Exception as e:
-            logger.error(
-                f"[{search_input.query_id}] Agent failed after {self.config.max_orchestrator_retries} attempts: {e}"
-            )
+            if is_content_filter_error(e):
+                logger.warning(
+                    f"[{search_input.query_id}] Skipped due to content filter: {e}"
+                )
+            else:
+                logger.error(
+                    f"[{search_input.query_id}] Agent failed after {self.config.max_orchestrator_retries} attempts: {e}"
+                )
             return ErrorSearchResult(**search_input.model_dump(), error=str(e))
         finally:
             logger.info(
