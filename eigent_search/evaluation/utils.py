@@ -45,6 +45,7 @@ MODEL_CONFIGS = {
     "azure-gpt-5-mini": BackendModelConfig.AZURE_GPT_5_MINI,
     "azure-gpt-4.1": BackendModelConfig.AZURE_GPT_4_1,
     "azure-gpt-4.1-mini": BackendModelConfig.AZURE_GPT_4_1_MINI,
+    "azure-gpt-4o": BackendModelConfig.AZURE_GPT_4_O,
     # OpenAI models
     "gpt-5-mini": BackendModelConfig.GPT_5_MINI,
     "gpt-4.1": BackendModelConfig.GPT_4_1,
