@@ -124,9 +124,8 @@ class SearchOrchestrator:
     ) -> SearchResult | ErrorSearchResult:
         """Run the agent with retry logic, timeout and error handling."""
 
-        def _should_retry(retry_state: tenacity.RetryCallState) -> bool:
+        def _should_retry(exc: BaseException) -> bool:
             """Don't retry content filter errors - they're permanent failures."""
-            exc = retry_state.outcome.exception()
             if is_content_filter_error(exc):
                 logger.warning(
                     f"[{search_input.query_id}] Content filter triggered, skipping retry: {exc}"
