@@ -63,7 +63,7 @@ export AZURE_OPENAI_API_KEY="your-azure-api-key"
 python scripts/simpleqa_eval.py -a eigent_search_q+ -n 5 
 ```
 
-Please see input parameters inside the script.
+Please refer to the input parameters defined in the script. The benchmarking pipeline supports multiple error-handling mechanisms; if errors occur (e.g., failed problem IDs or other interruptions), use the `--resume-from` parameter to resume the process.
 
 5. View results in the `results` directory.
 
