@@ -106,6 +106,12 @@ class BackendModelConfig(Enum):
         "temperature": 0.0,
         "api_version": "2024-12-01-preview",
     }
+    AZURE_GPT_4_O= {
+        "model_type": "gpt-4o",
+        "model_platform": ModelPlatformType.AZURE,
+        "temperature": 0.0,
+        "api_version": "2024-12-01-preview",
+    }
 
     # OpenAI models
     GPT_5_MINI = {

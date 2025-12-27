@@ -137,7 +137,17 @@ class QueryProcessingToolkit(BaseToolkit):
             results = self.search(query_str)
             self.search_counter += 1
 
-            # Check if search has returned anything valid
+            # Check if search returned empty results
+            if not results:
+                logger.warning(f"[search] No results found for '{query_str}'")
+                return {
+                    "None": f"No search results found for query: '{query_str}'. "
+                    f"This may indicate the query is too specific, uses uncommon terms, "
+                    f"or targets information that doesn't exist on the web. "
+                    f"Consider refining the query with more common terms or trying alternative phrasings."
+                }
+
+            # Check if search has returned an error
             if "error" in results[0]:
                 logger.error(f"[search] Error for '{query_str}': {results[0]['error']}")
                 return {"None": results[0]["error"]}

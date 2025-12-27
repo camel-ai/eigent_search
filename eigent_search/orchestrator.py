@@ -20,6 +20,7 @@ from typing import Type
 from camel.logger import get_logger
 from camel.responses import ChatAgentResponse
 import nest_asyncio
+from openai import BadRequestError
 from pydantic import BaseModel
 import tenacity
 
@@ -46,7 +47,6 @@ class SearchResult(SearchRequest):
 
     @property
     def formatted_response(self) -> str:
-
         try:
             response = self.response.msgs[0].content.strip()
         except IndexError:
@@ -114,23 +114,43 @@ class SearchOrchestrator:
     ) -> SearchResult | ErrorSearchResult:
         """Run the agent with retry logic, timeout and error handling."""
 
-        def _handle_retry(retry_state: tenacity.RetryCallState):
-            exc = retry_state.outcome._exception
+        def is_content_filter_error(exc: BaseException) -> bool:
+            """Check if exception is an Azure content filter error."""
+            if isinstance(exc, BadRequestError):
+                error_body = getattr(exc, "body", {}) or {}
+                error_info = (
+                    error_body.get("error", {}) if isinstance(error_body, dict) else {}
+                )
+                return error_info.get("code") == "content_filter"
+            return False
+
+        def should_retry(exc: BaseException) -> bool:
+            """Retry all exceptions except content filter errors."""
+            if is_content_filter_error(exc):
+                logger.warning(
+                    f"[{search_input.query_id}] Content filter triggered, not retrying"
+                )
+                return False
+            return True
+
+        def on_retry(retry_state: tenacity.RetryCallState):
+            """Log and reset agent before each retry."""
+            exc = retry_state.outcome.exception()
             logger.error(
-                f"[{search_input.query_id}] Attempt {retry_state.attempt_number} failed: {type(exc).__name__}: {repr(exc)}\n"
-                f"Reset agent, cleanup resources and retry...\n"
-                f"Detailed error traceback:\n{''.join(traceback.format_exception(type(exc), exc, exc.__traceback__))}\n"
-                f"\nEnd of traceback.\n"
+                f"[{search_input.query_id}] Attempt {retry_state.attempt_number} failed: "
+                f"{type(exc).__name__}: {exc!r}\n"
+                f"Traceback:\n{''.join(traceback.format_exception(type(exc), exc, exc.__traceback__))}"
             )
             self.reset()
 
         @tenacity.retry(
             stop=tenacity.stop_after_attempt(self.config.max_orchestrator_retries),
             wait=tenacity.wait_exponential(multiplier=1, min=4, max=10),
+            retry=tenacity.retry_if_exception(should_retry),
             reraise=True,
-            before_sleep=_handle_retry,
+            before_sleep=on_retry,
         )
-        def _run_with_retry():
+        def run_with_retry() -> SearchResult:
             nest_asyncio.apply()
             timeout_seconds = self.config.timeout_minutes_per_orchestrator_step * 60
             response = asyncio.run(
@@ -147,15 +167,16 @@ class SearchOrchestrator:
             )
 
         try:
-            result = _run_with_retry()
-            return result
+            return run_with_retry()
         except Exception as e:
-            logger.error(
-                f"[{search_input.query_id}] Agent failed after {self.config.max_orchestrator_retries} attempts: {e}"
-            )
+            if is_content_filter_error(e):
+                logger.warning(f"[{search_input.query_id}] Skipped due to content filter")
+            else:
+                logger.error(
+                    f"[{search_input.query_id}] Failed after "
+                    f"{self.config.max_orchestrator_retries} attempts: {e}"
+                )
             return ErrorSearchResult(**search_input.model_dump(), error=str(e))
         finally:
-            logger.info(
-                f"[{search_input.query_id}] Reset agent and cleaning up resources..."
-            )
+            logger.info(f"[{search_input.query_id}] Cleaning up resources...")
             self.reset()

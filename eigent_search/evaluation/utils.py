@@ -45,6 +45,7 @@ MODEL_CONFIGS = {
     "azure-gpt-5-mini": BackendModelConfig.AZURE_GPT_5_MINI,
     "azure-gpt-4.1": BackendModelConfig.AZURE_GPT_4_1,
     "azure-gpt-4.1-mini": BackendModelConfig.AZURE_GPT_4_1_MINI,
+    "azure-gpt-4o": BackendModelConfig.AZURE_GPT_4_O,
     # OpenAI models
     "gpt-5-mini": BackendModelConfig.GPT_5_MINI,
     "gpt-4.1": BackendModelConfig.GPT_4_1,
@@ -78,8 +79,8 @@ def set_up_search_and_judge_config(
         "search_config": json.loads(config["search_config"].model_dump_json(indent=2)),
         "judge_config": json.loads(config["judge_config"].model_dump_json(indent=2)),
     }
-    with open(working_directory / "config.json", "w") as f:
-        json.dump(saved_config, f, indent=2)
+    with open(working_directory / "config.json", "w", encoding="utf-8") as f:
+        json.dump(saved_config, f, indent=2, ensure_ascii=False)
 
     return config
 
@@ -174,9 +175,9 @@ def run_search_and_evaluate_multithreaded(
             result = future.result()
             results.append(result)
             if (i + 1) % 5 == 0 or i == len(test_samples) - 1:
-                with open(working_directory / "results.jsonl", "w") as f:
+                with open(working_directory / "results.jsonl", "w", encoding="utf-8") as f:
                     for result in existing_results + results:
-                        f.write(json.dumps(result) + "\n")
+                        f.write(json.dumps(result, ensure_ascii=False) + "\n")
                 logger.info(
                     f"Progress: {i + 1}/{len(test_samples)} ({(i + 1) / len(test_samples) * 100:.1f}%) - Results saved to {working_directory / 'results.jsonl'} ..."
                 )
