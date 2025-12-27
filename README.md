@@ -1,6 +1,6 @@
 # Eigent Search (Q+)
 
-Benchmarking [Eigent](https://github.com/eigent-ai/eigent)'s search agent and enhancing it with query processing toolkit.
+Benchmarking [Eigent](https://github.com/eigent-ai/eigent)'s search agent and enhancing it with query processing toolkit (a suite of structured thinking tools).
 
 ## Supported Preset Agent Types
 
