@@ -215,6 +215,7 @@ class SearchConfig(BaseModel):
                 )
             ),
             toolkits_to_register_agent=self.toolkits_to_register_agent,
+            summarize_threshold=None,
         )
 
     def set_preset_system_prompt(self, agent_type: SearchAgentType):
@@ -322,4 +323,4 @@ class LLMasJudgeConfig(BaseModel):
         return ModelFactory.create(**kwargs)
 
     def create_agent(self) -> ChatAgent:
-        return ChatAgent(model=self.create_model())
+        return ChatAgent(model=self.create_model(), summarize_threshold=None)
