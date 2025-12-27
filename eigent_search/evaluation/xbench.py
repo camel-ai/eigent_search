@@ -19,8 +19,6 @@ from datasets import Dataset, load_dataset
 from pydantic import BaseModel, Field
 from typing import Literal
 from .base import BaseEvaluator, EvaluationRequest, EvaluationResult
-from collections import Counter
-import random
 import base64
 
 logger = get_logger(__name__)
@@ -83,7 +81,7 @@ class XbenchEvaluator(BaseEvaluator):
         decoded_samples = []
         for test_sample in test_samples:
             # There shouldn't be any missing canary, and decrypt should never fail
-            test_sample["id"] = str(test_sample["id"])
+            test_sample["original_id"] = str(test_sample.pop("id"))
             canary = test_sample["canary"]
             problem = test_sample["prompt"]
             problem = XbenchEvaluator.xor_decrypt(base64.b64decode(problem), canary).decode('utf-8')
