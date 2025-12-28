@@ -64,6 +64,12 @@ class ErrorSearchResult(SearchRequest):
     error: str
 
 
+class GoogleAPILimitError(Exception):
+    """Raised when Google Search API daily limit is reached."""
+
+    pass
+
+
 class SearchOrchestrator:
     """Orchestrates search agent execution."""
 
@@ -124,11 +130,21 @@ class SearchOrchestrator:
                 return error_info.get("code") == "content_filter"
             return False
 
+        def is_google_api_limit_error(exc: BaseException) -> bool:
+            """Check if exception is a Google API daily limit error."""
+            return isinstance(exc, GoogleAPILimitError)
+
         def should_retry(exc: BaseException) -> bool:
-            """Retry all exceptions except content filter errors."""
+            """Retry all exceptions except content filter and Google API limit errors."""
             if is_content_filter_error(exc):
                 logger.warning(
                     f"[{search_input.query_id}] Content filter triggered, not retrying"
+                )
+                return False
+            if is_google_api_limit_error(exc):
+                logger.error(
+                    f"[{search_input.query_id}] Google API daily limit reached, "
+                    "interrupting benchmark"
                 )
                 return False
             return True
@@ -159,15 +175,27 @@ class SearchOrchestrator:
                     timeout=timeout_seconds,
                 )
             )
+            tool_trajectory = ToolTrajectory.extract_from_response(response)
+
+            # Check for Google API daily limit error in tool results
+            if tool_trajectory.has_google_api_limit_error():
+                raise GoogleAPILimitError(
+                    "Google Search API daily limit reached. Benchmark must be interrupted."
+                )
+
             return SearchResult(
                 **search_input.model_dump(),
                 response=response,
                 response_format=self.config.response_format,
-                tool_trajectory=ToolTrajectory.extract_from_response(response),
+                tool_trajectory=tool_trajectory,
             )
 
         try:
-            return run_with_retry()
+            result = run_with_retry()
+            return result
+        except GoogleAPILimitError:
+            # Re-raise to interrupt the benchmark
+            raise
         except Exception as e:
             if is_content_filter_error(e):
                 logger.warning(f"[{search_input.query_id}] Skipped due to content filter")

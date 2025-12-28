@@ -53,6 +53,17 @@ class ToolTrajectory(BaseModel):
     trajectory_length: int
     trajectory: list[ToolCallInfo]
 
+    # Pattern that indicates Google API daily limit reached
+    GOOGLE_API_LIMIT_PATTERN: str = "google search failed - api response"
+
+    def has_google_api_limit_error(self) -> bool:
+        """Check if Google API daily limit error occurred in tool results."""
+        for tool_call in self.trajectory:
+            result_str = str(tool_call.result).lower()
+            if self.GOOGLE_API_LIMIT_PATTERN in result_str:
+                return True
+        return False
+
     @classmethod
     def extract_from_response(cls, response: ChatAgentResponse) -> ToolTrajectory:
         trajectory = []
