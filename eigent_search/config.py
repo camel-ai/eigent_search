@@ -166,6 +166,7 @@ class SearchConfig(BaseModel):
 
     # Orchestrator Config
     agent_type: SearchAgentType = SearchAgentType.CUSTOMIZED
+    max_iteration: int = 50 # Maximum number of model calling iterations allowed per step
     max_orchestrator_retries: int = DEFAULT_MAX_ORCHESTRATOR_RETRIES
     timeout_minutes_per_orchestrator_step: int = (
         DEFAULT_TIMEOUT_MINUTES_PER_ORCHESTRATOR_STEP
@@ -216,6 +217,7 @@ class SearchConfig(BaseModel):
             ),
             toolkits_to_register_agent=self.toolkits_to_register_agent,
             summarize_threshold=None,
+            max_iteration=self.max_iteration,
         )
 
     def set_preset_system_prompt(self, agent_type: SearchAgentType):
