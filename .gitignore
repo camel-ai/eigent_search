@@ -198,3 +198,4 @@ package.json
 
 # uv lock file
 uv.lock
+/context_files
