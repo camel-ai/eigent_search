@@ -24,6 +24,13 @@ from openai import BadRequestError
 from pydantic import BaseModel
 import tenacity
 
+# Import minimax patch to ensure it's applied before tool_trajectory is imported
+# The patch auto-applies on import (see minimax_m25_patch.py line 486)
+try:
+    import eigent_search.minimax_m25_patch  # noqa: F401
+except ImportError:
+    pass  # Minimax patch module not available
+
 from .config import SearchConfig
 from .tool_trajectory import ToolTrajectory
 from .toolkit import EigentSearchToolkit, QueryProcessingToolkit
@@ -53,11 +60,57 @@ class SearchResult(SearchRequest):
             logger.error(f"Empty response: {self.response}")
             return ""
 
+        # CRITICAL: For Minimax M2.5, strip <think> tags from the response
+        # The reasoning content will be available in reasoning_content property
+        if '<think>' in response:
+            import re
+            # Remove all <think>...</think> blocks
+            response = re.sub(r'<think>.*?</think>', '', response, flags=re.DOTALL | re.IGNORECASE)
+            response = response.strip()
+
         if self.response_format:
             return self.response_format.model_validate_json(response).model_dump_json(
                 indent=2
             )
         return response
+
+    @property
+    def reasoning_content(self) -> str | None:
+        """Extract reasoning_content from the response.
+
+        Supports:
+        - DeepSeek R1: reasoning_content field
+        - Minimax M2.5: <think> tags in content
+        """
+        try:
+            # Try to get reasoning_content from the first message
+            if self.response.msgs and len(self.response.msgs) > 0:
+                msg = self.response.msgs[0]
+
+                # DeepSeek R1 style: reasoning_content attribute
+                if hasattr(msg, 'reasoning_content') and msg.reasoning_content:
+                    return msg.reasoning_content
+
+                # Minimax M2.5 style: extract <think> tags from content
+                if hasattr(msg, 'content') and msg.content and '<think>' in msg.content:
+                    import re
+                    pattern = r'<think>(.*?)</think>'
+                    matches = re.findall(pattern, msg.content, re.DOTALL | re.IGNORECASE)
+                    if matches:
+                        # Join all <think> blocks with newlines
+                        return '\n'.join(match.strip() for match in matches)
+
+            # If not in msgs, try to get from response.info (raw API response)
+            if hasattr(self.response, 'info') and isinstance(self.response.info, dict):
+                if 'choices' in self.response.info and len(self.response.info['choices']) > 0:
+                    message = self.response.info['choices'][0].get('message', {})
+                    if 'reasoning_content' in message:
+                        return message['reasoning_content']
+
+            return None
+        except Exception as e:
+            logger.warning(f"Failed to extract reasoning_content: {e}")
+            return None
 
 
 class ErrorSearchResult(SearchRequest):
