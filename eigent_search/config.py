@@ -92,6 +92,12 @@ class BackendModelConfig(Enum):
     """
 
     # Azure models
+    AZURE_GPT_5_1 = {
+        "model_type": "gpt-5.1",
+        "model_platform": ModelPlatformType.AZURE,
+        "temperature": 0.0,
+        "api_version": "2024-12-01-preview",
+    }
     AZURE_GPT_5_MINI = {
         "model_type": "gpt-5-mini",
         "model_platform": ModelPlatformType.AZURE,
