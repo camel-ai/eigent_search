@@ -56,6 +56,13 @@ export AZURE_OPENAI_BASE_URL="your-azure-url"
 export AZURE_OPENAI_API_KEY="your-azure-api-key"
 ```
 
+If you are using Minimax M2.5, you need the following env variables:
+
+```bash
+export MINIMAX_API_KEY="your-minimax-api-key"
+export MINIMAX_BASE_URL="your-minimax-base-url"
+```
+
 
 
 4. Run the evaluation script (on the first five questions):
