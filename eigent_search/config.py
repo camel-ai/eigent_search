@@ -97,6 +97,8 @@ class BackendModelConfig(Enum):
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
         "api_version": "2024-12-01-preview",
+        "max_tokens": 272000,  # 272K context window
+        "summarize_threshold": 90,  # Trigger summarization at 90% (244.8K tokens)
     }
     AZURE_GPT_5_MINI = {
         "model_type": "gpt-5-mini",
@@ -109,6 +111,8 @@ class BackendModelConfig(Enum):
         "model_platform": ModelPlatformType.AZURE,
         "temperature": 0.0,
         "api_version": "2024-12-01-preview",
+        "max_tokens": 128000,  # 128K context window
+        "summarize_threshold": 90,  # Trigger summarization at 90% (115.2K tokens)
     }
     AZURE_GPT_4_1_MINI = {
         "model_type": "gpt-4.1-mini",
@@ -155,6 +159,8 @@ class BackendModelConfig(Enum):
         "model_type": "MiniMax-M2.5",
         "model_platform": ModelPlatformType.MINIMAX,
         "temperature": 0.0,
+        "max_tokens": 196608,  # 192K context window (API enforced limit)
+        "summarize_threshold": 90,  # Trigger summarization at 90% (176,947 tokens)
     }
 
 
