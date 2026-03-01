@@ -52,6 +52,8 @@ MODEL_CONFIGS = {
     "gpt-4.1-mini": BackendModelConfig.GPT_4_1_MINI,
     "gpt-4o": BackendModelConfig.GPT_4O,
     "gpt-4o-mini": BackendModelConfig.GPT_4O_MINI,
+    # Minimax models
+    "minimax-m2.5": BackendModelConfig.MINIMAX_M2_5,
 }
 
 
@@ -118,13 +120,22 @@ def run_search_and_evaluate(
         model_answer=search_result.formatted_response,
     )
     eval_result = evaluator.evaluate_with_retry(eval_request)
+
+    # Build search_result dict
+    search_result_dict = {
+        "response": search_result.formatted_response,
+        "tool_trajectory": search_result.tool_trajectory.model_dump(),
+        "token_usage": search_result.token_usage,
+    }
+
+    # Add reasoning_content if available (DeepSeek R1 / Minimax M2.5 specific)
+    reasoning = search_result.reasoning_content
+    if reasoning is not None:
+        search_result_dict["reasoning_content"] = reasoning
+
     return {
         "input_sample": test_sample,
-        "search_result": {
-            "response": search_result.formatted_response,
-            "tool_trajectory": search_result.tool_trajectory.model_dump(),
-            "token_usage": search_result.token_usage,
-        },
+        "search_result": search_result_dict,
         "eval_result": {
             "score": eval_result.score,
             "metrics": eval_result.metrics,

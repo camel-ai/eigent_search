@@ -85,6 +85,10 @@ class BackendModelConfig(Enum):
 
     For OpenAI models:
         - api_key: reads from OPENAI_API_KEY env var (handled by CAMEL internally)
+
+    For Minimax models:
+        - api_key: reads from MINIMAX_API_KEY env var
+        - url: reads from MINIMAX_BASE_URL env var
     """
 
     # Azure models
@@ -137,6 +141,13 @@ class BackendModelConfig(Enum):
     GPT_4O_MINI = {
         "model_type": ModelType.GPT_4O_MINI,
         "model_platform": ModelPlatformType.OPENAI,
+        "temperature": 0.0,
+    }
+
+    # Minimax models
+    MINIMAX_M2_5 = {
+        "model_type": "MiniMax-M2.5",
+        "model_platform": ModelPlatformType.MINIMAX,
         "temperature": 0.0,
     }
 
@@ -199,6 +210,9 @@ class SearchConfig(BaseModel):
             kwargs["api_version"] = self.api_version
         elif self.model_platform == ModelPlatformType.OPENAI:
             kwargs["api_key"] = get_required_env("OPENAI_API_KEY")
+        elif self.model_platform == ModelPlatformType.MINIMAX:
+            kwargs["api_key"] = get_required_env("MINIMAX_API_KEY")
+            kwargs["url"] = get_required_env("MINIMAX_BASE_URL")
 
         return ModelFactory.create(**kwargs)
 
@@ -321,6 +335,9 @@ class LLMasJudgeConfig(BaseModel):
             kwargs["api_version"] = self.api_version
         elif self.model_platform == ModelPlatformType.OPENAI:
             kwargs["api_key"] = get_required_env("OPENAI_API_KEY")
+        elif self.model_platform == ModelPlatformType.MINIMAX:
+            kwargs["api_key"] = get_required_env("MINIMAX_API_KEY")
+            kwargs["url"] = get_required_env("MINIMAX_BASE_URL")
 
         return ModelFactory.create(**kwargs)
 
