@@ -77,3 +77,14 @@ Please refer to the input parameters defined in the script. The benchmarking pip
 ## License
 
 This project is licensed under the Apache License 2.0.
+
+## Citation
+
+```
+@article{zhang2026eigentsearch,
+  title={EigentSearch-Q+: Enhancing Deep Research Agents with Structured Reasoning Tools},
+  author={Zhang, Boer and Wu, Mingyan and Zhou, Dongzhuoran and Zhu, Yuqicheng and Fan, Wendong and Zhang, Puzhen and Ding, Zifeng and Li, Guohao and He, Yuan},
+  journal={arXiv preprint arXiv:2604.07927},
+  year={2026}
+}
+```
