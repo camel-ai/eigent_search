@@ -80,11 +80,14 @@ This project is licensed under the Apache License 2.0.
 
 ## Citation
 
+This work has been accepted at ACM CAIS 2026 as a demo paper.
+
 ```
-@article{zhang2026eigentsearch,
+@inproceedings{zhang2026eigentsearch,
   title={EigentSearch-Q+: Enhancing Deep Research Agents with Structured Reasoning Tools},
   author={Zhang, Boer and Wu, Mingyan and Zhou, Dongzhuoran and Zhu, Yuqicheng and Fan, Wendong and Zhang, Puzhen and Ding, Zifeng and Li, Guohao and He, Yuan},
-  journal={arXiv preprint arXiv:2604.07927},
+  booktitle={Proceedings of the ACM Conference on AI and Agentic Systems},
+  pages={1114--1118},
   year={2026}
 }
 ```
